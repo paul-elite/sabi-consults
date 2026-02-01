@@ -71,13 +71,15 @@ export function updateInquiryStatus(id: string, status: ContactInquiry['status']
   return inquiriesStore[index]
 }
 
-// Admin authentication (simple implementation)
-// In production, use NextAuth.js, Clerk, or similar
-const ADMIN_CREDENTIALS = {
-  email: 'admin@sabiconsults.com',
-  password: 'SabiAdmin2024!', // Change in production
-}
-
+// Admin authentication using environment variables
 export function validateAdmin(email: string, password: string): boolean {
-  return email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password
+  const adminEmail = process.env.ADMIN_EMAIL
+  const adminPassword = process.env.ADMIN_PASSWORD
+
+  if (!adminEmail || !adminPassword) {
+    console.error('ADMIN_EMAIL or ADMIN_PASSWORD not set in environment variables')
+    return false
+  }
+
+  return email === adminEmail && password === adminPassword
 }
