@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 const defaultSettings = {
-  whatsapp_number: '2348000000000',
-  phone_number: '+234 800 000 0000',
-  email: 'hello@sabiconsults.com',
+  whatsapp_number: '2349160531000',
+  phone_number: '0916 053 1000',
+  email: 'hello@sabiconsults.com.ng',
   instagram_handle: 'sabi_consults',
-  address: 'Abuja, Nigeria'
+  address: '3rd Floor, 137 Ademola Adetokunbo Crescent, Wuse 2, FCT-Abuja'
 }
 
 // GET /api/settings - Public endpoint to fetch all settings

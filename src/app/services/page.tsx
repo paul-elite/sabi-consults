@@ -72,7 +72,7 @@ export default function ServicesPage() {
       <section className="py-24 bg-[#f8f6f3]">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-sm font-medium text-[#8b7355] uppercase tracking-wider mb-4">
+            <p className="text-sm font-medium text-[#0055CC] uppercase tracking-wider mb-4">
               Our Services
             </p>
             <h1 className="text-4xl md:text-5xl font-light text-[#1a1a1a] mb-6">
@@ -100,7 +100,7 @@ export default function ServicesPage() {
               >
                 {/* Content */}
                 <div className={index % 2 === 1 ? 'lg:col-start-2' : ''}>
-                  <p className="text-sm font-medium text-[#8b7355] uppercase tracking-wider mb-2">
+                  <p className="text-sm font-medium text-[#0055CC] uppercase tracking-wider mb-2">
                     {service.subtitle}
                   </p>
                   <h2 className="text-3xl font-light text-[#1a1a1a] mb-4">
@@ -112,7 +112,7 @@ export default function ServicesPage() {
                   <ul className="grid grid-cols-2 gap-3 mb-8">
                     {service.features.map((feature, idx) => (
                       <li key={idx} className="flex items-center gap-2 text-sm text-neutral-600">
-                        <svg className="w-4 h-4 text-[#8b7355] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-[#0055CC] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                         {feature}
@@ -121,7 +121,7 @@ export default function ServicesPage() {
                   </ul>
                   <Link
                     href="/contact"
-                    className="inline-flex items-center gap-2 text-sm font-medium text-[#1a1a1a] hover:text-[#8b7355] transition-colors"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-[#1a1a1a] hover:text-[#0055CC] transition-colors"
                   >
                     Learn more
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -134,7 +134,7 @@ export default function ServicesPage() {
                 <div className={`bg-[#f8f6f3] p-12 ${index % 2 === 1 ? 'lg:col-start-1' : ''}`}>
                   <div className="flex items-center justify-center h-64">
                     <div className="text-center">
-                      <div className="text-7xl font-light text-[#8b7355] mb-4">
+                      <div className="text-7xl font-light text-[#0055CC] mb-4">
                         {String(index + 1).padStart(2, '0')}
                       </div>
                       <div className="text-sm uppercase tracking-wider text-neutral-500">
@@ -163,8 +163,8 @@ export default function ServicesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 border border-[#8b7355] flex items-center justify-center">
-                <span className="text-xl font-light text-[#8b7355]">01</span>
+              <div className="w-16 h-16 mx-auto mb-6 border border-[#0055CC] flex items-center justify-center">
+                <span className="text-xl font-light text-[#0055CC]">01</span>
               </div>
               <h3 className="font-medium text-white mb-2">Consultation</h3>
               <p className="text-sm text-neutral-400">
@@ -173,8 +173,8 @@ export default function ServicesPage() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 border border-[#8b7355] flex items-center justify-center">
-                <span className="text-xl font-light text-[#8b7355]">02</span>
+              <div className="w-16 h-16 mx-auto mb-6 border border-[#0055CC] flex items-center justify-center">
+                <span className="text-xl font-light text-[#0055CC]">02</span>
               </div>
               <h3 className="font-medium text-white mb-2">Strategy</h3>
               <p className="text-sm text-neutral-400">
@@ -183,8 +183,8 @@ export default function ServicesPage() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 border border-[#8b7355] flex items-center justify-center">
-                <span className="text-xl font-light text-[#8b7355]">03</span>
+              <div className="w-16 h-16 mx-auto mb-6 border border-[#0055CC] flex items-center justify-center">
+                <span className="text-xl font-light text-[#0055CC]">03</span>
               </div>
               <h3 className="font-medium text-white mb-2">Execution</h3>
               <p className="text-sm text-neutral-400">
@@ -193,8 +193,8 @@ export default function ServicesPage() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 border border-[#8b7355] flex items-center justify-center">
-                <span className="text-xl font-light text-[#8b7355]">04</span>
+              <div className="w-16 h-16 mx-auto mb-6 border border-[#0055CC] flex items-center justify-center">
+                <span className="text-xl font-light text-[#0055CC]">04</span>
               </div>
               <h3 className="font-medium text-white mb-2">Completion</h3>
               <p className="text-sm text-neutral-400">

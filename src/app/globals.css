@@ -2,14 +2,14 @@
 
 /* Custom theme configuration for Sabi Consults */
 @theme {
-  /* Color palette - premium, neutral tones */
+  /* Color palette - clean blue and white */
   --color-charcoal: #1a1a1a;
   --color-charcoal-light: #2d2d2d;
-  --color-cream: #f8f6f3;
-  --color-cream-dark: #f0ede8;
+  --color-cream: #f8f9fc;
+  --color-cream-dark: #e8eef5;
   --color-stone: #9c9890;
-  --color-accent: #8b7355; /* Warm earth tone */
-  --color-accent-dark: #6b5a45;
+  --color-accent: #0055CC; /* Primary blue */
+  --color-accent-dark: #0044aa;
 
   /* Typography */
   --font-family-heading: 'Inter', system-ui, sans-serif;

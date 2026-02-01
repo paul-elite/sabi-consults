@@ -54,12 +54,12 @@ export default function PropertyCard({ property, variant = 'default' }: Property
       {/* Content */}
       <div className="p-5">
         {/* District */}
-        <p className="text-xs font-medium text-[#8b7355] uppercase tracking-wider mb-2">
+        <p className="text-xs font-medium text-[#0055CC] uppercase tracking-wider mb-2">
           {property.district}
         </p>
 
         {/* Title */}
-        <h3 className={`font-medium text-[#1a1a1a] group-hover:text-[#8b7355] transition-colors ${
+        <h3 className={`font-medium text-[#1a1a1a] group-hover:text-[#0055CC] transition-colors ${
           isFeatured ? 'text-lg mb-2' : 'text-base mb-1'
         }`}>
           {property.title}

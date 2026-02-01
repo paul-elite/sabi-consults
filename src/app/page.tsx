@@ -56,7 +56,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
             <div>
-              <p className="text-sm font-medium text-[#8b7355] uppercase tracking-wider mb-2">
+              <p className="text-sm font-medium text-[#0055CC] uppercase tracking-wider mb-2">
                 Curated Selection
               </p>
               <h2 className="text-3xl md:text-4xl font-light text-[#1a1a1a]">
@@ -65,7 +65,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/properties"
-              className="mt-4 md:mt-0 text-sm font-medium text-[#1a1a1a] hover:text-[#8b7355] transition-colors flex items-center gap-2"
+              className="mt-4 md:mt-0 text-sm font-medium text-[#1a1a1a] hover:text-[#0055CC] transition-colors flex items-center gap-2"
             >
               View All Properties
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,7 +86,7 @@ export default async function HomePage() {
       <section className="py-24 bg-[#f8f6f3]">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-sm font-medium text-[#8b7355] uppercase tracking-wider mb-2">
+            <p className="text-sm font-medium text-[#0055CC] uppercase tracking-wider mb-2">
               Explore
             </p>
             <h2 className="text-3xl md:text-4xl font-light text-[#1a1a1a]">
@@ -118,7 +118,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-sm font-medium text-[#8b7355] uppercase tracking-wider mb-2">
+              <p className="text-sm font-medium text-[#0055CC] uppercase tracking-wider mb-2">
                 Why Choose Us
               </p>
               <h2 className="text-3xl md:text-4xl font-light text-[#1a1a1a] mb-6">
@@ -134,7 +134,7 @@ export default async function HomePage() {
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <div className="w-12 h-12 bg-[#f8f6f3] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-[#8b7355]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-[#0055CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                   </div>
@@ -146,7 +146,7 @@ export default async function HomePage() {
 
                 <div className="flex gap-4">
                   <div className="w-12 h-12 bg-[#f8f6f3] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-[#8b7355]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-[#0055CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
@@ -158,7 +158,7 @@ export default async function HomePage() {
 
                 <div className="flex gap-4">
                   <div className="w-12 h-12 bg-[#f8f6f3] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-[#8b7355]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-[#0055CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
@@ -193,7 +193,7 @@ export default async function HomePage() {
       <section className="py-24 bg-[#1a1a1a]">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-sm font-medium text-[#8b7355] uppercase tracking-wider mb-2">
+            <p className="text-sm font-medium text-[#0055CC] uppercase tracking-wider mb-2">
               Client Stories
             </p>
             <h2 className="text-3xl md:text-4xl font-light text-white">
@@ -204,7 +204,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial) => (
               <div key={testimonial.id} className="bg-[#2d2d2d] p-8">
-                <svg className="w-8 h-8 text-[#8b7355] mb-4" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-[#0055CC] mb-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                 </svg>
                 <p className="text-neutral-300 leading-relaxed mb-6">
@@ -238,7 +238,7 @@ export default async function HomePage() {
               Browse Properties
             </Link>
             <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '2348000000000'}`}
+              href="https://wa.me/2349160531000"
               target="_blank"
               rel="noopener noreferrer"
               className="px-8 py-4 border border-[#1a1a1a] text-[#1a1a1a] text-sm font-medium uppercase tracking-wider hover:bg-[#1a1a1a] hover:text-white transition-colors flex items-center justify-center gap-2"

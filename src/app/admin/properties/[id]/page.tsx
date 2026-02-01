@@ -472,7 +472,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                       type="checkbox"
                       checked={form.featured}
                       onChange={(e) => setForm({ ...form, featured: e.target.checked })}
-                      className="w-4 h-4 text-[#8b7355] border-neutral-300 focus:ring-[#8b7355]"
+                      className="w-4 h-4 text-[#0055CC] border-neutral-300 focus:ring-[#0055CC]"
                     />
                     <span className="text-sm text-neutral-600">Featured Property</span>
                   </label>

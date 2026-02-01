@@ -87,7 +87,7 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
               {/* Header */}
               <div>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="px-3 py-1 bg-[#f8f6f3] text-[#8b7355] text-xs font-medium uppercase tracking-wider">
+                  <span className="px-3 py-1 bg-[#f8f6f3] text-[#0055CC] text-xs font-medium uppercase tracking-wider">
                     For {property.type === 'sale' ? 'Sale' : 'Rent'}
                   </span>
                   <span className="px-3 py-1 bg-[#f8f6f3] text-neutral-600 text-xs font-medium uppercase tracking-wider">
@@ -147,7 +147,7 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {property.features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-3">
-                        <svg className="w-5 h-5 text-[#8b7355]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-[#0055CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                         <span className="text-neutral-600">{feature}</span>

@@ -77,7 +77,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/admin/dashboard" className="text-xl font-semibold">
-              Sabi<span className="text-[#8b7355]">Consults</span>
+              Sabi<span className="text-[#0055CC]">Consults</span>
               <span className="text-xs font-normal text-neutral-400 ml-2">Admin</span>
             </Link>
           </div>
@@ -206,7 +206,7 @@ export default function AdminDashboard() {
                           <div>
                             <p className="font-medium text-[#1a1a1a] text-sm">{property.title}</p>
                             {property.featured && (
-                              <span className="text-xs text-[#8b7355]">Featured</span>
+                              <span className="text-xs text-[#0055CC]">Featured</span>
                             )}
                           </div>
                         </div>
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/properties/${property.id}`}
-                            className="text-sm text-[#8b7355] hover:underline"
+                            className="text-sm text-[#0055CC] hover:underline"
                           >
                             Edit
                           </Link>
@@ -282,7 +282,7 @@ export default function AdminDashboard() {
                         </p>
                         <p className="text-sm text-neutral-600">{inquiry.message}</p>
                         {inquiry.propertyId && (
-                          <p className="text-xs text-[#8b7355] mt-2">
+                          <p className="text-xs text-[#0055CC] mt-2">
                             Property ID: {inquiry.propertyId}
                           </p>
                         )}

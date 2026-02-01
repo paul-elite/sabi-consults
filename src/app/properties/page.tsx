@@ -82,9 +82,9 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                       <li key={district.id}>
                         <a
                           href={`/properties?district=${district.name}`}
-                          className={`text-sm hover:text-[#8b7355] transition-colors ${
+                          className={`text-sm hover:text-[#0055CC] transition-colors ${
                             params.district?.toLowerCase() === district.name.toLowerCase()
-                              ? 'text-[#8b7355] font-medium'
+                              ? 'text-[#0055CC] font-medium'
                               : 'text-neutral-600'
                           }`}
                         >
@@ -116,7 +116,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 <p className="text-sm text-neutral-600">
                   {properties.length} {properties.length === 1 ? 'property' : 'properties'} found
                   {hasFilters && (
-                    <a href="/properties" className="ml-2 text-[#8b7355] hover:underline">
+                    <a href="/properties" className="ml-2 text-[#0055CC] hover:underline">
                       Clear filters
                     </a>
                   )}
@@ -135,7 +135,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                   <p className="text-neutral-600 mb-4">No properties match your criteria.</p>
                   <a
                     href="/properties"
-                    className="text-sm font-medium text-[#8b7355] hover:underline"
+                    className="text-sm font-medium text-[#0055CC] hover:underline"
                   >
                     View all properties
                   </a>

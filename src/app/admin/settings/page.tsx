@@ -101,7 +101,7 @@ export default function AdminSettings() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/admin/dashboard" className="text-xl font-semibold">
-              Sabi<span className="text-[#8b7355]">Consults</span>
+              Sabi<span className="text-[#0055CC]">Consults</span>
               <span className="text-xs font-normal text-neutral-400 ml-2">Admin</span>
             </Link>
           </div>
@@ -151,7 +151,7 @@ export default function AdminSettings() {
                 value={settings.whatsapp_number}
                 onChange={(e) => setSettings({ ...settings, whatsapp_number: e.target.value })}
                 placeholder="2348000000000"
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#8b7355] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors"
               />
               <p className="text-xs text-neutral-400 mt-1">
                 Enter without + or spaces (e.g., 2348012345678)
@@ -168,7 +168,7 @@ export default function AdminSettings() {
                 value={settings.phone_number}
                 onChange={(e) => setSettings({ ...settings, phone_number: e.target.value })}
                 placeholder="+234 800 000 0000"
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#8b7355] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors"
               />
               <p className="text-xs text-neutral-400 mt-1">
                 This is how the phone number will be displayed on the site
@@ -185,7 +185,7 @@ export default function AdminSettings() {
                 value={settings.email}
                 onChange={(e) => setSettings({ ...settings, email: e.target.value })}
                 placeholder="hello@sabiconsults.com"
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#8b7355] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors"
               />
             </div>
 
@@ -203,7 +203,7 @@ export default function AdminSettings() {
                   value={settings.instagram_handle}
                   onChange={(e) => setSettings({ ...settings, instagram_handle: e.target.value })}
                   placeholder="sabi_consults"
-                  className="flex-1 px-4 py-3 border border-neutral-200 focus:border-[#8b7355] focus:outline-none transition-colors"
+                  className="flex-1 px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -218,7 +218,7 @@ export default function AdminSettings() {
                 onChange={(e) => setSettings({ ...settings, address: e.target.value })}
                 placeholder="Abuja, Nigeria"
                 rows={2}
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#8b7355] focus:outline-none transition-colors resize-none"
+                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors resize-none"
               />
             </div>
           </div>

@@ -9,11 +9,11 @@ export interface SiteSettings {
 }
 
 const defaultSettings: SiteSettings = {
-  whatsapp_number: '2348000000000',
-  phone_number: '+234 800 000 0000',
-  email: 'hello@sabiconsults.com',
+  whatsapp_number: '2349160531000',
+  phone_number: '0916 053 1000',
+  email: 'hello@sabiconsults.com.ng',
   instagram_handle: 'sabi_consults',
-  address: 'Abuja, Nigeria'
+  address: '3rd Floor, 137 Ademola Adetokunbo Crescent, Wuse 2, FCT-Abuja'
 }
 
 // Server-side function to fetch settings

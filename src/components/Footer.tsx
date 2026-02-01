@@ -1,18 +1,23 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1a1a1a] text-white">
+    <footer className="bg-[#0055CC] text-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
-              <span className="text-2xl font-semibold tracking-tight">
-                Sabi<span className="text-[#8b7355]">Consults</span>
-              </span>
+              <Image
+                src="/logo.svg"
+                alt="Sabi Consults"
+                width={160}
+                height={47}
+                className="h-10 w-auto"
+              />
             </Link>
-            <p className="mt-4 text-neutral-400 text-sm leading-relaxed">
+            <p className="mt-4 text-white/70 text-sm leading-relaxed">
               Your trusted partner for premium real estate in Abuja. Deep local knowledge,
               exceptional service, and unwavering commitment to your property goals.
             </p>
@@ -22,7 +27,7 @@ export default function Footer() {
                 href="https://instagram.com/sabi_consults"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-white transition-colors"
+                className="text-white/70 hover:text-white transition-colors"
                 aria-label="Instagram"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -30,10 +35,10 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://wa.me/2348000000000"
+                href="https://wa.me/2349160531000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-white transition-colors"
+                className="text-white/70 hover:text-white transition-colors"
                 aria-label="WhatsApp"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -48,27 +53,27 @@ export default function Footer() {
             <h4 className="text-sm font-semibold uppercase tracking-wider mb-4">Navigation</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/" className="text-neutral-400 hover:text-white text-sm transition-colors">
+                <Link href="/" className="text-white/70 hover:text-white text-sm transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/properties" className="text-neutral-400 hover:text-white text-sm transition-colors">
+                <Link href="/properties" className="text-white/70 hover:text-white text-sm transition-colors">
                   Properties
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-neutral-400 hover:text-white text-sm transition-colors">
+                <Link href="/services" className="text-white/70 hover:text-white text-sm transition-colors">
                   Services
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-neutral-400 hover:text-white text-sm transition-colors">
+                <Link href="/about" className="text-white/70 hover:text-white text-sm transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-neutral-400 hover:text-white text-sm transition-colors">
+                <Link href="/contact" className="text-white/70 hover:text-white text-sm transition-colors">
                   Contact
                 </Link>
               </li>
@@ -80,22 +85,22 @@ export default function Footer() {
             <h4 className="text-sm font-semibold uppercase tracking-wider mb-4">Services</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/services#sales" className="text-neutral-400 hover:text-white text-sm transition-colors">
+                <Link href="/services#sales" className="text-white/70 hover:text-white text-sm transition-colors">
                   Property Sales
                 </Link>
               </li>
               <li>
-                <Link href="/services#acquisition" className="text-neutral-400 hover:text-white text-sm transition-colors">
+                <Link href="/services#acquisition" className="text-white/70 hover:text-white text-sm transition-colors">
                   Property Acquisition
                 </Link>
               </li>
               <li>
-                <Link href="/services#consulting" className="text-neutral-400 hover:text-white text-sm transition-colors">
+                <Link href="/services#consulting" className="text-white/70 hover:text-white text-sm transition-colors">
                   Real Estate Consulting
                 </Link>
               </li>
               <li>
-                <Link href="/services#investment" className="text-neutral-400 hover:text-white text-sm transition-colors">
+                <Link href="/services#investment" className="text-white/70 hover:text-white text-sm transition-colors">
                   Investment Advisory
                 </Link>
               </li>
@@ -106,17 +111,17 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider mb-4">Contact</h4>
             <ul className="space-y-3">
-              <li className="text-neutral-400 text-sm">
-                Abuja, Nigeria
+              <li className="text-white/70 text-sm">
+                3rd Floor, 137 Ademola Adetokunbo Crescent, Wuse 2, FCT-Abuja
               </li>
               <li>
-                <a href="mailto:hello@sabiconsults.com" className="text-neutral-400 hover:text-white text-sm transition-colors">
-                  hello@sabiconsults.com
+                <a href="tel:+2349160531000" className="text-white/70 hover:text-white text-sm transition-colors">
+                  0916 053 1000
                 </a>
               </li>
               <li>
-                <a href="tel:+2348000000000" className="text-neutral-400 hover:text-white text-sm transition-colors">
-                  +234 800 000 0000
+                <a href="https://wa.me/2349160531000" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white text-sm transition-colors">
+                  WhatsApp Us
                 </a>
               </li>
             </ul>
@@ -124,13 +129,13 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-neutral-800 mt-12 pt-8">
+        <div className="border-t border-white/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-neutral-500 text-sm">
+            <p className="text-white/50 text-sm">
               &copy; {new Date().getFullYear()} Sabi Consults. All rights reserved.
             </p>
             <div className="flex items-center space-x-6">
-              <Link href="/admin" className="text-neutral-500 hover:text-neutral-400 text-sm transition-colors">
+              <Link href="/admin" className="text-white/50 hover:text-white/70 text-sm transition-colors">
                 Staff Access
               </Link>
             </div>

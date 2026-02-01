@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-semibold tracking-tight text-[#1a1a1a]">
-            Sabi<span className="text-[#8b7355]">Consults</span>
+            Sabi<span className="text-[#0055CC]">Consults</span>
           </h1>
           <p className="text-sm text-neutral-500 mt-2">Staff Portal</p>
         </div>
