@@ -18,18 +18,18 @@ interface PropertyForm {
   description: string
   price: string
   priceLabel: string
-  type: 'sale' | 'rent'
-  propertyType: 'house' | 'apartment' | 'land' | 'commercial' | 'villa'
+  type: 'land' | 'house'
   district: string
   address: string
   latitude: string
   longitude: string
   bedrooms: string
   bathrooms: string
-  size: string
+  bq: string
+  landSize: string
   images: string
   features: string
-  status: 'available' | 'sold' | 'rented' | 'pending'
+  status: 'available' | 'sold' | 'pending'
   featured: boolean
 }
 
@@ -44,15 +44,15 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
     description: '',
     price: '',
     priceLabel: '',
-    type: 'sale',
-    propertyType: 'house',
+    type: 'house',
     district: 'Maitama',
     address: '',
     latitude: '9.0579',
     longitude: '7.4951',
     bedrooms: '',
     bathrooms: '',
-    size: '',
+    bq: '',
+    landSize: '',
     images: '',
     features: '',
     status: 'available',
@@ -83,14 +83,14 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
           price: property.price.toString(),
           priceLabel: property.priceLabel || '',
           type: property.type,
-          propertyType: property.propertyType,
           district: property.district,
           address: property.address,
           latitude: property.latitude.toString(),
           longitude: property.longitude.toString(),
           bedrooms: property.bedrooms?.toString() || '',
           bathrooms: property.bathrooms?.toString() || '',
-          size: property.size?.toString() || '',
+          bq: property.bq?.toString() || '',
+          landSize: property.landSize?.toString() || '',
           images: property.images.join('\n'),
           features: property.features.join('\n'),
           status: property.status,
@@ -121,14 +121,14 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
           price: parseFloat(form.price),
           priceLabel: form.priceLabel || undefined,
           type: form.type,
-          propertyType: form.propertyType,
           district: form.district,
           address: form.address,
           latitude: parseFloat(form.latitude),
           longitude: parseFloat(form.longitude),
           bedrooms: form.bedrooms ? parseInt(form.bedrooms) : undefined,
           bathrooms: form.bathrooms ? parseInt(form.bathrooms) : undefined,
-          size: form.size ? parseInt(form.size) : undefined,
+          bq: form.bq ? parseInt(form.bq) : 0,
+          landSize: form.landSize ? parseInt(form.landSize) : undefined,
           images: form.images.split('\n').filter(Boolean),
           features: form.features.split('\n').filter(Boolean),
           status: form.status,
@@ -159,7 +159,6 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
     description: '',
     price: 0,
     type: form.type,
-    propertyType: form.propertyType,
     address: form.address,
     images: [],
     features: [],
@@ -238,37 +237,18 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-neutral-600 mb-1">
-                      Listing Type *
-                    </label>
-                    <select
-                      value={form.type}
-                      onChange={(e) => setForm({ ...form, type: e.target.value as 'sale' | 'rent' })}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
-                    >
-                      <option value="sale">For Sale</option>
-                      <option value="rent">For Rent</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-600 mb-1">
                       Property Type *
                     </label>
                     <select
-                      value={form.propertyType}
-                      onChange={(e) => setForm({ ...form, propertyType: e.target.value as PropertyForm['propertyType'] })}
+                      value={form.type}
+                      onChange={(e) => setForm({ ...form, type: e.target.value as 'land' | 'house' })}
                       className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                     >
                       <option value="house">House</option>
-                      <option value="apartment">Apartment</option>
-                      <option value="villa">Villa</option>
                       <option value="land">Land</option>
-                      <option value="commercial">Commercial</option>
                     </select>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-neutral-600 mb-1">
                       Price (₦) *
@@ -281,19 +261,19 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                       className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                     />
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-600 mb-1">
-                      Price Label (optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={form.priceLabel}
-                      onChange={(e) => setForm({ ...form, priceLabel: e.target.value })}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
-                      placeholder="e.g., Per Annum"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-600 mb-1">
+                    Price Label (optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={form.priceLabel}
+                    onChange={(e) => setForm({ ...form, priceLabel: e.target.value })}
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    placeholder="e.g., Per Plot, Negotiable"
+                  />
                 </div>
               </div>
             </div>
@@ -301,7 +281,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
             {/* Property Details */}
             <div className="bg-white border border-neutral-200 p-6">
               <h2 className="font-medium text-[#1a1a1a] mb-6">Property Details</h2>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-neutral-600 mb-1">
                     Bedrooms
@@ -311,6 +291,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                     value={form.bedrooms}
                     onChange={(e) => setForm({ ...form, bedrooms: e.target.value })}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    placeholder={form.type === 'land' ? 'N/A' : ''}
+                    disabled={form.type === 'land'}
                   />
                 </div>
 
@@ -323,17 +305,33 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                     value={form.bathrooms}
                     onChange={(e) => setForm({ ...form, bathrooms: e.target.value })}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    placeholder={form.type === 'land' ? 'N/A' : ''}
+                    disabled={form.type === 'land'}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-neutral-600 mb-1">
-                    Size (sqm)
+                    BQ (Boys Quarters)
                   </label>
                   <input
                     type="number"
-                    value={form.size}
-                    onChange={(e) => setForm({ ...form, size: e.target.value })}
+                    value={form.bq}
+                    onChange={(e) => setForm({ ...form, bq: e.target.value })}
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    placeholder={form.type === 'land' ? 'N/A' : '0'}
+                    disabled={form.type === 'land'}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-600 mb-1">
+                    Land Size (sqm)
+                  </label>
+                  <input
+                    type="number"
+                    value={form.landSize}
+                    onChange={(e) => setForm({ ...form, landSize: e.target.value })}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   />
                 </div>
@@ -463,7 +461,6 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                       <option value="available">Available</option>
                       <option value="pending">Pending</option>
                       <option value="sold">Sold</option>
-                      <option value="rented">Rented</option>
                     </select>
                   </div>
 

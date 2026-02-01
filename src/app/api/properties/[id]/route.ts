@@ -55,14 +55,14 @@ export async function PUT(
     if (body.price !== undefined) updates.price = Number(body.price)
     if (body.priceLabel !== undefined) updates.price_label = body.priceLabel
     if (body.type !== undefined) updates.type = body.type
-    if (body.propertyType !== undefined) updates.property_type = body.propertyType
     if (body.district !== undefined) updates.district = body.district
     if (body.address !== undefined) updates.address = body.address
     if (body.latitude !== undefined) updates.latitude = Number(body.latitude)
     if (body.longitude !== undefined) updates.longitude = Number(body.longitude)
     if (body.bedrooms !== undefined) updates.bedrooms = body.bedrooms ? Number(body.bedrooms) : null
     if (body.bathrooms !== undefined) updates.bathrooms = body.bathrooms ? Number(body.bathrooms) : null
-    if (body.size !== undefined) updates.size = body.size ? Number(body.size) : null
+    if (body.bq !== undefined) updates.bq = body.bq ? Number(body.bq) : 0
+    if (body.landSize !== undefined) updates.land_size = body.landSize ? Number(body.landSize) : null
     if (body.images !== undefined) updates.images = body.images
     if (body.features !== undefined) updates.features = body.features
     if (body.status !== undefined) updates.status = body.status
@@ -133,14 +133,14 @@ function transformProperty(row: Record<string, unknown>) {
     price: row.price,
     priceLabel: row.price_label,
     type: row.type,
-    propertyType: row.property_type,
     district: row.district,
     address: row.address,
     latitude: row.latitude,
     longitude: row.longitude,
     bedrooms: row.bedrooms,
     bathrooms: row.bathrooms,
-    size: row.size,
+    bq: row.bq,
+    landSize: row.land_size,
     images: row.images,
     features: row.features,
     status: row.status,

@@ -213,7 +213,7 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-4 py-4 text-sm text-neutral-600">{property.district}</td>
                       <td className="px-4 py-4 text-sm text-neutral-600 capitalize">
-                        {property.type} - {property.propertyType}
+                        {property.type === 'land' ? 'Land' : 'House'}
                       </td>
                       <td className="px-4 py-4 text-sm text-neutral-600">
                         ₦{(property.price / 1000000).toFixed(1)}M

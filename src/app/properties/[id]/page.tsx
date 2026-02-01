@@ -87,11 +87,10 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
               {/* Header */}
               <div>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="px-3 py-1 bg-[#f8f6f3] text-[#0055CC] text-xs font-medium uppercase tracking-wider">
-                    For {property.type === 'sale' ? 'Sale' : 'Rent'}
-                  </span>
-                  <span className="px-3 py-1 bg-[#f8f6f3] text-neutral-600 text-xs font-medium uppercase tracking-wider">
-                    {property.propertyType}
+                  <span className={`px-3 py-1 text-xs font-medium uppercase tracking-wider ${
+                    property.type === 'land' ? 'bg-[#0055CC] text-white' : 'bg-[#f8f6f3] text-[#0055CC]'
+                  }`}>
+                    {property.type === 'land' ? 'Land' : 'House'}
                   </span>
                 </div>
                 <h1 className="text-3xl md:text-4xl font-light text-[#1a1a1a] mb-2">
@@ -120,10 +119,16 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                     <p className="text-sm text-neutral-500">Bathrooms</p>
                   </div>
                 )}
-                {property.size && (
+                {property.landSize && (
                   <div>
-                    <p className="text-2xl font-light text-[#1a1a1a]">{property.size.toLocaleString()}</p>
+                    <p className="text-2xl font-light text-[#1a1a1a]">{property.landSize.toLocaleString()}</p>
                     <p className="text-sm text-neutral-500">Sq. Meters</p>
+                  </div>
+                )}
+                {property.bq !== undefined && property.bq > 0 && (
+                  <div>
+                    <p className="text-2xl font-light text-[#1a1a1a]">{property.bq}</p>
+                    <p className="text-sm text-neutral-500">BQ</p>
                   </div>
                 )}
                 <div>
