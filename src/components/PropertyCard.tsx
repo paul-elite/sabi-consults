@@ -20,6 +20,7 @@ function formatPrice(price: number): string {
 
 export default function PropertyCard({ property, variant = 'default' }: PropertyCardProps) {
   const isFeatured = variant === 'featured'
+  const isLand = property.type === 'land'
 
   return (
     <Link
@@ -28,13 +29,19 @@ export default function PropertyCard({ property, variant = 'default' }: Property
     >
       {/* Image Container */}
       <div className={`relative overflow-hidden ${isFeatured ? 'aspect-[4/3]' : 'aspect-[3/2]'}`}>
-        <Image
-          src={property.images[0]}
-          alt={property.title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+        {property.images[0] ? (
+          <Image
+            src={property.images[0]}
+            alt={property.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full bg-neutral-200 flex items-center justify-center">
+            <span className="text-neutral-400">No Image</span>
+          </div>
+        )}
         {/* Overlay on hover */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
 
@@ -46,8 +53,10 @@ export default function PropertyCard({ property, variant = 'default' }: Property
         )}
 
         {/* Type Badge */}
-        <div className="absolute top-4 right-4 px-3 py-1 bg-white/90 text-[#1a1a1a] text-xs font-medium uppercase tracking-wider">
-          For {property.type === 'sale' ? 'Sale' : 'Rent'}
+        <div className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium uppercase tracking-wider ${
+          isLand ? 'bg-[#0055CC] text-white' : 'bg-white/90 text-[#1a1a1a]'
+        }`}>
+          {isLand ? 'Land' : 'House'}
         </div>
       </div>
 
@@ -66,19 +75,30 @@ export default function PropertyCard({ property, variant = 'default' }: Property
         </h3>
 
         {/* Property Details */}
-        {(property.bedrooms || property.bathrooms || property.size) && (
-          <div className="flex items-center gap-4 text-sm text-neutral-500 mb-3">
-            {property.bedrooms && (
-              <span>{property.bedrooms} Bed{property.bedrooms > 1 ? 's' : ''}</span>
-            )}
-            {property.bathrooms && (
-              <span>{property.bathrooms} Bath{property.bathrooms > 1 ? 's' : ''}</span>
-            )}
-            {property.size && (
-              <span>{property.size.toLocaleString()} sqm</span>
-            )}
-          </div>
-        )}
+        <div className="flex items-center gap-4 text-sm text-neutral-500 mb-3">
+          {isLand ? (
+            // Land details
+            property.landSize && (
+              <span>{property.landSize.toLocaleString()} sqm</span>
+            )
+          ) : (
+            // House details
+            <>
+              {property.bedrooms !== undefined && property.bedrooms > 0 && (
+                <span>{property.bedrooms} Bed{property.bedrooms > 1 ? 's' : ''}</span>
+              )}
+              {property.bathrooms !== undefined && property.bathrooms > 0 && (
+                <span>{property.bathrooms} Bath{property.bathrooms > 1 ? 's' : ''}</span>
+              )}
+              {property.bq !== undefined && property.bq > 0 && (
+                <span>{property.bq} BQ</span>
+              )}
+              {property.landSize !== undefined && property.landSize > 0 && (
+                <span>{property.landSize.toLocaleString()} sqm</span>
+              )}
+            </>
+          )}
+        </div>
 
         {/* Price */}
         <div className="flex items-baseline gap-2">

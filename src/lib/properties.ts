@@ -9,15 +9,15 @@ function transformProperty(row: Record<string, unknown>): Property {
     description: row.description as string,
     price: row.price as number,
     priceLabel: row.price_label as string | undefined,
-    type: row.type as 'sale' | 'rent',
-    propertyType: row.property_type as Property['propertyType'],
+    type: row.type as 'land' | 'house',
     district: row.district as string,
     address: row.address as string,
     latitude: row.latitude as number,
     longitude: row.longitude as number,
     bedrooms: row.bedrooms as number | undefined,
     bathrooms: row.bathrooms as number | undefined,
-    size: row.size as number | undefined,
+    bq: row.bq as number | undefined,
+    landSize: row.land_size as number | undefined,
     images: row.images as string[],
     features: row.features as string[],
     status: row.status as Property['status'],
@@ -104,7 +104,6 @@ export async function getPropertiesByDistrict(district: string): Promise<Propert
 export async function filterProperties(filters: {
   type?: string
   district?: string
-  propertyType?: string
   minPrice?: number
   maxPrice?: number
 }): Promise<Property[]> {
@@ -121,9 +120,6 @@ export async function filterProperties(filters: {
   }
   if (filters.district) {
     query = query.ilike('district', filters.district)
-  }
-  if (filters.propertyType) {
-    query = query.eq('property_type', filters.propertyType)
   }
   if (filters.minPrice) {
     query = query.gte('price', filters.minPrice)

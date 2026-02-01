@@ -12,7 +12,6 @@ interface PropertiesPageProps {
   searchParams: Promise<{
     type?: string
     district?: string
-    propertyType?: string
     priceRange?: string
   }>
 }
@@ -33,17 +32,16 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
   const filteredProperties = await filterProperties({
     type: params.type,
     district: params.district,
-    propertyType: params.propertyType,
     minPrice,
     maxPrice,
   })
 
   // Fallback to all properties if no filters
-  const properties = filteredProperties.length > 0 || params.type || params.district || params.propertyType || params.priceRange
+  const properties = filteredProperties.length > 0 || params.type || params.district || params.priceRange
     ? filteredProperties
     : await getAllProperties()
 
-  const hasFilters = params.type || params.district || params.propertyType || params.priceRange
+  const hasFilters = params.type || params.district || params.priceRange
 
   return (
     <div className="pt-20">

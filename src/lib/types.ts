@@ -5,19 +5,19 @@ export interface Property {
   title: string
   description: string
   price: number
-  priceLabel?: string // e.g., "Per Annum" for rentals
-  type: 'sale' | 'rent'
-  propertyType: 'house' | 'apartment' | 'land' | 'commercial' | 'villa'
+  priceLabel?: string // e.g., "Per Plot" for land
+  type: 'land' | 'house'
   district: string
   address: string
   latitude: number
   longitude: number
   bedrooms?: number
   bathrooms?: number
-  size?: number // in sqm
+  bq?: number // Boys Quarters count
+  landSize?: number // in sqm
   images: string[]
   features: string[]
-  status: 'available' | 'sold' | 'rented' | 'pending'
+  status: 'available' | 'sold' | 'pending'
   featured: boolean
   createdAt: string
   updatedAt: string
@@ -59,8 +59,7 @@ export interface AdminUser {
 
 // Search filters
 export interface PropertyFilters {
-  type?: 'sale' | 'rent'
-  propertyType?: Property['propertyType']
+  type?: 'land' | 'house'
   district?: string
   minPrice?: number
   maxPrice?: number

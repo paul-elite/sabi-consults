@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
   // Apply filters
   const type = searchParams.get('type')
   const district = searchParams.get('district')
-  const propertyType = searchParams.get('propertyType')
   const featured = searchParams.get('featured')
   const status = searchParams.get('status')
 
@@ -25,9 +24,6 @@ export async function GET(request: NextRequest) {
   }
   if (district) {
     query = query.ilike('district', district)
-  }
-  if (propertyType) {
-    query = query.eq('property_type', propertyType)
   }
   if (featured === 'true') {
     query = query.eq('featured', true)
@@ -69,7 +65,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     // Validate required fields
-    const requiredFields = ['title', 'description', 'price', 'type', 'propertyType', 'district', 'address', 'latitude', 'longitude']
+    const requiredFields = ['title', 'description', 'price', 'type', 'district', 'address', 'latitude', 'longitude']
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json(
@@ -89,14 +85,14 @@ export async function POST(request: NextRequest) {
         price: Number(body.price),
         price_label: body.priceLabel || null,
         type: body.type,
-        property_type: body.propertyType,
         district: body.district,
         address: body.address,
         latitude: Number(body.latitude),
         longitude: Number(body.longitude),
         bedrooms: body.bedrooms ? Number(body.bedrooms) : null,
         bathrooms: body.bathrooms ? Number(body.bathrooms) : null,
-        size: body.size ? Number(body.size) : null,
+        bq: body.bq ? Number(body.bq) : 0,
+        land_size: body.landSize ? Number(body.landSize) : null,
         images: body.images || [],
         features: body.features || [],
         status: body.status || 'available',
@@ -131,14 +127,14 @@ function transformProperty(row: Record<string, unknown>) {
     price: row.price,
     priceLabel: row.price_label,
     type: row.type,
-    propertyType: row.property_type,
     district: row.district,
     address: row.address,
     latitude: row.latitude,
     longitude: row.longitude,
     bedrooms: row.bedrooms,
     bathrooms: row.bathrooms,
-    size: row.size,
+    bq: row.bq,
+    landSize: row.land_size,
     images: row.images,
     features: row.features,
     status: row.status,
