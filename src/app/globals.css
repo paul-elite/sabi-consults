@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Custom theme configuration for Sabi Consults */
+@theme {
+  /* Color palette - premium, neutral tones */
+  --color-charcoal: #1a1a1a;
+  --color-charcoal-light: #2d2d2d;
+  --color-cream: #f8f6f3;
+  --color-cream-dark: #f0ede8;
+  --color-stone: #9c9890;
+  --color-accent: #8b7355; /* Warm earth tone */
+  --color-accent-dark: #6b5a45;
+
+  /* Typography */
+  --font-family-heading: 'Inter', system-ui, sans-serif;
+  --font-family-body: 'Inter', system-ui, sans-serif;
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-body);
+  background-color: #ffffff;
+  color: var(--color-charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Leaflet map monochrome overrides */
+.leaflet-tile {
+  filter: grayscale(100%) contrast(1.1);
+}
+
+.leaflet-container {
+  background: #e5e5e5;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Selection colors */
+::selection {
+  background-color: var(--color-accent);
+  color: white;
+}
