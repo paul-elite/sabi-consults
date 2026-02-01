@@ -1,12 +1,25 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const defaultSettings = {
+  whatsapp_number: '2348000000000',
+  phone_number: '+234 800 000 0000',
+  email: 'hello@sabiconsults.com',
+  instagram_handle: 'sabi_consults',
+  address: 'Abuja, Nigeria'
+}
 
 // GET /api/settings - Public endpoint to fetch all settings
 export async function GET() {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    // Return defaults if env vars not configured
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json(defaultSettings)
+    }
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const { data, error } = await supabase
@@ -16,13 +29,7 @@ export async function GET() {
     if (error) {
       console.error('Error fetching settings:', error)
       // Return default settings if table doesn't exist yet
-      return NextResponse.json({
-        whatsapp_number: '2348000000000',
-        phone_number: '+234 800 000 0000',
-        email: 'hello@sabiconsults.com',
-        instagram_handle: 'sabi_consults',
-        address: 'Abuja, Nigeria'
-      })
+      return NextResponse.json(defaultSettings)
     }
 
     // Convert array of {key, value} to object
@@ -31,19 +38,23 @@ export async function GET() {
       return acc
     }, {})
 
-    return NextResponse.json(settings)
+    return NextResponse.json({ ...defaultSettings, ...settings })
   } catch (error) {
     console.error('Error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch settings' },
-      { status: 500 }
-    )
+    return NextResponse.json(defaultSettings)
   }
 }
 
 // PUT /api/settings - Admin endpoint to update settings
 export async function PUT(request: Request) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
+    }
+
     // Verify admin authentication
     const authHeader = request.headers.get('Authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
