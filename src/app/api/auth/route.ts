@@ -56,7 +56,11 @@ export async function GET() {
   const session = cookieStore.get('admin_session')
 
   if (session && session.value === 'authenticated') {
-    return NextResponse.json({ authenticated: true })
+    // Return token for API calls that need authentication
+    const token = Buffer.from(
+      `${process.env.ADMIN_EMAIL}:${process.env.ADMIN_PASSWORD}`
+    ).toString('base64')
+    return NextResponse.json({ authenticated: true, token })
   }
 
   return NextResponse.json({ authenticated: false })

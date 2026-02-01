@@ -49,6 +49,22 @@ CREATE TABLE IF NOT EXISTS admin_users (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Site settings table (key-value store for configuration)
+CREATE TABLE IF NOT EXISTS site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Insert default settings
+INSERT INTO site_settings (key, value) VALUES
+  ('whatsapp_number', '2348000000000'),
+  ('phone_number', '+234 800 000 0000'),
+  ('email', 'hello@sabiconsults.com'),
+  ('instagram_handle', 'sabi_consults'),
+  ('address', 'Abuja, Nigeria')
+ON CONFLICT (key) DO NOTHING;
+
 -- Create indexes for common queries
 CREATE INDEX IF NOT EXISTS idx_properties_status ON properties(status);
 CREATE INDEX IF NOT EXISTS idx_properties_type ON properties(type);
@@ -105,6 +121,18 @@ CREATE POLICY "Service role has full access to inquiries" ON inquiries
 
 -- Admin users: Service role only
 CREATE POLICY "Service role has full access to admin_users" ON admin_users
+  FOR ALL
+  USING (auth.role() = 'service_role')
+  WITH CHECK (auth.role() = 'service_role');
+
+-- Site settings: Public read access
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view site settings" ON site_settings
+  FOR SELECT
+  USING (true);
+
+CREATE POLICY "Service role has full access to site_settings" ON site_settings
   FOR ALL
   USING (auth.role() = 'service_role')
   WITH CHECK (auth.role() = 'service_role');
