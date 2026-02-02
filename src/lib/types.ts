@@ -93,3 +93,20 @@ export interface Blog {
   createdAt: string
   updatedAt: string
 }
+
+// Team Member
+export interface TeamMember {
+  id: string
+  name: string
+  role: string
+  bio?: string
+  image?: string
+  email?: string
+  phone?: string
+  linkedin?: string
+  twitter?: string
+  displayOrder: number
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}

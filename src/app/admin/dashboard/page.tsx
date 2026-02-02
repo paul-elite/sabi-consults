@@ -85,6 +85,9 @@ export default function AdminDashboard() {
             <Link href="/admin/blog" className="text-sm text-neutral-400 hover:text-white transition-colors">
               Blog
             </Link>
+            <Link href="/admin/team" className="text-sm text-neutral-400 hover:text-white transition-colors">
+              Team
+            </Link>
             <Link href="/admin/settings" className="text-sm text-neutral-400 hover:text-white transition-colors">
               Settings
             </Link>

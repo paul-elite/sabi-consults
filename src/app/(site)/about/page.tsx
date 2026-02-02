@@ -1,11 +1,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import TeamSection from '@/components/TeamSection'
 
 export const metadata: Metadata = {
   title: 'About Us | Sabi Consults',
   description: 'Learn about Sabi Consults - your trusted partner for premium real estate in Abuja, Nigeria.',
 }
+
+export const dynamic = 'force-dynamic'
 
 export default function AboutPage() {
   return (
@@ -200,6 +203,9 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Team Section */}
+      <TeamSection />
 
       {/* CTA */}
       <section className="py-24 bg-[#1a1a1a]">
