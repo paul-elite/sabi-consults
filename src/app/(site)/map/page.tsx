@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import MapWrapper from '@/components/MapWrapper'
 import { getAllProperties } from '@/lib/properties'
+import { Property } from '@/lib/types'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -12,7 +13,15 @@ export const metadata = {
 }
 
 export default async function MapPage() {
-  const properties = await getAllProperties()
+  let properties: Property[] = []
+  let error: string | null = null
+
+  try {
+    properties = await getAllProperties()
+  } catch (e) {
+    console.error('Error fetching properties for map:', e)
+    error = 'Failed to load properties'
+  }
 
   // Filter to only show available properties
   const availableProperties = properties.filter(p => p.status === 'available')
@@ -32,7 +41,7 @@ export default async function MapPage() {
                 Property Map
               </h1>
               <p className="text-neutral-600 mt-1">
-                Explore {availableProperties.length} properties across Abuja
+                {error ? 'Unable to load properties' : `Explore ${availableProperties.length} properties across Abuja`}
               </p>
             </div>
 
@@ -53,17 +62,31 @@ export default async function MapPage() {
 
       {/* Full Page Map */}
       <div className="h-[calc(100vh-180px)] relative">
-        <Suspense fallback={
+        {error ? (
           <div className="w-full h-full bg-neutral-100 flex items-center justify-center">
-            <div className="text-neutral-400 animate-pulse">Loading map...</div>
+            <div className="text-center">
+              <p className="text-neutral-500 mb-4">{error}</p>
+              <Link
+                href="/properties"
+                className="px-4 py-2 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors"
+              >
+                View Properties List
+              </Link>
+            </div>
           </div>
-        }>
-          <MapWrapper
-            properties={availableProperties}
-            interactive={true}
-            fullPage={true}
-          />
-        </Suspense>
+        ) : (
+          <Suspense fallback={
+            <div className="w-full h-full bg-neutral-100 flex items-center justify-center">
+              <div className="text-neutral-400 animate-pulse">Loading map...</div>
+            </div>
+          }>
+            <MapWrapper
+              properties={availableProperties}
+              interactive={true}
+              fullPage={true}
+            />
+          </Suspense>
+        )}
 
         {/* Floating Controls */}
         <div className="absolute bottom-6 left-6 z-[1000] flex flex-col gap-2">
@@ -79,12 +102,14 @@ export default async function MapPage() {
         </div>
 
         {/* Property Count Badge */}
-        <div className="absolute top-4 right-4 z-[1000] bg-white shadow-lg px-4 py-2">
-          <p className="text-sm font-medium text-[#1a1a1a]">
-            {availableProperties.length} Properties
-          </p>
-          <p className="text-xs text-neutral-500">Click markers for details</p>
-        </div>
+        {!error && (
+          <div className="absolute top-4 right-4 z-[1000] bg-white shadow-lg px-4 py-2">
+            <p className="text-sm font-medium text-[#1a1a1a]">
+              {availableProperties.length} Properties
+            </p>
+            <p className="text-xs text-neutral-500">Click markers for details</p>
+          </div>
+        )}
       </div>
     </div>
   )
