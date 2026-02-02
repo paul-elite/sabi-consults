@@ -49,6 +49,39 @@ function generateId() {
   return Math.random().toString(36).substring(2, 9)
 }
 
+// Parse coordinates from various Google Maps URL formats
+function parseGoogleMapsUrl(url: string): { lat: number; lng: number } | null {
+  try {
+    // Format: https://www.google.com/maps/place/.../@9.0579,7.4951,17z/...
+    const atMatch = url.match(/@(-?\d+\.?\d*),(-?\d+\.?\d*)/)
+    if (atMatch) {
+      return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) }
+    }
+
+    // Format: https://maps.google.com/?q=9.0579,7.4951 or ?ll=9.0579,7.4951
+    const qMatch = url.match(/[?&](q|ll)=(-?\d+\.?\d*),(-?\d+\.?\d*)/)
+    if (qMatch) {
+      return { lat: parseFloat(qMatch[2]), lng: parseFloat(qMatch[3]) }
+    }
+
+    // Format: https://www.google.com/maps?q=9.0579,7.4951
+    const queryMatch = url.match(/maps\?q=(-?\d+\.?\d*),(-?\d+\.?\d*)/)
+    if (queryMatch) {
+      return { lat: parseFloat(queryMatch[1]), lng: parseFloat(queryMatch[2]) }
+    }
+
+    // Format: coordinates in data parameter: !3d9.0579!4d7.4951
+    const dataMatch = url.match(/!3d(-?\d+\.?\d*)!4d(-?\d+\.?\d*)/)
+    if (dataMatch) {
+      return { lat: parseFloat(dataMatch[1]), lng: parseFloat(dataMatch[2]) }
+    }
+
+    return null
+  } catch {
+    return null
+  }
+}
+
 function createEmptyVariation(): VariationForm {
   return {
     id: generateId(),
@@ -67,6 +100,8 @@ export default function NewPropertyPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [googleMapsUrl, setGoogleMapsUrl] = useState('')
+  const [locationError, setLocationError] = useState('')
   const [form, setForm] = useState<PropertyForm>({
     title: '',
     description: '',
@@ -128,6 +163,25 @@ export default function NewPropertyPage() {
     setVariations(variations.map(v =>
       v.id === id ? { ...v, [field]: value } : v
     ))
+  }
+
+  const handleGoogleMapsUrl = (url: string) => {
+    setGoogleMapsUrl(url)
+    setLocationError('')
+
+    if (!url.trim()) return
+
+    const coords = parseGoogleMapsUrl(url)
+    if (coords) {
+      setForm({
+        ...form,
+        latitude: coords.lat.toString(),
+        longitude: coords.lng.toString(),
+      })
+      setLocationError('')
+    } else {
+      setLocationError('Could not extract coordinates. Please paste a valid Google Maps URL or enter coordinates manually.')
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -531,6 +585,42 @@ export default function NewPropertyPage() {
             <div className="bg-white border border-neutral-200 p-6">
               <h2 className="font-medium text-[#1a1a1a] mb-6">Location</h2>
               <div className="space-y-4">
+                {/* Google Maps URL Input */}
+                <div>
+                  <label className="block text-sm font-medium text-neutral-600 mb-1">
+                    Google Maps Link
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={googleMapsUrl}
+                      onChange={(e) => handleGoogleMapsUrl(e.target.value)}
+                      className="flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                      placeholder="Paste Google Maps share link here..."
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.readText().then(text => {
+                          handleGoogleMapsUrl(text)
+                        })
+                      }}
+                      className="px-4 py-3 bg-neutral-100 border border-neutral-200 text-sm text-neutral-600 hover:bg-neutral-200 transition-colors"
+                      title="Paste from clipboard"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </button>
+                  </div>
+                  {locationError && (
+                    <p className="text-xs text-red-500 mt-1">{locationError}</p>
+                  )}
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Open Google Maps, find the location, click &quot;Share&quot; → &quot;Copy link&quot; and paste here.
+                  </p>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-neutral-600 mb-1">
@@ -599,7 +689,7 @@ export default function NewPropertyPage() {
                   </Suspense>
                 </div>
                 <p className="text-xs text-neutral-500">
-                  Tip: Select a district to auto-fill coordinates, then adjust for the exact location.
+                  Coordinates are auto-filled from Google Maps link. You can also select a district or enter manually.
                 </p>
               </div>
             </div>

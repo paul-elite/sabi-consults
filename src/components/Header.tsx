@@ -8,7 +8,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0055CC] border-b border-[#0044aa]">
+    <header className="fixed top-0 left-0 right-0 z-[1100] bg-[#0055CC] border-b border-[#0044aa]">
       <nav className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
