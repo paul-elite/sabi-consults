@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import PropertySearch from '@/components/PropertySearch'
 import PropertyCard from '@/components/PropertyCard'
+import InstagramFeed from '@/components/InstagramFeed'
 import { getFeaturedProperties } from '@/lib/properties'
 import { testimonials, districts } from '@/data/properties'
 
@@ -219,6 +220,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Instagram Feed */}
+      <InstagramFeed />
 
       {/* CTA Section */}
       <section className="py-24 bg-[#0055CC]">
