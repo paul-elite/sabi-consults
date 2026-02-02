@@ -82,6 +82,9 @@ export default function AdminDashboard() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/admin/blog" className="text-sm text-neutral-400 hover:text-white transition-colors">
+              Blog
+            </Link>
             <Link href="/admin/settings" className="text-sm text-neutral-400 hover:text-white transition-colors">
               Settings
             </Link>
