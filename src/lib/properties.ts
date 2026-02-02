@@ -1,8 +1,14 @@
 import { createClient } from '@/lib/supabase/server'
-import { Property } from '@/lib/types'
+import { Property, PropertyVariation } from '@/lib/types'
 
 // Transform Supabase row to Property type
 function transformProperty(row: Record<string, unknown>): Property {
+  // Parse variations from JSONB
+  let variations: PropertyVariation[] | undefined
+  if (row.variations && Array.isArray(row.variations) && row.variations.length > 0) {
+    variations = row.variations as PropertyVariation[]
+  }
+
   return {
     id: row.id as string,
     title: row.title as string,
@@ -20,6 +26,7 @@ function transformProperty(row: Record<string, unknown>): Property {
     landSize: row.land_size as number | undefined,
     images: row.images as string[],
     features: row.features as string[],
+    variations,
     status: row.status as Property['status'],
     featured: row.featured as boolean,
     createdAt: row.created_at as string,

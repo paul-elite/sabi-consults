@@ -1,5 +1,17 @@
 // Core data types for Sabi Consults
 
+export interface PropertyVariation {
+  id: string
+  name: string // e.g., "3 Bedroom Terrace", "500 sqm Plot"
+  price?: number
+  bedrooms?: number
+  bathrooms?: number
+  bq?: number
+  landSize?: number // in sqm
+  unitsAvailable?: number
+  status?: 'available' | 'sold' | 'pending'
+}
+
 export interface Property {
   id: string
   title: string
@@ -17,6 +29,7 @@ export interface Property {
   landSize?: number // in sqm
   images: string[]
   features: string[]
+  variations?: PropertyVariation[] // Multiple unit types or plot sizes
   status: 'available' | 'sold' | 'pending'
   featured: boolean
   createdAt: string

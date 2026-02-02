@@ -65,6 +65,7 @@ export async function PUT(
     if (body.landSize !== undefined) updates.land_size = body.landSize ? Number(body.landSize) : null
     if (body.images !== undefined) updates.images = body.images
     if (body.features !== undefined) updates.features = body.features
+    if (body.variations !== undefined) updates.variations = body.variations
     if (body.status !== undefined) updates.status = body.status
     if (body.featured !== undefined) updates.featured = body.featured
 
@@ -126,6 +127,10 @@ export async function DELETE(
 
 // Helper function to transform snake_case to camelCase
 function transformProperty(row: Record<string, unknown>) {
+  const variations = row.variations && Array.isArray(row.variations) && row.variations.length > 0
+    ? row.variations
+    : undefined
+
   return {
     id: row.id,
     title: row.title,
@@ -143,6 +148,7 @@ function transformProperty(row: Record<string, unknown>) {
     landSize: row.land_size,
     images: row.images,
     features: row.features,
+    variations,
     status: row.status,
     featured: row.featured,
     createdAt: row.created_at,

@@ -145,6 +145,69 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                 </p>
               </div>
 
+              {/* Variations / Unit Types */}
+              {property.variations && property.variations.length > 0 && (
+                <div>
+                  <h2 className="text-xl font-medium text-[#1a1a1a] mb-4">
+                    {property.type === 'land' ? 'Available Plot Sizes' : 'Available Unit Types'}
+                  </h2>
+                  <div className="space-y-3">
+                    {property.variations.map((variation) => (
+                      <div
+                        key={variation.id}
+                        className={`border p-4 ${
+                          variation.status === 'sold'
+                            ? 'bg-neutral-50 border-neutral-200 opacity-60'
+                            : 'bg-white border-neutral-200 hover:border-[#0055CC]'
+                        } transition-colors`}
+                      >
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-medium text-[#1a1a1a]">{variation.name}</h3>
+                              {variation.status === 'sold' && (
+                                <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium uppercase">
+                                  Sold Out
+                                </span>
+                              )}
+                              {variation.status === 'pending' && (
+                                <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-medium uppercase">
+                                  Pending
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-neutral-500">
+                              {variation.bedrooms && (
+                                <span>{variation.bedrooms} Bed{variation.bedrooms > 1 ? 's' : ''}</span>
+                              )}
+                              {variation.bathrooms && (
+                                <span>{variation.bathrooms} Bath{variation.bathrooms > 1 ? 's' : ''}</span>
+                              )}
+                              {variation.bq !== undefined && variation.bq > 0 && (
+                                <span>{variation.bq} BQ</span>
+                              )}
+                              {variation.landSize && (
+                                <span>{variation.landSize.toLocaleString()} sqm</span>
+                              )}
+                              {variation.unitsAvailable !== undefined && variation.unitsAvailable > 0 && (
+                                <span className="text-[#0055CC]">{variation.unitsAvailable} units left</span>
+                              )}
+                            </div>
+                          </div>
+                          {variation.price && (
+                            <div className="text-right">
+                              <p className="text-lg font-medium text-[#0055CC]">
+                                {formatPrice(variation.price)}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Features */}
               {property.features.length > 0 && (
                 <div>

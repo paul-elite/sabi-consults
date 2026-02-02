@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
         land_size: body.landSize ? Number(body.landSize) : null,
         images: body.images || [],
         features: body.features || [],
+        variations: body.variations || [],
         status: body.status || 'available',
         featured: body.featured || false,
       })
@@ -120,6 +121,11 @@ export async function POST(request: NextRequest) {
 
 // Helper function to transform snake_case to camelCase
 function transformProperty(row: Record<string, unknown>) {
+  // Parse variations - ensure it's an array or undefined
+  const variations = row.variations && Array.isArray(row.variations) && row.variations.length > 0
+    ? row.variations
+    : undefined
+
   return {
     id: row.id,
     title: row.title,
@@ -137,6 +143,7 @@ function transformProperty(row: Record<string, unknown>) {
     landSize: row.land_size,
     images: row.images,
     features: row.features,
+    variations,
     status: row.status,
     featured: row.featured,
     createdAt: row.created_at,

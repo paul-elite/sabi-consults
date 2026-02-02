@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS properties (
   land_size INTEGER, -- in sqm
   images TEXT[] DEFAULT '{}',
   features TEXT[] DEFAULT '{}',
+  variations JSONB DEFAULT '[]', -- Array of property variations (unit types, plot sizes)
   status TEXT NOT NULL DEFAULT 'available' CHECK (status IN ('available', 'sold', 'pending')),
   featured BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW(),

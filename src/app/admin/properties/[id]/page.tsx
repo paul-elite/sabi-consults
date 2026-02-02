@@ -4,7 +4,7 @@ import { useState, useEffect, use, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { Property } from '@/lib/types'
+import { Property, PropertyVariation } from '@/lib/types'
 import { districts } from '@/data/properties'
 
 // Dynamic import for map
@@ -33,6 +33,50 @@ interface PropertyForm {
   featured: boolean
 }
 
+interface VariationForm {
+  id: string
+  name: string
+  price: string
+  bedrooms: string
+  bathrooms: string
+  bq: string
+  landSize: string
+  unitsAvailable: string
+  status: 'available' | 'sold' | 'pending'
+}
+
+function generateId() {
+  return Math.random().toString(36).substring(2, 9)
+}
+
+function createEmptyVariation(): VariationForm {
+  return {
+    id: generateId(),
+    name: '',
+    price: '',
+    bedrooms: '',
+    bathrooms: '',
+    bq: '',
+    landSize: '',
+    unitsAvailable: '',
+    status: 'available',
+  }
+}
+
+function variationToForm(v: PropertyVariation): VariationForm {
+  return {
+    id: v.id,
+    name: v.name,
+    price: v.price?.toString() || '',
+    bedrooms: v.bedrooms?.toString() || '',
+    bathrooms: v.bathrooms?.toString() || '',
+    bq: v.bq?.toString() || '',
+    landSize: v.landSize?.toString() || '',
+    unitsAvailable: v.unitsAvailable?.toString() || '',
+    status: v.status || 'available',
+  }
+}
+
 export default function EditPropertyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const router = useRouter()
@@ -58,6 +102,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
     status: 'available',
     featured: false,
   })
+  const [variations, setVariations] = useState<VariationForm[]>([])
 
   useEffect(() => {
     async function fetchProperty() {
@@ -96,6 +141,11 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
           status: property.status,
           featured: property.featured,
         })
+
+        // Load variations if they exist
+        if (property.variations && property.variations.length > 0) {
+          setVariations(property.variations.map(variationToForm))
+        }
       } catch {
         setError('Failed to load property')
       } finally {
@@ -106,10 +156,39 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
     fetchProperty()
   }, [id, router])
 
+  const addVariation = () => {
+    setVariations([...variations, createEmptyVariation()])
+  }
+
+  const removeVariation = (variationId: string) => {
+    setVariations(variations.filter(v => v.id !== variationId))
+  }
+
+  const updateVariation = (variationId: string, field: keyof VariationForm, value: string) => {
+    setVariations(variations.map(v =>
+      v.id === variationId ? { ...v, [field]: value } : v
+    ))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setSaving(true)
+
+    // Transform variations to proper format (only include non-empty ones)
+    const formattedVariations: PropertyVariation[] = variations
+      .filter(v => v.name.trim()) // Only include variations with a name
+      .map(v => ({
+        id: v.id,
+        name: v.name,
+        price: v.price ? Number(v.price) : undefined,
+        bedrooms: v.bedrooms ? Number(v.bedrooms) : undefined,
+        bathrooms: v.bathrooms ? Number(v.bathrooms) : undefined,
+        bq: v.bq ? Number(v.bq) : undefined,
+        landSize: v.landSize ? Number(v.landSize) : undefined,
+        unitsAvailable: v.unitsAvailable ? Number(v.unitsAvailable) : undefined,
+        status: v.status,
+      }))
 
     try {
       const res = await fetch(`/api/properties/${id}`, {
@@ -131,6 +210,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
           landSize: form.landSize ? parseInt(form.landSize) : undefined,
           images: form.images.split('\n').filter(Boolean),
           features: form.features.split('\n').filter(Boolean),
+          variations: formattedVariations,
           status: form.status,
           featured: form.featured,
         }),
@@ -167,6 +247,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
     createdAt: '',
     updatedAt: '',
   }
+
+  const isLand = form.type === 'land'
 
   if (loading) {
     return (
@@ -251,7 +333,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
 
                   <div>
                     <label className="block text-sm font-medium text-neutral-600 mb-1">
-                      Price (₦) *
+                      Starting Price (₦) *
                     </label>
                     <input
                       type="number"
@@ -272,7 +354,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                     value={form.priceLabel}
                     onChange={(e) => setForm({ ...form, priceLabel: e.target.value })}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
-                    placeholder="e.g., Per Plot, Negotiable"
+                    placeholder="e.g., Per Plot, Starting From"
                   />
                 </div>
               </div>
@@ -280,7 +362,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
 
             {/* Property Details */}
             <div className="bg-white border border-neutral-200 p-6">
-              <h2 className="font-medium text-[#1a1a1a] mb-6">Property Details</h2>
+              <h2 className="font-medium text-[#1a1a1a] mb-2">Property Details</h2>
+              <p className="text-sm text-neutral-500 mb-6">Default details for single unit properties.</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-neutral-600 mb-1">
@@ -291,8 +374,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                     value={form.bedrooms}
                     onChange={(e) => setForm({ ...form, bedrooms: e.target.value })}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
-                    placeholder={form.type === 'land' ? 'N/A' : ''}
-                    disabled={form.type === 'land'}
+                    placeholder={isLand ? 'N/A' : ''}
+                    disabled={isLand}
                   />
                 </div>
 
@@ -305,8 +388,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                     value={form.bathrooms}
                     onChange={(e) => setForm({ ...form, bathrooms: e.target.value })}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
-                    placeholder={form.type === 'land' ? 'N/A' : ''}
-                    disabled={form.type === 'land'}
+                    placeholder={isLand ? 'N/A' : ''}
+                    disabled={isLand}
                   />
                 </div>
 
@@ -319,8 +402,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                     value={form.bq}
                     onChange={(e) => setForm({ ...form, bq: e.target.value })}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
-                    placeholder={form.type === 'land' ? 'N/A' : '0'}
-                    disabled={form.type === 'land'}
+                    placeholder={isLand ? 'N/A' : '0'}
+                    disabled={isLand}
                   />
                 </div>
 
@@ -336,6 +419,156 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Variations */}
+            <div className="bg-white border border-neutral-200 p-6">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="font-medium text-[#1a1a1a]">Variations (Optional)</h2>
+                <button
+                  type="button"
+                  onClick={addVariation}
+                  className="px-3 py-1.5 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors"
+                >
+                  + Add Variation
+                </button>
+              </div>
+              <p className="text-sm text-neutral-500 mb-6">
+                For estates with multiple unit types or plot sizes.
+              </p>
+
+              {variations.length === 0 ? (
+                <div className="text-center py-8 border-2 border-dashed border-neutral-200">
+                  <p className="text-neutral-500 text-sm">No variations added.</p>
+                  <p className="text-neutral-400 text-xs mt-1">Click &quot;Add Variation&quot; for estates with multiple unit types.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {variations.map((variation, index) => (
+                    <div key={variation.id} className="border border-neutral-200 p-4 relative">
+                      <button
+                        type="button"
+                        onClick={() => removeVariation(variation.id)}
+                        className="absolute top-2 right-2 p-1 text-neutral-400 hover:text-red-500 transition-colors"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+
+                      <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
+                        Variation {index + 1}
+                      </p>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="col-span-2">
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">
+                            Name
+                          </label>
+                          <input
+                            type="text"
+                            value={variation.name}
+                            onChange={(e) => updateVariation(variation.id, 'name', e.target.value)}
+                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                            placeholder="e.g., 3 Bedroom Terrace"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">
+                            Price (₦)
+                          </label>
+                          <input
+                            type="number"
+                            value={variation.price}
+                            onChange={(e) => updateVariation(variation.id, 'price', e.target.value)}
+                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">
+                            Units Available
+                          </label>
+                          <input
+                            type="number"
+                            value={variation.unitsAvailable}
+                            onChange={(e) => updateVariation(variation.id, 'unitsAvailable', e.target.value)}
+                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                          />
+                        </div>
+
+                        {!isLand && (
+                          <>
+                            <div>
+                              <label className="block text-xs font-medium text-neutral-500 mb-1">
+                                Bedrooms
+                              </label>
+                              <input
+                                type="number"
+                                value={variation.bedrooms}
+                                onChange={(e) => updateVariation(variation.id, 'bedrooms', e.target.value)}
+                                className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-xs font-medium text-neutral-500 mb-1">
+                                Bathrooms
+                              </label>
+                              <input
+                                type="number"
+                                value={variation.bathrooms}
+                                onChange={(e) => updateVariation(variation.id, 'bathrooms', e.target.value)}
+                                className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-xs font-medium text-neutral-500 mb-1">
+                                BQ
+                              </label>
+                              <input
+                                type="number"
+                                value={variation.bq}
+                                onChange={(e) => updateVariation(variation.id, 'bq', e.target.value)}
+                                className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                              />
+                            </div>
+                          </>
+                        )}
+
+                        <div>
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">
+                            Land Size (sqm)
+                          </label>
+                          <input
+                            type="number"
+                            value={variation.landSize}
+                            onChange={(e) => updateVariation(variation.id, 'landSize', e.target.value)}
+                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">
+                            Status
+                          </label>
+                          <select
+                            value={variation.status}
+                            onChange={(e) => updateVariation(variation.id, 'status', e.target.value)}
+                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                          >
+                            <option value="available">Available</option>
+                            <option value="pending">Pending</option>
+                            <option value="sold">Sold Out</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Location */}
