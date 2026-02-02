@@ -11,9 +11,9 @@
   --color-accent: #0055CC; /* Primary blue */
   --color-accent-dark: #0044aa;
 
-  /* Typography */
-  --font-family-heading: 'Inter', system-ui, sans-serif;
-  --font-family-body: 'Inter', system-ui, sans-serif;
+  /* Typography - Merriweather for headings, Helvetica/Inter for body */
+  --font-family-heading: var(--font-merriweather), Georgia, 'Times New Roman', serif;
+  --font-family-body: 'Helvetica Neue', Helvetica, Arial, var(--font-inter), system-ui, sans-serif;
 }
 
 /* Base styles */
@@ -27,15 +27,67 @@ body {
   color: var(--color-charcoal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
 }
 
-/* Leaflet map monochrome overrides */
+/* Headings - Merriweather with tight tracking */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h1 {
+  font-weight: 300;
+}
+
+h2 {
+  font-weight: 300;
+}
+
+h3 {
+  font-weight: 400;
+}
+
+h4, h5, h6 {
+  font-weight: 400;
+}
+
+/* Paragraphs and body text */
+p {
+  letter-spacing: -0.01em;
+  line-height: 1.7;
+}
+
+/* Tighter tracking for smaller text */
+.text-sm, .text-xs {
+  letter-spacing: -0.005em;
+}
+
+/* Links */
+a {
+  letter-spacing: -0.01em;
+}
+
+/* Buttons and UI elements */
+button, input, select, textarea {
+  font-family: var(--font-family-body);
+  letter-spacing: -0.01em;
+}
+
+/* Leaflet map overrides */
 .leaflet-tile {
-  filter: grayscale(100%) contrast(1.1);
+  filter: grayscale(0%) contrast(1);
 }
 
 .leaflet-container {
   background: #e5e5e5;
+}
+
+/* Leaflet popup typography */
+.leaflet-popup-content {
+  font-family: var(--font-family-body);
 }
 
 /* Custom scrollbar */
@@ -60,4 +112,21 @@ body {
 ::selection {
   background-color: var(--color-accent);
   color: white;
+}
+
+/* Utility classes for typography */
+.font-heading {
+  font-family: var(--font-family-heading);
+}
+
+.font-body {
+  font-family: var(--font-family-body);
+}
+
+.tracking-tight {
+  letter-spacing: -0.02em;
+}
+
+.tracking-tighter {
+  letter-spacing: -0.03em;
 }
