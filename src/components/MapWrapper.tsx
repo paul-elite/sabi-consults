@@ -13,6 +13,8 @@ interface MapWrapperProps {
   selectedProperty?: Property
   className?: string
   interactive?: boolean
+  showPopups?: boolean
+  fullPage?: boolean
 }
 
 export default function MapWrapper(props: MapWrapperProps) {
