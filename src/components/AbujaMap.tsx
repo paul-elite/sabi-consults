@@ -1,8 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Property } from '@/lib/types'
-import 'leaflet/dist/leaflet.css'
 
 interface AbujaMapProps {
   properties?: Property[]
@@ -36,6 +35,7 @@ export default function AbujaMap({
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<L.Map | null>(null)
   const markersRef = useRef<L.Marker[]>([])
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
@@ -87,6 +87,7 @@ export default function AbujaMap({
       }).addTo(map)
 
       mapInstanceRef.current = map
+      setIsLoaded(true)
 
       // Add property markers
       if (selectedProperty) {
@@ -159,9 +160,16 @@ export default function AbujaMap({
   }, [properties, selectedProperty, interactive, showPopups, fullPage])
 
   return (
-    <div
-      ref={mapRef}
-      className={`w-full h-full min-h-[300px] ${className}`}
-    />
+    <div className={`w-full h-full min-h-[300px] relative ${className}`}>
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-neutral-100 flex items-center justify-center z-10">
+          <div className="text-neutral-400 text-sm">Loading map...</div>
+        </div>
+      )}
+      <div
+        ref={mapRef}
+        className="w-full h-full"
+      />
+    </div>
   )
 }
