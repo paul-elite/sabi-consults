@@ -6,6 +6,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { districts } from '@/data/properties'
 import { PropertyVariation } from '@/lib/types'
+import ImageUploader from '@/components/ImageUploader'
 
 // Dynamic import for map
 const AbujaMap = dynamic(() => import('@/components/AbujaMap'), {
@@ -27,7 +28,6 @@ interface PropertyForm {
   bathrooms: string
   bq: string
   landSize: string
-  images: string
   features: string
   status: 'available' | 'sold' | 'pending'
   featured: boolean
@@ -116,11 +116,11 @@ export default function NewPropertyPage() {
     bathrooms: '',
     bq: '',
     landSize: '',
-    images: '',
     features: '',
     status: 'available',
     featured: false,
   })
+  const [images, setImages] = useState<string[]>([])
   const [variations, setVariations] = useState<VariationForm[]>([])
 
   // Check auth on mount
@@ -222,7 +222,7 @@ export default function NewPropertyPage() {
           bathrooms: form.bathrooms ? parseInt(form.bathrooms) : undefined,
           bq: form.bq ? parseInt(form.bq) : 0,
           landSize: form.landSize ? parseInt(form.landSize) : undefined,
-          images: form.images.split('\n').filter(Boolean),
+          images: images,
           features: form.features.split('\n').filter(Boolean),
           variations: formattedVariations.length > 0 ? formattedVariations : undefined,
           status: form.status,
@@ -694,35 +694,30 @@ export default function NewPropertyPage() {
               </div>
             </div>
 
-            {/* Media & Features */}
+            {/* Images */}
             <div className="bg-white border border-neutral-200 p-6">
-              <h2 className="font-medium text-[#1a1a1a] mb-6">Media & Features</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">
-                    Image URLs (one per line)
-                  </label>
-                  <textarea
-                    rows={4}
-                    value={form.images}
-                    onChange={(e) => setForm({ ...form, images: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none font-mono"
-                    placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
-                  />
-                </div>
+              <h2 className="font-medium text-[#1a1a1a] mb-6">Property Images</h2>
+              <ImageUploader
+                images={images}
+                onChange={setImages}
+                maxImages={10}
+              />
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-neutral-600 mb-1">
-                    Features (one per line)
-                  </label>
-                  <textarea
-                    rows={4}
-                    value={form.features}
-                    onChange={(e) => setForm({ ...form, features: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
-                    placeholder="Swimming Pool&#10;Generator House&#10;Security Post"
-                  />
-                </div>
+            {/* Features */}
+            <div className="bg-white border border-neutral-200 p-6">
+              <h2 className="font-medium text-[#1a1a1a] mb-6">Features</h2>
+              <div>
+                <label className="block text-sm font-medium text-neutral-600 mb-1">
+                  Property Features (one per line)
+                </label>
+                <textarea
+                  rows={4}
+                  value={form.features}
+                  onChange={(e) => setForm({ ...form, features: e.target.value })}
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
+                  placeholder="Swimming Pool&#10;Generator House&#10;Security Post"
+                />
               </div>
             </div>
           </div>
