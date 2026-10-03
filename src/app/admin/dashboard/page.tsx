@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Property, ContactInquiry } from '@/lib/types'
+import { useAdminUser, canAccess } from '@/components/admin/AdminNav'
 
 export default function AdminDashboard() {
+  const user = useAdminUser()
+  const canEdit = canAccess(user, 'admin') // admin or super_admin can add/delete
   const router = useRouter()
   const [properties, setProperties] = useState<Property[]>([])
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([])
@@ -172,12 +175,14 @@ export default function AdminDashboard() {
           <div className="card overflow-hidden">
             <div className="card-header flex items-center justify-between">
               <h2 className="font-medium text-ink">All Properties</h2>
-              <Link href="/admin/properties/new" className="btn btn-md btn-primary">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Add Property
-              </Link>
+              {canEdit && (
+                <Link href="/admin/properties/new" className="btn btn-md btn-primary">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Add Property
+                </Link>
+              )}
             </div>
             <div className="table-container">
               <table className="table">
@@ -231,18 +236,30 @@ export default function AdminDashboard() {
                       </td>
                       <td>
                         <div className="flex items-center gap-2">
-                          <Link
-                            href={`/admin/properties/${property.id}`}
-                            className="btn btn-sm btn-ghost"
-                          >
-                            Edit
-                          </Link>
-                          <button
-                            onClick={() => handleDeleteProperty(property.id)}
-                            className="btn btn-sm btn-danger-ghost"
-                          >
-                            Delete
-                          </button>
+                          {canEdit ? (
+                            <>
+                              <Link
+                                href={`/admin/properties/${property.id}`}
+                                className="btn btn-sm btn-ghost"
+                              >
+                                Edit
+                              </Link>
+                              <button
+                                onClick={() => handleDeleteProperty(property.id)}
+                                className="btn btn-sm btn-danger-ghost"
+                              >
+                                Delete
+                              </button>
+                            </>
+                          ) : (
+                            <Link
+                              href={`/properties/${property.id}`}
+                              target="_blank"
+                              className="btn btn-sm btn-ghost"
+                            >
+                              View
+                            </Link>
+                          )}
                         </div>
                       </td>
                     </tr>

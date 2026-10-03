@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useAdminUser, canAccess } from '@/components/admin/AdminNav'
 
 interface TeamMember {
   id: string
@@ -18,6 +19,8 @@ interface TeamMember {
 
 export default function AdminTeamPage() {
   const router = useRouter()
+  const user = useAdminUser()
+  const canEdit = canAccess(user, 'admin') // admin or super_admin can edit team
   const [members, setMembers] = useState<TeamMember[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
@@ -103,36 +106,40 @@ export default function AdminTeamPage() {
             </Link>
             <span className="text-lg font-semibold text-ink">Team Members</span>
           </div>
-          <Link
-            href="/admin/team/new"
-            className="rounded-lg px-4 py-2 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
-          >
-            Add Member
-          </Link>
+          {canEdit && (
+            <Link
+              href="/admin/team/new"
+              className="btn btn-md btn-brand"
+            >
+              Add Member
+            </Link>
+          )}
         </div>
       </div>
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {members.length === 0 ? (
-          <div className="rounded-xl bg-white border border-neutral-200 p-12 text-center">
+          <div className="card p-12 text-center">
             <svg className="w-12 h-12 mx-auto text-neutral-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             <p className="text-neutral-500 mb-4">No team members yet</p>
-            <Link
-              href="/admin/team/new"
-              className="rounded-lg inline-flex px-6 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
-            >
-              Add Your First Team Member
-            </Link>
+            {canEdit && (
+              <Link
+                href="/admin/team/new"
+                className="btn btn-md btn-brand"
+              >
+                Add Your First Team Member
+              </Link>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {members.map((member) => (
               <div
                 key={member.id}
-                className={`rounded-xl bg-white border border-neutral-200 overflow-hidden ${!member.is_active ? 'opacity-60' : ''}`}
+                className={`card overflow-hidden ${!member.is_active ? 'opacity-60' : ''}`}
               >
                 {/* Image */}
                 <div className="relative aspect-[4/3] bg-neutral-100">
@@ -152,7 +159,7 @@ export default function AdminTeamPage() {
                     </div>
                   )}
                   {!member.is_active && (
-                    <div className="rounded-full absolute top-2 right-2 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium">
+                    <div className="absolute top-2 right-2 badge badge-warning">
                       Inactive
                     </div>
                   )}
@@ -169,31 +176,37 @@ export default function AdminTeamPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="px-4 py-3 border-t border-neutral-100 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Link
-                      href={`/admin/team/${member.id}`}
-                      className="rounded-lg px-3 py-1.5 text-sm text-brand hover:bg-blue-50 transition-colors"
-                    >
-                      Edit
-                    </Link>
+                {canEdit ? (
+                  <div className="px-4 py-3 border-t border-neutral-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/admin/team/${member.id}`}
+                        className="btn btn-sm btn-ghost text-brand"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => toggleActive(member)}
+                        className="btn btn-sm btn-ghost"
+                      >
+                        {member.is_active ? 'Deactivate' : 'Activate'}
+                      </button>
+                    </div>
                     <button
-                      onClick={() => toggleActive(member)}
-                      className="rounded-lg px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 transition-colors"
+                      onClick={() => handleDelete(member.id, member.name)}
+                      disabled={deleting === member.id}
+                      className="p-1.5 text-neutral-400 hover:text-red-500 transition-colors disabled:opacity-50"
                     >
-                      {member.is_active ? 'Deactivate' : 'Activate'}
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
                     </button>
                   </div>
-                  <button
-                    onClick={() => handleDelete(member.id, member.name)}
-                    disabled={deleting === member.id}
-                    className="p-1.5 text-neutral-400 hover:text-red-500 transition-colors disabled:opacity-50"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
+                ) : (
+                  <div className="px-4 py-3 border-t border-neutral-100">
+                    <span className="text-xs text-neutral-400">View only</span>
+                  </div>
+                )}
               </div>
             ))}
           </div>

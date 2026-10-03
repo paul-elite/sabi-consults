@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useAdminUser, canAccess } from '@/components/admin/AdminNav'
 
 interface Blog {
   id: string
@@ -25,6 +26,8 @@ function formatDate(dateString: string): string {
 
 export default function AdminBlogPage() {
   const router = useRouter()
+  const user = useAdminUser()
+  const canDelete = canAccess(user, 'admin') // admin or super_admin can delete
   const [blogs, setBlogs] = useState<Blog[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
@@ -89,10 +92,7 @@ export default function AdminBlogPage() {
             </Link>
             <span className="text-lg font-semibold text-ink">Blog Posts</span>
           </div>
-          <Link
-            href="/admin/blog/new"
-            className="rounded-lg px-4 py-2 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
-          >
+          <Link href="/admin/blog/new" className="btn btn-md btn-brand">
             New Post
           </Link>
         </div>
@@ -101,53 +101,47 @@ export default function AdminBlogPage() {
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {blogs.length === 0 ? (
-          <div className="rounded-xl bg-white border border-neutral-200 p-12 text-center">
+          <div className="card p-12 text-center">
             <svg className="w-12 h-12 mx-auto text-neutral-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2" />
             </svg>
             <p className="text-neutral-500 mb-4">No blog posts yet</p>
-            <Link
-              href="/admin/blog/new"
-              className="rounded-lg inline-flex px-6 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
-            >
+            <Link href="/admin/blog/new" className="btn btn-md btn-brand">
               Create Your First Post
             </Link>
           </div>
         ) : (
-          <div className="rounded-xl overflow-hidden bg-white border border-neutral-200">
-            <table className="w-full">
-              <thead className="bg-neutral-50 border-b border-neutral-200">
-                <tr>
-                  <th className="text-left text-sm font-medium text-neutral-500 px-6 py-4">Title</th>
-                  <th className="text-left text-sm font-medium text-neutral-500 px-6 py-4">Status</th>
-                  <th className="text-left text-sm font-medium text-neutral-500 px-6 py-4">Author</th>
-                  <th className="text-left text-sm font-medium text-neutral-500 px-6 py-4">Date</th>
-                  <th className="text-right text-sm font-medium text-neutral-500 px-6 py-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-100">
+          <div className="card overflow-hidden">
+            <div className="table-container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                    <th className="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
                 {blogs.map((blog) => (
-                  <tr key={blog.id} className="hover:bg-neutral-50">
-                    <td className="px-6 py-4">
+                  <tr key={blog.id}>
+                    <td>
                       <div>
                         <p className="font-medium text-ink">{blog.title}</p>
                         <p className="text-sm text-neutral-500 truncate max-w-md">{blog.excerpt || 'No excerpt'}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`rounded-full inline-flex px-2 py-1 text-xs font-medium ${
-                        blog.status === 'published'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-yellow-100 text-yellow-700'
-                      }`}>
+                    <td>
+                      <span className={`badge ${blog.status === 'published' ? 'badge-success' : 'badge-warning'}`}>
                         {blog.status === 'published' ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-neutral-600">{blog.author}</td>
-                    <td className="px-6 py-4 text-sm text-neutral-600">
+                    <td className="text-neutral-600">{blog.author}</td>
+                    <td className="text-neutral-600">
                       {blog.published_at ? formatDate(blog.published_at) : formatDate(blog.created_at)}
                     </td>
-                    <td className="px-6 py-4">
+                    <td>
                       <div className="flex items-center justify-end gap-2">
                         {blog.status === 'published' && (
                           <Link
@@ -170,22 +164,25 @@ export default function AdminBlogPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
                         </Link>
-                        <button
-                          onClick={() => handleDelete(blog.id, blog.title)}
-                          disabled={deleting === blog.id}
-                          className="p-2 text-neutral-400 hover:text-red-500 transition-colors disabled:opacity-50"
-                          title="Delete"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
+                        {canDelete && (
+                          <button
+                            onClick={() => handleDelete(blog.id, blog.title)}
+                            disabled={deleting === blog.id}
+                            className="p-2 text-neutral-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                            title="Delete"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
         )}
       </main>

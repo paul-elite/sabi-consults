@@ -35,3 +35,15 @@ export function propertyFacts(p: Property): string[] {
   if (p.landSize && p.landSize > 0) facts.push(`${p.landSize.toLocaleString()} sqm`)
   return facts
 }
+
+/** Card eyebrow: omit the district and trailing location directions from the name. */
+export function propertyCardName(p: Pick<Property, 'title' | 'district' | 'type'>): string {
+  const district = p.district.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  let name = p.title.trim().replace(/,\s*(?:behind|near|opposite|beside|along)\b.*$/i, '')
+  if (district) {
+    name = name
+      .replace(new RegExp(`^${district}(?:\\s*[,–—-]\\s*|\\s+|$)`, 'i'), '')
+      .replace(new RegExp(`(?:\\s*[,–—-]\\s*|\\s+(?:in|at)\\s+|\\s+)${district}$`, 'i'), '')
+  }
+  return name.trim() || (p.type === 'land' ? 'Land' : 'House')
+}

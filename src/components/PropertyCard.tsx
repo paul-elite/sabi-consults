@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Property } from '@/lib/types'
-import { priceHeadline, propertyFacts } from '@/lib/format'
+import { priceHeadline, propertyFacts, propertyCardName } from '@/lib/format'
 
 interface PropertyCardProps {
   property: Property
@@ -12,6 +12,7 @@ interface PropertyCardProps {
 export default function PropertyCard({ property, variant = 'default', priority = false }: PropertyCardProps) {
   const { amount, label } = priceHeadline(property)
   const facts = propertyFacts(property)
+  const name = propertyCardName(property)
   const options = property.variations?.length || 0
   const isLand = property.type === 'land'
 
@@ -19,7 +20,7 @@ export default function PropertyCard({ property, variant = 'default', priority =
     <Link
       href={`/properties/${property.id}`}
       className="group block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 focus-visible:outline-offset-4"
-      aria-label={`${property.title}, ${property.district}. ${label} ${amount}`}
+      aria-label={`${name}, ${property.district}. ${label} ${amount}`}
     >
       {/* Image container */}
       <div className={`relative overflow-hidden bg-neutral-100 ${variant === 'featured' ? 'aspect-[4/3]' : 'aspect-[4/3] sm:aspect-[3/2]'}`}>
@@ -53,14 +54,9 @@ export default function PropertyCard({ property, variant = 'default', priority =
 
       {/* Content */}
       <div className="p-4">
-        <div className="flex items-center justify-between gap-2 mb-2">
-          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">{property.district}</p>
-          {options > 1 && (
-            <span className="text-xs text-neutral-400">{options} options</span>
-          )}
-        </div>
+        <p className="mb-2 text-xs font-medium text-neutral-500 uppercase tracking-wider line-clamp-2">{name}</p>
         <h3 className="text-base font-medium text-ink leading-snug group-hover:text-brand transition-colors line-clamp-2">
-          {property.title}
+          {property.district}
         </h3>
         {facts.length > 0 && (
           <p className="mt-2 text-sm text-neutral-500 flex flex-wrap items-center gap-x-2.5 gap-y-1">
@@ -72,15 +68,15 @@ export default function PropertyCard({ property, variant = 'default', priority =
             ))}
           </p>
         )}
-        {/* Price */}
-        <div className="mt-4 pt-3 border-t border-neutral-100 flex items-baseline justify-between gap-3">
-          <p className="text-ink">
-            {label && <span className="text-xs text-neutral-400 mr-1.5">{label}</span>}
-            <span className="text-lg font-semibold tracking-tight">{amount}</span>
+        {/* Options and price share a baseline and type size. */}
+        <div className="mt-4 pt-3 border-t border-neutral-100 flex items-baseline justify-between gap-3 text-sm">
+          {options > 1 && (
+            <span className="shrink-0 text-neutral-500">{options} options</span>
+          )}
+          <p className="ml-auto text-right text-sm text-ink">
+            {label && <span className="text-neutral-500">{label} </span>}
+            <span className="font-medium">{amount}</span>
           </p>
-          <span className="text-xs font-medium text-brand opacity-0 group-hover:opacity-100 transition-opacity">
-            View →
-          </span>
         </div>
       </div>
     </Link>
