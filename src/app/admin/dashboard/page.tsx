@@ -140,9 +140,10 @@ export default function AdminDashboard() {
         <div className="flex gap-2 mb-6">
           <button
             onClick={() => setActiveTab('properties')}
+            aria-pressed={activeTab === 'properties'}
             className={`btn btn-md ${
               activeTab === 'properties'
-                ? 'btn-primary'
+                ? 'bg-[#0055cc] text-white hover:bg-[#0044a3]'
                 : 'btn-secondary'
             }`}
           >
@@ -150,9 +151,10 @@ export default function AdminDashboard() {
           </button>
           <button
             onClick={() => setActiveTab('inquiries')}
+            aria-pressed={activeTab === 'inquiries'}
             className={`btn btn-md ${
               activeTab === 'inquiries'
-                ? 'btn-primary'
+                ? 'bg-[#0055cc] text-white hover:bg-[#0044a3]'
                 : 'btn-secondary'
             }`}
           >

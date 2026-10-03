@@ -72,7 +72,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
             <nav className="hidden lg:flex items-center gap-1 text-sm" aria-label="Admin">
               {links.map(l => (
                 <Link key={l.href} href={l.href} aria-current={pathname?.startsWith(l.href) ? 'page' : undefined}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${pathname?.startsWith(l.href) ? 'bg-neutral-100 text-ink font-medium' : 'text-neutral-500 hover:text-ink hover:bg-neutral-50'}`}>
+                  className={`px-3 py-1.5 rounded-md transition-colors ${pathname?.startsWith(l.href) ? 'bg-blue-50 text-[#0055cc] font-medium' : 'text-neutral-500 hover:text-ink hover:bg-neutral-50'}`}>
                   {l.label}
                 </Link>
               ))}
@@ -93,7 +93,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
           {open && (
             <nav className="lg:hidden border-t border-neutral-100 px-4 pb-4 pb-safe bg-white" aria-label="Admin mobile">
               {links.map(l => (
-                <Link key={l.href} href={l.href} className={`block py-3 border-b border-neutral-100 ${pathname?.startsWith(l.href) ? 'text-ink font-medium' : 'text-neutral-600'}`}>{l.label}</Link>
+                <Link key={l.href} href={l.href} aria-current={pathname?.startsWith(l.href) ? 'page' : undefined} className={`block py-3 border-b border-neutral-100 ${pathname?.startsWith(l.href) ? 'text-[#0055cc] font-medium' : 'text-neutral-600'}`}>{l.label}</Link>
               ))}
               <Link href="/" target="_blank" className="block py-3 border-b border-neutral-100 text-neutral-600">View site ↗</Link>
               <div className="pt-4 flex items-center justify-between text-sm">

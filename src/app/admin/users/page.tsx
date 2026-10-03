@@ -43,7 +43,7 @@ function UsersManager() {
       const d = await r.json()
       if (!r.ok) throw new Error(d.error)
       setAccounts(d)
-    }).catch(e => setLoadError(e.message || 'Couldn't load accounts'))
+    }).catch(e => setLoadError(e.message || "Couldn't load accounts"))
   useEffect(() => { load() }, [])
 
   const create = async (e: React.FormEvent) => {
@@ -242,7 +242,7 @@ function UsersManager() {
                   <p className="font-medium text-ink truncate">{a.name}{a.id === me?.id && <span className="text-neutral-400 font-normal"> (you)</span>}</p>
                   <p className="text-sm text-neutral-500 truncate">{a.email}</p>
                   <p className="text-xs text-neutral-400 mt-0.5">
-                    {a.active ? (a.last_login_at ? `Last signed in ${new Date(a.last_login_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Hasn't signed in yet') : 'Deactivated'}
+                    {a.active ? (a.last_login_at ? `Last signed in ${new Date(a.last_login_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}` : "Hasn't signed in yet") : 'Deactivated'}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
