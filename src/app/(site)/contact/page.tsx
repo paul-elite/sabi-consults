@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { getSettings } from '@/lib/settings'
 import ContactForm from '@/components/ContactForm'
 
 export const metadata: Metadata = {
@@ -6,7 +7,9 @@ export const metadata: Metadata = {
   description: 'Get in touch with us for premium real estate services in Abuja, Nigeria.',
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getSettings()
+  const digits = settings.whatsapp_number.replace(/\D/g, '')
   return (
     <div className="pt-16 lg:pt-20">
       {/* Hero Section */}
@@ -49,8 +52,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium text-ink mb-1">Office Location</h3>
                     <p className="text-neutral-600">
-                      3rd Floor, 137 Ademola Adetokunbo Crescent,<br />
-                      Wuse 2, FCT-Abuja
+                      {settings.address}
                     </p>
                   </div>
                 </div>
@@ -64,8 +66,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-medium text-ink mb-1">Email Us</h3>
-                    <a href="mailto:hello@sabiconsults.com" className="text-neutral-600 hover:text-brand transition-colors">
-                      hello@sabiconsults.com
+                    <a href={`mailto:${settings.email}`} className="text-neutral-600 hover:text-brand transition-colors">
+                      {settings.email}
                     </a>
                   </div>
                 </div>
@@ -79,8 +81,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-medium text-ink mb-1">Call Us</h3>
-                    <a href="tel:+2349160531000" className="text-neutral-600 hover:text-brand transition-colors">
-                      0916 053 1000
+                    <a href={`tel:+${digits}`} className="text-neutral-600 hover:text-brand transition-colors">
+                      {settings.phone_number}
                     </a>
                   </div>
                 </div>
@@ -95,7 +97,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium text-ink mb-1">WhatsApp</h3>
                     <a
-                      href="https://wa.me/2349160531000"
+                      href={`https://wa.me/${digits}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-neutral-600 hover:text-brand transition-colors"
@@ -115,12 +117,12 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium text-ink mb-1">Instagram</h3>
                     <a
-                      href="https://instagram.com/sabi_consults"
+                      href={`https://instagram.com/${settings.instagram_handle}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-neutral-600 hover:text-brand transition-colors"
                     >
-                      @sabi_consults
+                      @{settings.instagram_handle}
                     </a>
                   </div>
                 </div>
@@ -153,7 +155,7 @@ export default function ContactPage() {
 
       {/* WhatsApp Floating Button */}
       <a
-        href="https://wa.me/2349160531000"
+        href={`https://wa.me/${digits}`}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-50"

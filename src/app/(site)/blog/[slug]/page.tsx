@@ -121,7 +121,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <p className="text-sm font-medium text-neutral-500 mb-4">Share this article</p>
             <div className="flex gap-4">
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(blog.title)}&url=${encodeURIComponent(`https://sabiconsults.com/blog/${blog.slug}`)}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(blog.title)}&url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://sabiconsults.com.ng'}/blog/${blog.slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 bg-neutral-100 hover:bg-neutral-200 transition-colors"
@@ -131,7 +131,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </svg>
               </a>
               <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://sabiconsults.com/blog/${blog.slug}`)}`}
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://sabiconsults.com.ng'}/blog/${blog.slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 bg-neutral-100 hover:bg-neutral-200 transition-colors"
@@ -141,7 +141,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </svg>
               </a>
               <a
-                href={`https://wa.me/?text=${encodeURIComponent(`${blog.title} - https://sabiconsults.com/blog/${blog.slug}`)}`}
+                href={`https://wa.me/?text=${encodeURIComponent(`${blog.title} - ${process.env.NEXT_PUBLIC_SITE_URL || 'https://sabiconsults.com.ng'}/blog/${blog.slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 bg-neutral-100 hover:bg-neutral-200 transition-colors"

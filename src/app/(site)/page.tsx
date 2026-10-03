@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getBrand } from '@/lib/brand'
+import { getSettings } from '@/lib/settings'
 import Image from 'next/image'
 import PropertySearch from '@/components/PropertySearch'
 import PropertyCard from '@/components/PropertyCard'
@@ -11,7 +12,7 @@ import { testimonials, districts } from '@/data/properties'
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  const brand = await getBrand()
+  const [brand, settings] = await Promise.all([getBrand(), getSettings()])
   const featuredProperties = await getFeaturedProperties()
 
   return (
@@ -252,7 +253,7 @@ export default async function HomePage() {
           </div>
           <div className="mt-8">
             <a
-              href="https://wa.me/2349160531000"
+              href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors text-sm"

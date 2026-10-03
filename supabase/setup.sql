@@ -99,11 +99,11 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 INSERT INTO site_settings (key, value) VALUES
-  ('whatsapp_number', '2349160531000'),
-  ('phone_number', '0916 053 1000'),
-  ('email', 'hello@sabiconsults.com.ng'),
+  ('whatsapp_number', '2349112122288'),
+  ('phone_number', '+234 911 212 2288'),
+  ('email', 'info.sabiconsults@gmail.com'),
   ('instagram_handle', 'sabi_consults'),
-  ('address', '3rd Floor, 137 Ademola Adetokunbo Crescent, Wuse 2, FCT-Abuja'),
+  ('address', 'Plot 137, Adetokunbo Ademola Crescent, Wuse II, Abuja-FCT'),
   ('brand_name', 'Sabi Consults'),
   ('brand_tagline', 'Helping people find their way home in Abuja'),
   ('brand_logo_url', '/logo.svg'),
@@ -197,5 +197,16 @@ CREATE POLICY "Allow public read of active team members" ON team_members
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('images', 'images', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- ---------------------------------------------------------------------
+-- Hardening (from the Supabase security advisor)
+-- ---------------------------------------------------------------------
+ALTER FUNCTION update_updated_at_column() SET search_path = '';
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+             WHERE n.nspname = 'public' AND p.proname = 'rls_auto_enable') THEN
+    REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM PUBLIC, anon, authenticated;
+  END IF;
+END $$;
 
 -- Done. Sign in at /admin with ADMIN_EMAIL and ADMIN_PASSWORD from your env vars.

@@ -1,5 +1,6 @@
 'use client'
 
+import { useSiteSettings } from './BrandProvider'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
@@ -16,7 +17,7 @@ export default function InstagramFeed() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
-  const instagramHandle = 'sabi_consults'
+  const instagramHandle = useSiteSettings().instagram_handle
 
   useEffect(() => {
     async function fetchInstagramPosts() {
