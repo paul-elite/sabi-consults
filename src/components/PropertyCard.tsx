@@ -48,7 +48,7 @@ export default function PropertyCard({ property, variant = 'default', priority =
             <span className="px-2.5 py-1 rounded-full bg-amber-400 text-amber-950 text-xs font-medium">Selling fast</span>
           )}
           {property.status === 'sold' && (
-            <span className="px-2.5 py-1 rounded-full bg-neutral-900 text-white text-xs font-medium">Sold</span>
+            <span className="px-2.5 py-1 rounded-full bg-brand-dark text-white text-xs font-medium">Sold</span>
           )}
         </div>
       </div>
@@ -56,7 +56,7 @@ export default function PropertyCard({ property, variant = 'default', priority =
       {/* Content */}
       <div className="p-4">
         <p className="mb-2 text-xs font-medium text-neutral-500 uppercase tracking-wider line-clamp-2">{name}</p>
-        <h3 className="text-base font-medium text-ink leading-snug group-hover:text-brand transition-colors line-clamp-2">
+        <h3 className="text-base font-semibold text-ink leading-snug group-hover:text-brand transition-colors line-clamp-2">
           {property.district}
         </h3>
         {facts.length > 0 && (

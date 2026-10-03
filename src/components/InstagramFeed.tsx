@@ -52,7 +52,7 @@ export default function InstagramFeed() {
             <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
               Follow Us
             </p>
-            <h2 className="text-3xl md:text-4xl font-light text-ink mb-4">
+            <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-4">
               @{instagramHandle}
             </h2>
             <p className="text-neutral-600">
@@ -84,7 +84,7 @@ export default function InstagramFeed() {
             <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
               Follow Us
             </p>
-            <h2 className="text-3xl md:text-4xl font-light text-ink">
+            <h2 className="text-3xl md:text-4xl font-semibold text-ink">
               @{instagramHandle}
             </h2>
           </div>
@@ -105,7 +105,7 @@ export default function InstagramFeed() {
           <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
             Follow Us
           </p>
-          <h2 className="text-3xl md:text-4xl font-light text-ink mb-4">
+          <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-4">
             @{instagramHandle}
           </h2>
           <p className="text-neutral-600">

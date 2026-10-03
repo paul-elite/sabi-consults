@@ -279,7 +279,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded-lg px-6 py-3 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn btn-md btn-brand disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>

@@ -1,7 +1,7 @@
 'use client'
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Home01Icon, MapsIcon } from '@hugeicons/core-free-icons'
+import { Home01Icon, MapsIcon, GridIcon } from '@hugeicons/core-free-icons'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -14,17 +14,17 @@ interface PropertySearchProps {
 
 export default function PropertySearch({ variant = 'hero', className = '' }: PropertySearchProps) {
   const router = useRouter()
-  const [type, setType] = useState<'house' | 'land'>('house')
+  const [type, setType] = useState<'all' | 'house' | 'land'>('all')
   const [district, setDistrict] = useState('')
   const [priceRange, setPriceRange] = useState('')
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     const params = new URLSearchParams()
-    params.set('type', type)
+    if (type !== 'all') params.set('type', type)
     if (district) params.set('district', district)
     if (priceRange) params.set('priceRange', priceRange)
-    router.push(`/properties?${params.toString()}`)
+    router.push(`/properties${params.size ? `?${params.toString()}` : ''}`)
   }
 
   if (variant === 'compact') {
@@ -54,30 +54,17 @@ export default function PropertySearch({ variant = 'hero', className = '' }: Pro
     <div className={`bg-white shadow-xl rounded-2xl overflow-hidden text-left ${className}`}>
       {/* Type Toggle */}
       <div className="flex p-1.5 gap-1.5 bg-neutral-100 m-3 sm:m-4 mb-0 sm:mb-0 rounded-xl">
-        <button
-          type="button"
-          onClick={() => setType('house')}
-          className={`flex-1 h-11 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-            type === 'house'
-              ? 'bg-brand text-white'
-              : 'bg-transparent text-neutral-600 hover:text-ink'
-          }`}
-        >
-          <HugeiconsIcon icon={Home01Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
-          Houses
-        </button>
-        <button
-          type="button"
-          onClick={() => setType('land')}
-          className={`flex-1 h-11 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-            type === 'land'
-              ? 'bg-brand text-white'
-              : 'bg-transparent text-neutral-600 hover:text-ink'
-          }`}
-        >
-          <HugeiconsIcon icon={MapsIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
-          Land
-        </button>
+        {([
+          { value: 'all', label: 'All', icon: GridIcon },
+          { value: 'house', label: 'Houses', icon: Home01Icon },
+          { value: 'land', label: 'Land', icon: MapsIcon },
+        ] as const).map(item => (
+          <button key={item.value} type="button" aria-pressed={type === item.value} onClick={() => setType(item.value)}
+            className={`flex-1 h-11 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${type === item.value ? 'bg-brand text-white' : 'text-neutral-600 hover:text-brand'}`}>
+            <HugeiconsIcon icon={item.icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
+            {item.label}
+          </button>
+        ))}
       </div>
 
       {/* Search Form */}

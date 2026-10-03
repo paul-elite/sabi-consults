@@ -16,13 +16,13 @@ export default async function ContactPage() {
   return (
     <div className="pt-16 lg:pt-20">
       {/* Hero Section */}
-      <section className="py-24 bg-surface">
+      <section className="py-24 bg-brand-soft">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-sm font-medium text-brand uppercase tracking-wider mb-4">
               Contact Us
             </p>
-            <h1 className="text-4xl md:text-5xl font-light text-ink mb-6">
+            <h1 className="text-4xl md:text-5xl font-semibold text-ink mb-6">
               Let&apos;s Start a Conversation
             </h1>
             <p className="text-xl text-neutral-600 leading-relaxed">
@@ -39,18 +39,18 @@ export default async function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Information */}
             <div>
-              <h2 className="text-2xl font-light text-ink mb-8">
+              <h2 className="text-2xl font-semibold text-ink mb-8">
                 Get in Touch
               </h2>
 
               <div className="space-y-8">
                 {/* Office Address */}
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center flex-shrink-0">
+                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <HugeiconsIcon icon={Location01Icon} className="w-5 h-5 text-brand" strokeWidth={1.7} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-ink mb-1">Office Location</h3>
+                    <h3 className="font-semibold text-ink mb-1">Office Location</h3>
                     <p className="text-neutral-600">
                       {settings.address}
                     </p>
@@ -59,11 +59,11 @@ export default async function ContactPage() {
 
                 {/* Email */}
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center flex-shrink-0">
+                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <HugeiconsIcon icon={Mail01Icon} className="w-5 h-5 text-brand" strokeWidth={1.7} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-ink mb-1">Email Us</h3>
+                    <h3 className="font-semibold text-ink mb-1">Email Us</h3>
                     <a href={`mailto:${settings.email}`} className="text-neutral-600 hover:text-brand transition-colors">
                       {settings.email}
                     </a>
@@ -72,11 +72,11 @@ export default async function ContactPage() {
 
                 {/* Phone */}
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center flex-shrink-0">
+                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <HugeiconsIcon icon={CallIcon} className="w-5 h-5 text-brand" strokeWidth={1.7} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-ink mb-1">Call Us</h3>
+                    <h3 className="font-semibold text-ink mb-1">Call Us</h3>
                     <a href={`tel:+${digits}`} className="text-neutral-600 hover:text-brand transition-colors">
                       {settings.phone_number}
                     </a>
@@ -89,7 +89,7 @@ export default async function ContactPage() {
                     <HugeiconsIcon icon={WhatsappIcon} className="w-5 h-5 text-white" strokeWidth={1.7} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-ink mb-1">WhatsApp</h3>
+                    <h3 className="font-semibold text-ink mb-1">WhatsApp</h3>
                     <a
                       href={`https://wa.me/${digits}`}
                       target="_blank"
@@ -103,11 +103,11 @@ export default async function ContactPage() {
 
                 {/* Instagram */}
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center flex-shrink-0">
+                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <HugeiconsIcon icon={InstagramIcon} className="w-5 h-5 text-brand" strokeWidth={1.7} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-ink mb-1">Instagram</h3>
+                    <h3 className="font-semibold text-ink mb-1">Instagram</h3>
                     <a
                       href={`https://instagram.com/${settings.instagram_handle}`}
                       target="_blank"
@@ -122,7 +122,7 @@ export default async function ContactPage() {
 
               {/* Operating Hours */}
               <div className="mt-12 pt-8 border-t border-neutral-200">
-                <h3 className="font-medium text-ink mb-4">Operating Hours</h3>
+                <h3 className="font-semibold text-ink mb-4">Operating Hours</h3>
                 <div className="space-y-2 text-neutral-600">
                   <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
                   <p>Saturday: 10:00 AM - 4:00 PM</p>
@@ -132,8 +132,8 @@ export default async function ContactPage() {
             </div>
 
             {/* Contact Form */}
-            <div className="rounded-xl bg-surface p-8 lg:p-12">
-              <h2 className="text-2xl font-light text-ink mb-2">
+            <div className="rounded-xl bg-brand-soft p-8 lg:p-12">
+              <h2 className="text-2xl font-semibold text-ink mb-2">
                 Send Us a Message
               </h2>
               <p className="text-neutral-600 mb-8">

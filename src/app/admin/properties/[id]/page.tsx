@@ -805,7 +805,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-lg w-full py-3 bg-ink text-white text-sm font-medium uppercase tracking-wider hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn w-full py-3 btn-brand uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>

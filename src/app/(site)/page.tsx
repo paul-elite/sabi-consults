@@ -41,7 +41,7 @@ export default async function HomePage() {
 
         {/* Hero Content */}
         <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-[34px] sm:text-5xl lg:text-6xl font-light text-white mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-[34px] sm:text-5xl lg:text-6xl font-semibold text-white mb-4 sm:mb-6 leading-tight">
             Find Your Perfect Property
             <span className="block font-medium">in Abuja</span>
           </h1>
@@ -71,7 +71,7 @@ export default async function HomePage() {
               <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">
                 Curated Selection
               </p>
-              <h2 className="text-2xl md:text-3xl font-medium text-ink">
+              <h2 className="text-2xl md:text-3xl font-semibold text-ink">
                 Featured Properties
               </h2>
             </div>
@@ -96,13 +96,13 @@ export default async function HomePage() {
       </section>
 
       {/* Districts Section */}
-      <section className="py-14 md:py-24 bg-surface">
+      <section className="py-14 md:py-24 bg-brand-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 md:mb-12">
             <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
               Explore
             </p>
-            <h2 className="text-3xl md:text-4xl font-light text-ink">
+            <h2 className="text-3xl md:text-4xl font-semibold text-ink">
               Where we have properties
             </h2>
           </div>
@@ -114,7 +114,7 @@ export default async function HomePage() {
                 href={`/properties?district=${encodeURIComponent(district.name)}`}
                 className="group bg-white rounded-xl p-4 md:p-6 hover:bg-brand transition-colors duration-300"
               >
-                <h3 className="text-base md:text-lg font-medium text-ink group-hover:text-white transition-colors flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2">
+                <h3 className="text-base md:text-lg font-semibold text-ink group-hover:text-white transition-colors flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2">
                   {district.name}
                   <span className="text-xs font-normal text-neutral-400 group-hover:text-white/70">{district.count} {district.count === 1 ? 'listing' : 'listings'}</span>
                 </h3>
@@ -135,7 +135,7 @@ export default async function HomePage() {
               <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
                 Why Choose Us
               </p>
-              <h2 className="text-3xl md:text-4xl font-light text-ink mb-6">
+              <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-6">
                 Deep Local Expertise.<br />Trusted Guidance.
               </h2>
               <p className="text-neutral-600 leading-relaxed mb-8">
@@ -147,31 +147,31 @@ export default async function HomePage() {
 
               <div className="space-y-6">
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center flex-shrink-0">
+                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <HugeiconsIcon icon={Shield01Icon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-ink mb-1">Verified Properties</h3>
+                    <h3 className="font-semibold text-ink mb-1">Verified Properties</h3>
                     <p className="text-sm text-neutral-600">Every listing is personally vetted by our team</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center flex-shrink-0">
+                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <HugeiconsIcon icon={UserGroupIcon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-ink mb-1">Diaspora Friendly</h3>
+                    <h3 className="font-semibold text-ink mb-1">Diaspora Friendly</h3>
                     <p className="text-sm text-neutral-600">Trusted partner for overseas Nigerians</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center flex-shrink-0">
+                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <HugeiconsIcon icon={FlashIcon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-ink mb-1">End-to-End Support</h3>
+                    <h3 className="font-semibold text-ink mb-1">End-to-End Support</h3>
                     <p className="text-sm text-neutral-600">From search to closing, we guide every step</p>
                   </div>
                 </div>
@@ -187,37 +187,33 @@ export default async function HomePage() {
                   className="object-cover"
                 />
               </div>
-              {/* Stats overlay */}
-              <div className="rounded-xl absolute -bottom-8 -left-8 bg-ink text-white p-8">
-                <div className="text-4xl font-light mb-2">10+</div>
-                <div className="text-sm text-neutral-400">Years in Abuja Real Estate</div>
-              </div>
+
             </div>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-14 md:py-24 bg-ink">
+      <section className="py-14 md:py-24 bg-brand-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
               Client Stories
             </p>
-            <h2 className="text-3xl md:text-4xl font-light text-white">
+            <h2 className="text-3xl md:text-4xl font-semibold text-ink">
               Trusted by Clients
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="rounded-xl bg-ink-soft p-8">
+              <div key={testimonial.id} className="rounded-xl bg-white border border-blue-100 p-8">
                 <HugeiconsIcon icon={QuoteDownIcon} className="w-8 h-8 text-brand mb-4" strokeWidth={1.7} aria-hidden="true" />
-                <p className="text-neutral-300 leading-relaxed mb-6">
+                <p className="text-neutral-600 leading-relaxed mb-6">
                   {testimonial.content}
                 </p>
                 <div>
-                  <p className="font-medium text-white">{testimonial.name}</p>
+                  <p className="font-semibold text-ink">{testimonial.name}</p>
                   <p className="text-sm text-neutral-500">{testimonial.role}</p>
                 </div>
               </div>
@@ -232,7 +228,7 @@ export default async function HomePage() {
       {/* CTA Section */}
       <section className="py-14 md:py-24 bg-brand">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-light text-white mb-6">
+          <h2 className="text-3xl md:text-4xl font-semibold text-white mb-6">
             Ready to Find Your Property?
           </h2>
           <p className="text-white/80 mb-8 max-w-2xl mx-auto">

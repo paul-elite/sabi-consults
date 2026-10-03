@@ -85,12 +85,12 @@ export default async function BlogPage() {
   const remainingBlogs = blogs.slice(1)
 
   return (
-    <div className="min-h-screen pt-16 lg:pt-20 bg-surface">
+    <div className="min-h-screen pt-16 lg:pt-20 bg-brand-soft">
       {/* Compact Hero */}
       <section className="bg-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
           <div className="max-w-2xl">
-            <h1 className="text-2xl md:text-3xl font-heading font-light text-ink">
+            <h1 className="text-2xl md:text-3xl font-heading font-semibold text-ink">
               Abuja Property Insights
             </h1>
             <p className="text-neutral-600 mt-2">
@@ -105,10 +105,10 @@ export default async function BlogPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {blogs.length === 0 ? (
             <div className="bg-white rounded-xl p-12 text-center">
-              <div className="w-16 h-16 bg-surface rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-brand-soft rounded-full flex items-center justify-center mx-auto mb-4">
                 <HugeiconsIcon icon={News01Icon} className="w-8 h-8 text-neutral-400" strokeWidth={1.7} aria-hidden="true" />
               </div>
-              <h2 className="text-lg font-medium text-ink mb-2">Coming Soon</h2>
+              <h2 className="text-lg font-semibold text-ink mb-2">Coming Soon</h2>
               <p className="text-neutral-500 max-w-md mx-auto">
                 We&apos;re preparing expert insights on Abuja real estate. Check back soon for guides, market updates, and investment tips.
               </p>
@@ -142,7 +142,7 @@ export default async function BlogPage() {
                           {featuredBlog.publishedAt ? formatDate(featuredBlog.publishedAt) : 'Draft'}
                         </span>
                       </div>
-                      <h2 className="text-xl md:text-2xl font-heading font-normal text-ink leading-snug mb-3">
+                      <h2 className="text-xl md:text-2xl font-heading font-semibold text-ink leading-snug mb-3">
                         <Link href={`/blog/${featuredBlog.slug}`} className="hover:text-brand transition-colors">
                           {featuredBlog.title}
                         </Link>
@@ -182,8 +182,8 @@ export default async function BlogPage() {
       {/* Newsletter CTA */}
       <section className="py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-ink rounded-xl p-8 md:p-12 text-center">
-            <h2 className="text-xl md:text-2xl font-heading font-light text-white mb-3">
+          <div className="bg-brand rounded-xl p-8 md:p-12 text-center">
+            <h2 className="text-xl md:text-2xl font-heading font-semibold text-white mb-3">
               Questions About Abuja Property?
             </h2>
             <p className="text-neutral-400 mb-6 max-w-lg mx-auto">

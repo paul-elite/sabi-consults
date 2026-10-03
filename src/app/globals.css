@@ -374,14 +374,14 @@ body { overflow-x: hidden; }
 
 /* Button variants */
 .btn-primary {
-  background-color: var(--color-ink);
+  background-color: var(--color-brand);
   color: white;
 }
 .btn-primary:hover:not(:disabled) {
-  background-color: color-mix(in oklab, var(--color-ink) 85%, white);
+  background-color: color-mix(in oklab, var(--color-brand) 85%, white);
 }
 .btn-primary:active:not(:disabled) {
-  background-color: var(--color-ink);
+  background-color: var(--color-brand);
   transform: scale(0.98);
 }
 
@@ -508,7 +508,7 @@ body { overflow-x: hidden; }
 
 .form-select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%23737373' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("/icons/chevron-down.svg");
   background-position: right 0.75rem center;
   background-repeat: no-repeat;
   background-size: 1rem 1rem;
@@ -517,7 +517,7 @@ body { overflow-x: hidden; }
 }
 
 .form-select:focus {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%230055CC' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("/icons/chevron-down-blue.svg");
 }
 
 .form-helper {

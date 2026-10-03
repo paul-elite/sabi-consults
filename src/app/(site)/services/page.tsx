@@ -75,13 +75,13 @@ export default async function ServicesPage() {
   return (
     <div className="pt-16 lg:pt-20">
       {/* Hero Section */}
-      <section className="py-24 bg-surface">
+      <section className="py-24 bg-brand-soft">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-sm font-medium text-brand uppercase tracking-wider mb-4">
               Our Services
             </p>
-            <h1 className="text-4xl md:text-5xl font-light text-ink mb-6">
+            <h1 className="text-4xl md:text-5xl font-semibold text-ink mb-6">
               Comprehensive Real Estate Solutions
             </h1>
             <p className="text-xl text-neutral-600 leading-relaxed">
@@ -109,7 +109,7 @@ export default async function ServicesPage() {
                   <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
                     {service.subtitle}
                   </p>
-                  <h2 className="text-3xl font-light text-ink mb-4">
+                  <h2 className="text-3xl font-semibold text-ink mb-4">
                     {service.title}
                   </h2>
                   <p className="text-neutral-600 leading-relaxed mb-8">
@@ -133,7 +133,7 @@ export default async function ServicesPage() {
                 </div>
 
                 {/* Visual */}
-                <div className={`rounded-xl bg-surface p-12 ${index % 2 === 1 ? 'lg:col-start-1' : ''}`}>
+                <div className={`rounded-xl bg-brand-soft p-12 ${index % 2 === 1 ? 'lg:col-start-1' : ''}`}>
                   <div className="flex items-center justify-center h-64">
                     <div className="text-center">
                       <div className="text-7xl font-light text-brand mb-4">
@@ -152,54 +152,54 @@ export default async function ServicesPage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-24 bg-ink">
+      <section className="py-24 bg-brand">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4">
               How We Work
             </h2>
-            <p className="text-neutral-400 max-w-2xl mx-auto">
+            <p className="text-white/80 max-w-2xl mx-auto">
               Our process is designed to be transparent, efficient, and focused on your goals.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-brand flex items-center justify-center">
-                <span className="text-xl font-light text-brand">01</span>
+              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-white/40 flex items-center justify-center">
+                <span className="text-xl font-light text-white">01</span>
               </div>
-              <h3 className="font-medium text-white mb-2">Consultation</h3>
-              <p className="text-sm text-neutral-400">
+              <h3 className="font-semibold text-white mb-2">Consultation</h3>
+              <p className="text-sm text-white/80">
                 We begin by understanding your goals, timeline, and requirements.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-brand flex items-center justify-center">
-                <span className="text-xl font-light text-brand">02</span>
+              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-white/40 flex items-center justify-center">
+                <span className="text-xl font-light text-white">02</span>
               </div>
-              <h3 className="font-medium text-white mb-2">Strategy</h3>
-              <p className="text-sm text-neutral-400">
+              <h3 className="font-semibold text-white mb-2">Strategy</h3>
+              <p className="text-sm text-white/80">
                 We develop a tailored approach based on your specific situation.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-brand flex items-center justify-center">
-                <span className="text-xl font-light text-brand">03</span>
+              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-white/40 flex items-center justify-center">
+                <span className="text-xl font-light text-white">03</span>
               </div>
-              <h3 className="font-medium text-white mb-2">Execution</h3>
-              <p className="text-sm text-neutral-400">
+              <h3 className="font-semibold text-white mb-2">Execution</h3>
+              <p className="text-sm text-white/80">
                 We implement the strategy with precision and regular updates.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-brand flex items-center justify-center">
-                <span className="text-xl font-light text-brand">04</span>
+              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-white/40 flex items-center justify-center">
+                <span className="text-xl font-light text-white">04</span>
               </div>
-              <h3 className="font-medium text-white mb-2">Completion</h3>
-              <p className="text-sm text-neutral-400">
+              <h3 className="font-semibold text-white mb-2">Completion</h3>
+              <p className="text-sm text-white/80">
                 We ensure a smooth closing and continued support as needed.
               </p>
             </div>
@@ -208,9 +208,9 @@ export default async function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-surface">
+      <section className="py-24 bg-brand-soft">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-light text-ink mb-6">
+          <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-6">
             Ready to Get Started?
           </h2>
           <p className="text-neutral-600 mb-8 max-w-2xl mx-auto">
@@ -220,7 +220,7 @@ export default async function ServicesPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
-              className="rounded-lg px-8 py-4 bg-ink text-white text-sm font-medium uppercase tracking-wider hover:bg-ink-soft transition-colors"
+              className="rounded-lg px-8 py-4 bg-brand text-white text-sm font-medium uppercase tracking-wider hover:bg-brand-dark transition-colors"
             >
               Contact Us
             </Link>
@@ -228,7 +228,7 @@ export default async function ServicesPage() {
               href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg px-8 py-4 border border-ink text-ink text-sm font-medium uppercase tracking-wider hover:bg-ink hover:text-white transition-colors flex items-center justify-center gap-2"
+              className="rounded-lg px-8 py-4 border border-ink text-ink text-sm font-medium uppercase tracking-wider hover:bg-brand hover:text-white transition-colors flex items-center justify-center gap-2"
             >
               <HugeiconsIcon icon={WhatsappIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
               Chat on WhatsApp

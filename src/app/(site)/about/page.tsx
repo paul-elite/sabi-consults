@@ -19,16 +19,16 @@ export default async function AboutPage() {
   return (
     <div className="pt-16 lg:pt-20">
       {/* Hero Section */}
-      <section className="relative py-24 bg-ink">
+      <section className="relative py-24 bg-brand">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-sm font-medium text-brand uppercase tracking-wider mb-4">
               About Us
             </p>
-            <h1 className="text-4xl md:text-5xl font-light text-white mb-6">
+            <h1 className="text-4xl md:text-5xl font-semibold text-white mb-6">
               We Know Abuja.<br />We Know Real Estate.
             </h1>
-            <p className="text-xl text-neutral-400 leading-relaxed">
+            <p className="text-xl text-white/80 leading-relaxed">
               {brand.name} is a premium real estate consultancy built on deep local expertise
               and an unwavering commitment to client success.
             </p>
@@ -56,7 +56,7 @@ export default async function AboutPage() {
             </div>
 
             <div>
-              <h2 className="text-3xl font-light text-ink mb-6">
+              <h2 className="text-3xl font-semibold text-ink mb-6">
                 The Meaning Behind Our Name
               </h2>
               <div className="space-y-4 text-neutral-600 leading-relaxed">
@@ -82,10 +82,10 @@ export default async function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="py-24 bg-surface">
+      <section className="py-24 bg-brand-soft">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-light text-ink mb-4">
+            <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-4">
               What Guides Us
             </h2>
             <p className="text-neutral-600 max-w-2xl mx-auto">
@@ -96,10 +96,10 @@ export default async function AboutPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="rounded-xl bg-white p-10">
-              <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center mb-6">
+              <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center mb-6">
                 <HugeiconsIcon icon={Shield01Icon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-medium text-ink mb-3">Trust First</h3>
+              <h3 className="text-xl font-semibold text-ink mb-3">Trust First</h3>
               <p className="text-neutral-600">
                 Every recommendation we make is grounded in your best interest. We build
                 relationships for the long term, not quick transactions.
@@ -107,10 +107,10 @@ export default async function AboutPage() {
             </div>
 
             <div className="rounded-xl bg-white p-10">
-              <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center mb-6">
+              <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center mb-6">
                 <HugeiconsIcon icon={FlaskConicalIcon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-medium text-ink mb-3">Deep Expertise</h3>
+              <h3 className="text-xl font-semibold text-ink mb-3">Deep Expertise</h3>
               <p className="text-neutral-600">
                 We know Abuja&apos;s real estate market intimately—the districts, the developers,
                 the trends, and the opportunities others miss.
@@ -118,10 +118,10 @@ export default async function AboutPage() {
             </div>
 
             <div className="rounded-xl bg-white p-10">
-              <div className="rounded-lg w-12 h-12 bg-surface flex items-center justify-center mb-6">
+              <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center mb-6">
                 <HugeiconsIcon icon={UserGroupIcon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-medium text-ink mb-3">Client Partnership</h3>
+              <h3 className="text-xl font-semibold text-ink mb-3">Client Partnership</h3>
               <p className="text-neutral-600">
                 We work alongside you as partners, not just service providers. Your success
                 is our success, and we&apos;re invested in every outcome.
@@ -136,7 +136,7 @@ export default async function AboutPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div>
-              <h2 className="text-3xl font-light text-ink mb-6">
+              <h2 className="text-3xl font-semibold text-ink mb-6">
                 Our Abuja Expertise
               </h2>
               <div className="space-y-4 text-neutral-600 leading-relaxed">
@@ -159,40 +159,40 @@ export default async function AboutPage() {
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-xl flex gap-6 p-6 bg-surface">
+              <div className="rounded-xl flex gap-6 p-6 bg-brand-soft">
                 <div className="text-4xl font-light text-brand">01</div>
                 <div>
-                  <h3 className="font-medium text-ink mb-2">Local Market Intelligence</h3>
+                  <h3 className="font-semibold text-ink mb-2">Local Market Intelligence</h3>
                   <p className="text-sm text-neutral-600">
                     Real-time insights into pricing trends, new developments, and market movements.
                   </p>
                 </div>
               </div>
 
-              <div className="rounded-xl flex gap-6 p-6 bg-surface">
+              <div className="rounded-xl flex gap-6 p-6 bg-brand-soft">
                 <div className="text-4xl font-light text-brand">02</div>
                 <div>
-                  <h3 className="font-medium text-ink mb-2">Verified Properties</h3>
+                  <h3 className="font-semibold text-ink mb-2">Verified Properties</h3>
                   <p className="text-sm text-neutral-600">
                     Every listing is personally inspected and documented by our team.
                   </p>
                 </div>
               </div>
 
-              <div className="rounded-xl flex gap-6 p-6 bg-surface">
+              <div className="rounded-xl flex gap-6 p-6 bg-brand-soft">
                 <div className="text-4xl font-light text-brand">03</div>
                 <div>
-                  <h3 className="font-medium text-ink mb-2">Due Diligence Support</h3>
+                  <h3 className="font-semibold text-ink mb-2">Due Diligence Support</h3>
                   <p className="text-sm text-neutral-600">
                     Comprehensive verification of titles, documentation, and property history.
                   </p>
                 </div>
               </div>
 
-              <div className="rounded-xl flex gap-6 p-6 bg-surface">
+              <div className="rounded-xl flex gap-6 p-6 bg-brand-soft">
                 <div className="text-4xl font-light text-brand">04</div>
                 <div>
-                  <h3 className="font-medium text-ink mb-2">Transaction Management</h3>
+                  <h3 className="font-semibold text-ink mb-2">Transaction Management</h3>
                   <p className="text-sm text-neutral-600">
                     End-to-end support from negotiation through closing.
                   </p>
@@ -207,12 +207,12 @@ export default async function AboutPage() {
       <TeamSection />
 
       {/* CTA */}
-      <section className="py-24 bg-ink">
+      <section className="py-24 bg-brand">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-light text-white mb-6">
+          <h2 className="text-3xl md:text-4xl font-semibold text-white mb-6">
             Let&apos;s Work Together
           </h2>
-          <p className="text-neutral-400 mb-8 max-w-2xl mx-auto">
+          <p className="text-white/80 mb-8 max-w-2xl mx-auto">
             Whether you&apos;re buying your first home, expanding your portfolio, or seeking
             expert guidance on the Abuja market, we&apos;re here to help.
           </p>

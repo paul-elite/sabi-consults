@@ -1,7 +1,7 @@
 'use client'
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Cancel01Icon, Menu01Icon, PaintBoardIcon } from '@hugeicons/core-free-icons'
+import { Cancel01Icon, Menu01Icon, PaintBoardIcon, LinkSquare01Icon } from '@hugeicons/core-free-icons'
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -84,7 +84,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
               ))}
             </nav>
             <div className="ml-auto hidden lg:flex items-center gap-4 text-sm">
-              <Link href="/" target="_blank" className="text-neutral-500 hover:text-ink">View site ↗</Link>
+              <Link href="/" target="_blank" className="text-neutral-500 hover:text-ink">View site <HugeiconsIcon icon={LinkSquare01Icon} className="inline w-4 h-4" aria-hidden="true" /></Link>
               {canAccess(user, BRANDING_LINK.min) && (
                 <Link
                   href={BRANDING_LINK.href}
@@ -116,7 +116,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
                   Branding
                 </Link>
               )}
-              <Link href="/" target="_blank" className="block py-3 border-b border-neutral-100 text-neutral-600">View site ↗</Link>
+              <Link href="/" target="_blank" className="block py-3 border-b border-neutral-100 text-neutral-600">View site <HugeiconsIcon icon={LinkSquare01Icon} className="inline w-4 h-4" aria-hidden="true" /></Link>
               <div className="pt-4 flex items-center justify-between text-sm">
                 <span className="text-neutral-600">{user.name} · {roleLabel(user.role)}</span>
                 <button onClick={signOut} className="px-4 h-10 bg-neutral-100 text-neutral-700 rounded-lg">Sign out</button>

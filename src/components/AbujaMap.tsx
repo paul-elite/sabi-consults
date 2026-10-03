@@ -44,10 +44,7 @@ export default function AbujaMap({
     import('leaflet').then((L) => {
       // Blue marker for houses
       const houseIcon = L.divIcon({
-        html: `<svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 0C7.164 0 0 7.164 0 16c0 12 16 24 16 24s16-12 16-24c0-8.836-7.164-16-16-16z" style="fill:var(--color-brand)"/>
-          <path d="M16 8l-8 6v10h5v-6h6v6h5V14l-8-6z" fill="#ffffff"/>
-        </svg>`,
+        html: '<img src="/icons/house-marker.svg" width="32" height="40" alt="" />',
         className: 'custom-marker-house',
         iconSize: [32, 40],
         iconAnchor: [16, 40],
@@ -56,12 +53,7 @@ export default function AbujaMap({
 
       // Green marker for land
       const landIcon = L.divIcon({
-        html: `<svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 0C7.164 0 0 7.164 0 16c0 12 16 24 16 24s16-12 16-24c0-8.836-7.164-16-16-16z" fill="#059669"/>
-          <rect x="9" y="9" width="14" height="14" rx="1" stroke="#ffffff" stroke-width="2" fill="none"/>
-          <line x1="16" y1="9" x2="16" y2="23" stroke="#ffffff" stroke-width="1.5"/>
-          <line x1="9" y1="16" x2="23" y2="16" stroke="#ffffff" stroke-width="1.5"/>
-        </svg>`,
+        html: '<img src="/icons/land-marker.svg" width="32" height="40" alt="" />',
         className: 'custom-marker-land',
         iconSize: [32, 40],
         iconAnchor: [16, 40],

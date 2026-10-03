@@ -198,7 +198,7 @@ export default function ResourcesPage() {
       {/* Header */}
       <section className="bg-white border-b border-neutral-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-          <h1 className="text-3xl sm:text-4xl font-medium text-ink mb-3">Resources & Forms</h1>
+          <h1 className="text-3xl sm:text-4xl font-semibold text-ink mb-3">Resources & Forms</h1>
           <p className="text-lg text-neutral-600 max-w-2xl">
             Download essential documents, templates, and guides to help you navigate property transactions in Abuja with confidence.
           </p>
@@ -239,7 +239,7 @@ export default function ResourcesPage() {
                   {category.icon}
                 </div>
                 <div>
-                  <h2 className="text-xl font-medium text-ink">{category.title}</h2>
+                  <h2 className="text-xl font-semibold text-ink">{category.title}</h2>
                   <p className="text-sm text-neutral-500">{category.description}</p>
                 </div>
               </div>
@@ -256,8 +256,8 @@ export default function ResourcesPage() {
       {/* Help Section */}
       <section className="bg-white border-t border-neutral-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-          <div className="bg-surface rounded-xl p-8 sm:p-10 text-center">
-            <h2 className="text-2xl font-medium text-ink mb-3">Need a Custom Document?</h2>
+          <div className="bg-brand-soft rounded-xl p-8 sm:p-10 text-center">
+            <h2 className="text-2xl font-semibold text-ink mb-3">Need a Custom Document?</h2>
             <p className="text-neutral-600 mb-6 max-w-xl mx-auto">
               Our team can help prepare customized documents for your specific property transaction needs in Abuja.
             </p>

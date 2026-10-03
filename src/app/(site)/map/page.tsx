@@ -40,7 +40,7 @@ export default async function MapPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-light text-ink">
+              <h1 className="text-2xl md:text-3xl font-semibold text-ink">
                 Property Map
               </h1>
               <p className="text-neutral-600 mt-1">

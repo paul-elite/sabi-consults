@@ -12,9 +12,9 @@ export default async function Footer() {
   return (
     <footer className="bg-brand text-on-brand">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12 md:py-16 pb-safe">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:gap-x-12">
           {/* Brand Column */}
-          <div className="lg:col-span-1">
+          <div className="min-w-0">
             <Link href="/" className="inline-block">
               {brand.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -23,7 +23,7 @@ export default async function Footer() {
                 <span className="font-heading text-2xl">{brand.name}</span>
               )}
             </Link>
-            <p className="mt-4 text-on-brand/70 text-sm leading-relaxed">
+            <p className="mt-4 text-on-brand/80 text-sm leading-relaxed">
               {brand.tagline}
             </p>
             {/* Social Links */}

@@ -56,7 +56,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   return (
     <div className="min-h-screen pt-16 lg:pt-20">
       {/* Hero */}
-      <section className="bg-ink py-12 md:py-16">
+      <section className="bg-brand py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
           <Link
             href="/blog"
@@ -74,7 +74,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             </time>
           </div>
 
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white leading-tight">
             {blog.title}
           </h1>
 
@@ -153,9 +153,9 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       {/* Related Posts */}
       {relatedBlogs.length > 0 && (
-        <section className="py-12 md:py-16 bg-surface">
+        <section className="py-12 md:py-16 bg-brand-soft">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <h2 className="text-2xl font-light text-ink mb-8">More Articles</h2>
+            <h2 className="text-2xl font-semibold text-ink mb-8">More Articles</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {relatedBlogs.map((relatedBlog) => (
                 <Link key={relatedBlog.id} href={`/blog/${relatedBlog.slug}`} className="group">
@@ -178,7 +178,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     <p className="text-sm text-neutral-500 mb-2">
                       {relatedBlog.publishedAt ? formatDate(relatedBlog.publishedAt) : 'Draft'}
                     </p>
-                    <h3 className="text-xl font-medium text-ink group-hover:text-brand transition-colors">
+                    <h3 className="text-xl font-semibold text-ink group-hover:text-brand transition-colors">
                       {relatedBlog.title}
                     </h3>
                   </div>
@@ -192,7 +192,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       {/* CTA */}
       <section className="py-16 bg-brand">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-light text-white mb-4">
+          <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4">
             Ready to Invest in Abuja Real Estate?
           </h2>
           <p className="text-white/80 mb-8">

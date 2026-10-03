@@ -9,15 +9,54 @@ import Link from 'next/link'
 import { Property, ContactInquiry } from '@/lib/types'
 import { useAdminUser, canAccess } from '@/components/admin/AdminNav'
 
+interface AnalyticsStats {
+  summary: {
+    pageViews: number
+    uniqueVisitors: number
+    uniqueSessions: number
+    propertyViews: number
+    totalInquiries: number
+    totalContactClicks: number
+    avgSessionDuration: number
+    conversionRate: string
+  }
+  trafficSources: Record<string, number>
+  deviceBreakdown: Record<string, number>
+  topPages: { path: string; views: number }[]
+  topProperties: { id: string; title: string; district: string; views: number }[]
+  topDistricts: { name: string; views: number }[]
+  topCountries: { country: string; count: number }[]
+  trend: { date: string; views: number; visitors: number; inquiries: number }[]
+  funnel: {
+    visitors: number
+    propertyViews: number
+    contactClicks: number
+    inquiries: number
+  }
+  contactMethods: Record<string, number>
+}
+
+function formatDuration(seconds: number) {
+  if (!seconds) return '0s'
+  const minutes = Math.floor(seconds / 60)
+  const remaining = seconds % 60
+  return minutes > 0 ? `${minutes}m ${remaining}s` : `${remaining}s`
+}
+
+function maxValue(values: number[]) {
+  return Math.max(1, ...values)
+}
+
 export default function AdminDashboard() {
   const user = useAdminUser()
   const canEdit = canAccess(user, 'admin') // admin or super_admin can add/delete
   const router = useRouter()
   const [properties, setProperties] = useState<Property[]>([])
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([])
+  const [analytics, setAnalytics] = useState<AnalyticsStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
-  const [activeTab, setActiveTab] = useState<'properties' | 'inquiries'>('properties')
+  const [activeTab, setActiveTab] = useState<'properties' | 'inquiries' | 'analytics'>('properties')
 
   useEffect(() => {
     async function checkAuthAndFetch() {
@@ -31,17 +70,20 @@ export default function AdminDashboard() {
         }
 
         // Fetch data
-        const [propertiesRes, inquiriesRes] = await Promise.all([
+        const [propertiesRes, inquiriesRes, analyticsRes] = await Promise.all([
           fetch('/api/properties'),
           fetch('/api/inquiries'),
+          fetch('/api/analytics/stats?range=30d'),
         ])
 
         const propertiesData = await propertiesRes.json()
         const inquiriesData = await inquiriesRes.json()
+        const analyticsData = await analyticsRes.json().catch(() => null)
 
         setProperties(Array.isArray(propertiesData) ? propertiesData : [])
         setInquiries(Array.isArray(inquiriesData) ? inquiriesData : [])
-        if (!propertiesRes.ok || !inquiriesRes.ok) setLoadError('Some data couldn’t be loaded. Check the database connection, then refresh.')
+        setAnalytics(analyticsRes.ok ? analyticsData : null)
+        if (!propertiesRes.ok || !inquiriesRes.ok || !analyticsRes.ok) setLoadError('Some data couldn’t be loaded. Check the database connection, then refresh.')
       } catch {
         console.error('Failed to fetch data')
       } finally {
@@ -162,6 +204,17 @@ export default function AdminDashboard() {
                 {inquiries.filter(i => i.status === 'new').length}
               </span>
             )}
+          </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            aria-pressed={activeTab === 'analytics'}
+            className={`btn btn-md ${
+              activeTab === 'analytics'
+                ? 'bg-[#0055cc] text-white hover:bg-[#0044a3]'
+                : 'btn-secondary'
+            }`}
+          >
+            Analytics
           </button>
         </div>
 
@@ -318,6 +371,169 @@ export default function AdminDashboard() {
                 <HugeiconsIcon icon={Message01Icon} className="w-12 h-12 mx-auto text-neutral-300 mb-4" strokeWidth={1.7} aria-hidden="true" />
                 <p className="text-neutral-500">No inquiries yet</p>
                 <p className="text-sm text-neutral-400 mt-1">Inquiries from your website will appear here</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <div className="space-y-6">
+            {analytics ? (
+              <>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="card card-body">
+                    <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Page views</p>
+                    <p className="text-2xl font-semibold text-ink mt-1">{analytics.summary.pageViews.toLocaleString()}</p>
+                  </div>
+                  <div className="card card-body">
+                    <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Visitors</p>
+                    <p className="text-2xl font-semibold text-ink mt-1">{analytics.summary.uniqueVisitors.toLocaleString()}</p>
+                  </div>
+                  <div className="card card-body">
+                    <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Sessions</p>
+                    <p className="text-2xl font-semibold text-ink mt-1">{analytics.summary.uniqueSessions.toLocaleString()}</p>
+                  </div>
+                  <div className="card card-body">
+                    <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Avg duration</p>
+                    <p className="text-2xl font-semibold text-ink mt-1">{formatDuration(analytics.summary.avgSessionDuration)}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  <div className="card card-body xl:col-span-2">
+                    <div className="flex items-center justify-between gap-4 mb-5">
+                      <div>
+                        <h2 className="font-medium text-ink">Visitor trend</h2>
+                        <p className="text-sm text-neutral-500 mt-1">Last 30 days of page views, visitors, and inquiries.</p>
+                      </div>
+                      <span className="badge badge-info">{analytics.summary.conversionRate}% conversion</span>
+                    </div>
+                    {analytics.trend.length > 0 ? (
+                      <div className="h-56 flex items-end gap-1 border-b border-neutral-100">
+                        {analytics.trend.map((day) => {
+                          const height = Math.max(8, (day.views / maxValue(analytics.trend.map(item => item.views))) * 100)
+                          return (
+                            <div key={day.date} className="flex-1 min-w-0 h-full flex flex-col justify-end gap-2 group">
+                              <div
+                                className="w-full rounded-t-md bg-[#0055cc]/80 group-hover:bg-[#0055cc] transition-colors"
+                                style={{ height: `${height}%` }}
+                                title={`${day.date}: ${day.views} views, ${day.visitors} visitors, ${day.inquiries} inquiries`}
+                              />
+                              <span className="hidden sm:block text-[10px] text-neutral-400 truncate">{new Date(day.date).getDate()}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    ) : (
+                      <div className="h-56 rounded-xl bg-neutral-50 grid place-items-center text-sm text-neutral-400">
+                        No visitor trend yet
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="card card-body">
+                    <h2 className="font-medium text-ink mb-4">Conversion funnel</h2>
+                    {[
+                      ['Visitors', analytics.funnel.visitors],
+                      ['Property views', analytics.funnel.propertyViews],
+                      ['Contact clicks', analytics.funnel.contactClicks],
+                      ['Inquiries', analytics.funnel.inquiries],
+                    ].map(([label, value]) => (
+                      <div key={label} className="mb-4 last:mb-0">
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-neutral-600">{label}</span>
+                          <span className="font-medium text-ink">{Number(value).toLocaleString()}</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-brand"
+                            style={{ width: `${Math.max(4, (Number(value) / maxValue([analytics.funnel.visitors])) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="card card-body">
+                    <h2 className="font-medium text-ink mb-4">Traffic sources</h2>
+                    {Object.entries(analytics.trafficSources).length > 0 ? Object.entries(analytics.trafficSources).map(([source, count]) => (
+                      <div key={source} className="mb-3 last:mb-0">
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-neutral-600">{source}</span>
+                          <span className="font-medium text-ink">{count}</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
+                          <div className="h-full rounded-full bg-[#0055cc]" style={{ width: `${(count / maxValue(Object.values(analytics.trafficSources))) * 100}%` }} />
+                        </div>
+                      </div>
+                    )) : <p className="text-sm text-neutral-400">No traffic source data yet.</p>}
+                  </div>
+
+                  <div className="card card-body">
+                    <h2 className="font-medium text-ink mb-4">Devices</h2>
+                    {Object.entries(analytics.deviceBreakdown).length > 0 ? Object.entries(analytics.deviceBreakdown).map(([device, count]) => (
+                      <div key={device} className="mb-3 last:mb-0">
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-neutral-600 capitalize">{device}</span>
+                          <span className="font-medium text-ink">{count}</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
+                          <div className="h-full rounded-full bg-emerald-500" style={{ width: `${(count / maxValue(Object.values(analytics.deviceBreakdown))) * 100}%` }} />
+                        </div>
+                      </div>
+                    )) : <p className="text-sm text-neutral-400">No device data yet.</p>}
+                  </div>
+
+                  <div className="card card-body">
+                    <h2 className="font-medium text-ink mb-4">Contact actions</h2>
+                    {Object.entries(analytics.contactMethods).map(([method, count]) => (
+                      <div key={method} className="flex items-center justify-between py-2 border-b border-neutral-100 last:border-0">
+                        <span className="text-sm text-neutral-600 capitalize">{method}</span>
+                        <span className="font-medium text-ink">{count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="card overflow-hidden">
+                    <div className="card-header">
+                      <h2 className="font-medium text-ink">Top pages</h2>
+                    </div>
+                    <div className="divide-y divide-neutral-100">
+                      {analytics.topPages.length > 0 ? analytics.topPages.map((page) => (
+                        <div key={page.path} className="p-4 flex items-center justify-between gap-4">
+                          <span className="text-sm text-neutral-600 truncate">{page.path}</span>
+                          <span className="font-medium text-ink">{page.views.toLocaleString()}</span>
+                        </div>
+                      )) : <div className="p-6 text-sm text-neutral-400">No page data yet.</div>}
+                    </div>
+                  </div>
+
+                  <div className="card overflow-hidden">
+                    <div className="card-header">
+                      <h2 className="font-medium text-ink">Top properties</h2>
+                    </div>
+                    <div className="divide-y divide-neutral-100">
+                      {analytics.topProperties.length > 0 ? analytics.topProperties.map((property) => (
+                        <div key={property.id} className="p-4 flex items-center justify-between gap-4">
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-ink truncate">{property.title}</p>
+                            <p className="text-xs text-neutral-400">{property.district}</p>
+                          </div>
+                          <span className="font-medium text-ink">{property.views.toLocaleString()}</span>
+                        </div>
+                      )) : <div className="p-6 text-sm text-neutral-400">No property data yet.</div>}
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="card card-body text-center py-14">
+                <p className="text-ink font-medium">Analytics are not available yet</p>
+                <p className="text-sm text-neutral-500 mt-2">Run the Supabase analytics migration, then traffic will begin appearing here.</p>
               </div>
             )}
           </div>

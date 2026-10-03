@@ -121,7 +121,7 @@ export default function JoinPage() {
           </p>
           <Link
             href="/admin"
-            className="inline-flex h-12 px-8 items-center justify-center bg-ink text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors"
+            className="btn btn-md btn-brand"
           >
             Sign in
           </Link>

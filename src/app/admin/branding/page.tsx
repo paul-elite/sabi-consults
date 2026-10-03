@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Menu01Icon, ArrowRight02Icon } from '@hugeicons/core-free-icons'
+
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { RequireRole } from '@/components/admin/AdminNav'
@@ -345,7 +348,7 @@ function BrandingEditor() {
                 // eslint-disable-next-line @next/next/no-img-element
                 ? <img src={brand.logoUrl} alt="" className="h-7 w-auto max-w-40 object-contain" />
                 : <span style={{ fontFamily: 'var(--fh)', fontSize: '16px' }}>{brand.name || 'Company name'}</span>}
-              <span className="opacity-80">☰</span>
+              <HugeiconsIcon icon={Menu01Icon} className="w-5 h-5 opacity-80" aria-hidden="true" />
             </div>
             <div
               className="p-5 border-x border-neutral-200"
@@ -382,7 +385,7 @@ function BrandingEditor() {
                 <div className="p-3">
                   <p className="font-semibold" style={{ fontFamily: 'var(--fh)' }}>Emerald Grove City</p>
                   <p className="opacity-60">Asokoro, from ₦9M</p>
-                  <p className="mt-2 font-medium" style={{ color: 'var(--p)' }}>View details →</p>
+                  <p className="mt-2 font-medium" style={{ color: 'var(--p)' }}>View details <HugeiconsIcon icon={ArrowRight02Icon} className="inline w-4 h-4" aria-hidden="true" /></p>
                 </div>
               </div>
             </div>

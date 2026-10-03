@@ -13,13 +13,13 @@ export default async function TeamSection() {
   }
 
   return (
-    <section className="py-24 bg-surface">
+    <section className="py-24 bg-brand-soft">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
             Our Team
           </p>
-          <h2 className="text-3xl md:text-4xl font-light text-ink mb-4">
+          <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-4">
             Meet the Experts
           </h2>
           <p className="text-neutral-600 max-w-2xl mx-auto">
@@ -50,7 +50,7 @@ export default async function TeamSection() {
 
               {/* Info */}
               <div className="p-6">
-                <h3 className="text-lg font-medium text-ink">{member.name}</h3>
+                <h3 className="text-lg font-semibold text-ink">{member.name}</h3>
                 <p className="text-sm text-brand mb-3">{member.role}</p>
 
                 {member.bio && (

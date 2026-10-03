@@ -56,7 +56,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
   }
   const chip = (active: boolean) =>
     `shrink-0 inline-flex items-center h-10 px-4 rounded-full border text-sm whitespace-nowrap transition-colors ${
-      active ? 'bg-ink border-ink text-white' : 'bg-white border-neutral-300 text-ink hover:border-ink'
+      active ? 'bg-brand border-ink text-white' : 'bg-white border-neutral-300 text-ink hover:border-ink'
     }`
 
   const heading = params.district
@@ -68,7 +68,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
       {/* Header */}
       <section className="bg-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-4">
-          <h1 className="text-2xl sm:text-3xl font-medium text-ink">{heading}</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-ink">{heading}</h1>
           <p className="mt-1.5 text-neutral-500 text-[15px]">Land and homes across Abuja, with plot sizes and flexible payment options.</p>
         </div>
       </section>
@@ -122,7 +122,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 <defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="currentColor" strokeWidth="1" /></pattern></defs>
                 <rect width="100%" height="100%" fill="url(#grid)" />
               </svg>
-              <span className="relative inline-flex items-center gap-2 h-11 px-5 rounded-full bg-ink text-white text-sm font-medium group-hover:bg-brand transition-colors">
+              <span className="relative inline-flex items-center gap-2 h-11 px-5 rounded-full bg-brand text-white text-sm font-medium group-hover:bg-brand transition-colors">
                 <HugeiconsIcon icon={MapsIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
                 Show on map
               </span>
@@ -132,7 +132,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 px-6 rounded-xl bg-surface">
+          <div className="text-center py-16 px-6 rounded-xl bg-brand-soft">
             <p className="text-ink font-medium mb-1">No properties match these filters</p>
             <p className="text-sm text-neutral-600 mb-5">Try a different price range or area, or ask us: new listings often go to our contacts first.</p>
             <div className="flex justify-center gap-3 flex-wrap">
@@ -144,7 +144,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
       </section>
 
       {/* Floating map button on phones */}
-      <Link href="/map" className="sm:hidden fixed left-1/2 -translate-x-1/2 bottom-[calc(1.25rem+env(safe-area-inset-bottom))] z-40 inline-flex items-center gap-2 h-12 px-5 rounded-full bg-ink text-white text-sm font-medium shadow-lg">
+      <Link href="/map" className="sm:hidden fixed left-1/2 -translate-x-1/2 bottom-[calc(1.25rem+env(safe-area-inset-bottom))] z-40 inline-flex items-center gap-2 h-12 px-5 rounded-full bg-brand text-white text-sm font-medium shadow-lg">
         <HugeiconsIcon icon={MapsIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
         Map
       </Link>

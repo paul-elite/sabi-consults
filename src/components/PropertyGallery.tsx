@@ -1,7 +1,7 @@
 'use client'
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Cancel01Icon } from '@hugeicons/core-free-icons'
+import { Cancel01Icon, ArrowLeft01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
 
 import { useRef, useState } from 'react'
 import Image from 'next/image'
@@ -75,8 +75,8 @@ export default function PropertyGallery({ images, title }: { images: string[]; t
             <Image src={images[viewer]} alt="" fill className="object-contain" sizes="100vw" />
             {images.length > 1 && (
               <>
-                <button type="button" onClick={() => setViewer((viewer - 1 + images.length) % images.length)} className="absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 text-white grid place-items-center" aria-label="Previous photo">‹</button>
-                <button type="button" onClick={() => setViewer((viewer + 1) % images.length)} className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 text-white grid place-items-center" aria-label="Next photo">›</button>
+                <button type="button" onClick={() => setViewer((viewer - 1 + images.length) % images.length)} className="absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 text-white grid place-items-center" aria-label="Previous photo"><HugeiconsIcon icon={ArrowLeft01Icon} aria-hidden="true" /></button>
+                <button type="button" onClick={() => setViewer((viewer + 1) % images.length)} className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 text-white grid place-items-center" aria-label="Next photo"><HugeiconsIcon icon={ArrowRight01Icon} aria-hidden="true" /></button>
               </>
             )}
           </div>
