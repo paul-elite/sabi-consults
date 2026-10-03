@@ -5,9 +5,31 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useBrand } from '@/components/BrandProvider'
 
+const POSITIONS = [
+  'Sales Agent',
+  'Property Consultant',
+  'Marketing Executive',
+  'Customer Service Representative',
+  'Office Administrator',
+  'Accountant',
+  'Driver',
+  'Legal Officer',
+  'IT Support',
+  'Other',
+]
+
 export default function JoinPage() {
   const brand = useBrand()
-  const [form, setForm] = useState({ name: '', email: '', phone: '', bio: '', password: '', confirmPassword: '' })
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    dateOfBirth: '',
+    position: '',
+    customPosition: '',
+    password: '',
+    confirmPassword: '',
+  })
   const [image, setImage] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [fields, setFields] = useState<Record<string, string>>({})
@@ -49,11 +71,23 @@ export default function JoinPage() {
     setError('')
     setBusy(true)
 
+    // Determine the final position value
+    const finalPosition = form.position === 'Other' ? form.customPosition : form.position
+
     try {
       const res = await fetch('/api/staff/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, image }),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          dateOfBirth: form.dateOfBirth,
+          position: finalPosition,
+          password: form.password,
+          confirmPassword: form.confirmPassword,
+          image,
+        }),
       })
       const data = await res.json()
 
@@ -166,6 +200,53 @@ export default function JoinPage() {
               {fields.name && <p className="form-error">{fields.name}</p>}
             </div>
 
+            {/* Date of Birth */}
+            <div className="form-field">
+              <label htmlFor="dateOfBirth" className="form-label">Date of birth</label>
+              <input
+                id="dateOfBirth"
+                type="date"
+                value={form.dateOfBirth}
+                onChange={e => setForm(f => ({ ...f, dateOfBirth: e.target.value }))}
+                className={`form-input ${fields.dateOfBirth ? 'form-input-error' : ''}`}
+                max={new Date().toISOString().split('T')[0]}
+              />
+              {fields.dateOfBirth && <p className="form-error">{fields.dateOfBirth}</p>}
+            </div>
+
+            {/* Position */}
+            <div className="form-field">
+              <label htmlFor="position" className="form-label">Position</label>
+              <select
+                id="position"
+                value={form.position}
+                onChange={e => setForm(f => ({ ...f, position: e.target.value, customPosition: e.target.value === 'Other' ? f.customPosition : '' }))}
+                className={`form-input form-select ${fields.position ? 'form-input-error' : ''}`}
+              >
+                <option value="">Select your position</option>
+                {POSITIONS.map(pos => (
+                  <option key={pos} value={pos}>{pos}</option>
+                ))}
+              </select>
+              {fields.position && <p className="form-error">{fields.position}</p>}
+            </div>
+
+            {/* Custom Position (if Other selected) */}
+            {form.position === 'Other' && (
+              <div className="form-field">
+                <label htmlFor="customPosition" className="form-label">Specify your position</label>
+                <input
+                  id="customPosition"
+                  type="text"
+                  value={form.customPosition}
+                  onChange={e => setForm(f => ({ ...f, customPosition: e.target.value }))}
+                  className={`form-input ${fields.customPosition ? 'form-input-error' : ''}`}
+                  placeholder="Enter your position"
+                />
+                {fields.customPosition && <p className="form-error">{fields.customPosition}</p>}
+              </div>
+            )}
+
             {/* Email */}
             <div className="form-field">
               <label htmlFor="email" className="form-label">Email</label>
@@ -192,21 +273,6 @@ export default function JoinPage() {
                 placeholder="+234 000 000 0000"
               />
               {fields.phone && <p className="form-error">{fields.phone}</p>}
-            </div>
-
-            {/* Bio */}
-            <div className="form-field">
-              <label htmlFor="bio" className="form-label">
-                Short bio <span className="form-label-optional">(optional)</span>
-              </label>
-              <textarea
-                id="bio"
-                value={form.bio}
-                onChange={e => setForm(f => ({ ...f, bio: e.target.value }))}
-                rows={3}
-                className="form-input form-textarea"
-                placeholder="A few words about yourself..."
-              />
             </div>
 
             <div className="divider" />

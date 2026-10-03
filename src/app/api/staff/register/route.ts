@@ -14,13 +14,28 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { name, email, phone, bio, password, confirmPassword, image } = body
+  const { name, email, phone, dateOfBirth, position, password, confirmPassword, image } = body
 
   // Validate fields
   const fields: Record<string, string> = {}
 
   if (!name?.trim() || name.trim().length < 2) {
     fields.name = 'Enter your full name'
+  }
+
+  if (!dateOfBirth) {
+    fields.dateOfBirth = 'Enter your date of birth'
+  } else {
+    const dob = new Date(dateOfBirth)
+    const today = new Date()
+    const age = today.getFullYear() - dob.getFullYear()
+    if (age < 18 || age > 100) {
+      fields.dateOfBirth = 'You must be at least 18 years old'
+    }
+  }
+
+  if (!position?.trim()) {
+    fields.position = 'Select or enter your position'
   }
 
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email || '')) {
@@ -62,7 +77,8 @@ export async function POST(request: NextRequest) {
     name: name.trim(),
     email: email.trim().toLowerCase(),
     phone: phone.trim(),
-    bio: bio?.trim() || null,
+    date_of_birth: dateOfBirth,
+    position: position.trim(),
     image: image || null,
     role: 'staff',
     password_hash: hashPassword(password),
