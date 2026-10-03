@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { RequireRole } from '@/components/admin/AdminNav'
 
 interface SiteSettings {
   whatsapp_number: string
@@ -12,7 +13,7 @@ interface SiteSettings {
   address: string
 }
 
-export default function AdminSettings() {
+function AdminSettingsInner() {
   const router = useRouter()
   const [settings, setSettings] = useState<SiteSettings>({
     whatsapp_number: '',
@@ -50,10 +51,6 @@ export default function AdminSettings() {
     checkAuthAndFetch()
   }, [router])
 
-  const handleLogout = async () => {
-    await fetch('/api/auth', { method: 'DELETE' })
-    router.push('/admin')
-  }
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,15 +58,10 @@ export default function AdminSettings() {
     setMessage(null)
 
     try {
-      // Get auth token
-      const authRes = await fetch('/api/auth')
-      const authData = await authRes.json()
-
       const res = await fetch('/api/settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authData.token}`
         },
         body: JSON.stringify(settings)
       })
@@ -96,36 +88,16 @@ export default function AdminSettings() {
 
   return (
     <div className="min-h-screen">
-      {/* Admin Header */}
-      <header className="bg-[#1a1a1a] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/admin/dashboard" className="text-xl font-semibold">
-              Sabi<span className="text-[#0055CC]">Consults</span>
-              <span className="text-xs font-normal text-neutral-400 ml-2">Admin</span>
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/admin/dashboard" className="text-sm text-neutral-400 hover:text-white transition-colors">
-              Dashboard
-            </Link>
-            <Link href="/" target="_blank" className="text-sm text-neutral-400 hover:text-white transition-colors">
-              View Site
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="text-sm text-neutral-400 hover:text-white transition-colors"
-            >
-              Logout
-            </button>
-          </div>
+      <div className="bg-white border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+          <h1 className="text-lg font-semibold text-ink">Contact settings</h1>
         </div>
-      </header>
+      </div>
 
       {/* Settings Content */}
       <main className="max-w-3xl mx-auto px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-light text-[#1a1a1a]">Site Settings</h1>
+          <h1 className="text-2xl font-light text-ink">Site Settings</h1>
           <p className="text-neutral-500 mt-1">Manage your contact information and social links</p>
         </div>
 
@@ -143,7 +115,7 @@ export default function AdminSettings() {
           <div className="p-6 space-y-6">
             {/* WhatsApp Number */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 WhatsApp Number
               </label>
               <input
@@ -151,7 +123,7 @@ export default function AdminSettings() {
                 value={settings.whatsapp_number}
                 onChange={(e) => setSettings({ ...settings, whatsapp_number: e.target.value })}
                 placeholder="2348000000000"
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors"
               />
               <p className="text-xs text-neutral-400 mt-1">
                 Enter without + or spaces (e.g., 2348012345678)
@@ -160,7 +132,7 @@ export default function AdminSettings() {
 
             {/* Phone Number */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Phone Number (Display)
               </label>
               <input
@@ -168,7 +140,7 @@ export default function AdminSettings() {
                 value={settings.phone_number}
                 onChange={(e) => setSettings({ ...settings, phone_number: e.target.value })}
                 placeholder="+234 800 000 0000"
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors"
               />
               <p className="text-xs text-neutral-400 mt-1">
                 This is how the phone number will be displayed on the site
@@ -177,7 +149,7 @@ export default function AdminSettings() {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Email Address
               </label>
               <input
@@ -185,13 +157,13 @@ export default function AdminSettings() {
                 value={settings.email}
                 onChange={(e) => setSettings({ ...settings, email: e.target.value })}
                 placeholder="hello@sabiconsults.com"
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors"
               />
             </div>
 
             {/* Instagram Handle */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Instagram Handle
               </label>
               <div className="flex">
@@ -203,14 +175,14 @@ export default function AdminSettings() {
                   value={settings.instagram_handle}
                   onChange={(e) => setSettings({ ...settings, instagram_handle: e.target.value })}
                   placeholder="sabi_consults"
-                  className="flex-1 px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors"
+                  className="flex-1 px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             {/* Address */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Office Address
               </label>
               <textarea
@@ -218,7 +190,7 @@ export default function AdminSettings() {
                 onChange={(e) => setSettings({ ...settings, address: e.target.value })}
                 placeholder="Abuja, Nigeria"
                 rows={2}
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-[#0055CC] focus:outline-none transition-colors resize-none"
+                className="w-full px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors resize-none"
               />
             </div>
           </div>
@@ -228,7 +200,7 @@ export default function AdminSettings() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2 bg-[#1a1a1a] text-white text-sm font-medium hover:bg-[#2d2d2d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? 'Saving...' : 'Save Settings'}
             </button>
@@ -237,4 +209,8 @@ export default function AdminSettings() {
       </main>
     </div>
   )
+}
+
+export default function AdminSettings() {
+  return <RequireRole min="admin"><AdminSettingsInner /></RequireRole>
 }

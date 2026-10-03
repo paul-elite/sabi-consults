@@ -15,13 +15,13 @@ export async function generateMetadata({ params }: PageProps) {
 
   if (!blog) {
     return {
-      title: 'Blog Not Found | Sabi Consults',
+      title: 'Blog Not Found',
     }
   }
 
   return {
-    title: `${blog.title} | Sabi Consults Blog`,
-    description: blog.excerpt || `Read ${blog.title} on the Sabi Consults blog.`,
+    title: `${blog.title}`,
+    description: blog.excerpt || `Read ${blog.title} on our blog.`,
     openGraph: {
       title: blog.title,
       description: blog.excerpt,
@@ -50,9 +50,9 @@ export default async function BlogPostPage({ params }: PageProps) {
   const relatedBlogs = recentBlogs.filter(b => b.id !== blog.id).slice(0, 2)
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-16 lg:pt-20">
       {/* Hero */}
-      <section className="bg-[#1a1a1a] py-12 md:py-16">
+      <section className="bg-ink py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
           <Link
             href="/blog"
@@ -103,13 +103,13 @@ export default async function BlogPostPage({ params }: PageProps) {
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <div
             className="prose prose-lg prose-neutral max-w-none
-              prose-headings:font-heading prose-headings:font-normal prose-headings:text-[#1a1a1a]
+              prose-headings:font-heading prose-headings:font-normal prose-headings:text-ink
               prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
               prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
               prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-2
               prose-p:text-neutral-600 prose-p:leading-relaxed
-              prose-a:text-[#0055CC] prose-a:no-underline hover:prose-a:underline
-              prose-strong:text-[#1a1a1a]
+              prose-a:text-brand prose-a:no-underline hover:prose-a:underline
+              prose-strong:text-ink
               prose-ul:text-neutral-600 prose-ol:text-neutral-600
               prose-li:my-1
               prose-img:rounded-lg"
@@ -157,9 +157,9 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       {/* Related Posts */}
       {relatedBlogs.length > 0 && (
-        <section className="py-12 md:py-16 bg-[#f8f6f3]">
+        <section className="py-12 md:py-16 bg-surface">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <h2 className="text-2xl font-light text-[#1a1a1a] mb-8">More Articles</h2>
+            <h2 className="text-2xl font-light text-ink mb-8">More Articles</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {relatedBlogs.map((relatedBlog) => (
                 <Link key={relatedBlog.id} href={`/blog/${relatedBlog.slug}`} className="group">
@@ -184,7 +184,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     <p className="text-sm text-neutral-500 mb-2">
                       {relatedBlog.publishedAt ? formatDate(relatedBlog.publishedAt) : 'Draft'}
                     </p>
-                    <h3 className="text-xl font-medium text-[#1a1a1a] group-hover:text-[#0055CC] transition-colors">
+                    <h3 className="text-xl font-medium text-ink group-hover:text-brand transition-colors">
                       {relatedBlog.title}
                     </h3>
                   </div>
@@ -196,7 +196,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       )}
 
       {/* CTA */}
-      <section className="py-16 bg-[#0055CC]">
+      <section className="py-16 bg-brand">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-2xl md:text-3xl font-light text-white mb-4">
             Ready to Invest in Abuja Real Estate?
@@ -206,7 +206,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           </p>
           <Link
             href="/contact"
-            className="inline-flex px-8 py-4 bg-white text-[#0055CC] text-sm font-medium uppercase tracking-wider hover:bg-white/90 transition-colors"
+            className="inline-flex px-8 py-4 bg-white text-brand text-sm font-medium uppercase tracking-wider hover:bg-white/90 transition-colors"
           >
             Contact Us Today
           </Link>

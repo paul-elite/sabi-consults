@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
@@ -24,5 +25,8 @@
     "react-dom": "^19.2.4",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

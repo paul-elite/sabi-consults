@@ -45,7 +45,7 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
         <svg className="w-12 h-12 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
-        <p className="text-[#1a1a1a] font-medium mb-2">Thank you for your inquiry</p>
+        <p className="text-ink font-medium mb-2">Thank you for your inquiry</p>
         <p className="text-sm text-neutral-600">We&apos;ll get back to you shortly.</p>
       </div>
     )
@@ -120,7 +120,7 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="w-full py-3 bg-[#1a1a1a] text-white text-sm font-medium uppercase tracking-wider hover:bg-[#2d2d2d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-3 bg-ink text-white text-sm font-medium uppercase tracking-wider hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {status === 'loading' ? 'Sending...' : 'Send Inquiry'}
       </button>

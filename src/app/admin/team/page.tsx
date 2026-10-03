@@ -34,7 +34,7 @@ export default function AdminTeamPage() {
 
         const res = await fetch('/api/team')
         const data = await res.json()
-        setMembers(data)
+        setMembers(Array.isArray(data) ? data : [])
       } catch (error) {
         console.error('Error:', error)
       } finally {
@@ -93,24 +93,24 @@ export default function AdminTeamPage() {
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Header */}
-      <header className="bg-[#1a1a1a] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/admin/dashboard" className="text-neutral-400 hover:text-white transition-colors">
+            <Link href="/admin/dashboard" className="text-neutral-500 hover:text-ink transition-colors">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
-            <span className="text-xl font-semibold">Team Members</span>
+            <span className="text-lg font-semibold text-ink">Team Members</span>
           </div>
           <Link
             href="/admin/team/new"
-            className="px-4 py-2 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors"
+            className="px-4 py-2 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
           >
             Add Member
           </Link>
         </div>
-      </header>
+      </div>
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
@@ -122,7 +122,7 @@ export default function AdminTeamPage() {
             <p className="text-neutral-500 mb-4">No team members yet</p>
             <Link
               href="/admin/team/new"
-              className="inline-flex px-6 py-3 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors"
+              className="inline-flex px-6 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
             >
               Add Your First Team Member
             </Link>
@@ -160,8 +160,8 @@ export default function AdminTeamPage() {
 
                 {/* Info */}
                 <div className="p-4">
-                  <h3 className="font-medium text-[#1a1a1a]">{member.name}</h3>
-                  <p className="text-sm text-[#0055CC] mb-2">{member.role}</p>
+                  <h3 className="font-medium text-ink">{member.name}</h3>
+                  <p className="text-sm text-brand mb-2">{member.role}</p>
                   {member.email && (
                     <p className="text-xs text-neutral-500">{member.email}</p>
                   )}
@@ -173,7 +173,7 @@ export default function AdminTeamPage() {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/admin/team/${member.id}`}
-                      className="px-3 py-1.5 text-sm text-[#0055CC] hover:bg-blue-50 transition-colors"
+                      className="px-3 py-1.5 text-sm text-brand hover:bg-blue-50 transition-colors"
                     >
                       Edit
                     </Link>

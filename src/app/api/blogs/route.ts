@@ -1,12 +1,12 @@
+import { getBrand } from '@/lib/brand'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
+import { getSession } from '@/lib/auth'
 
 // GET all blogs (admin - includes drafts)
 export async function GET() {
   try {
-    const cookieStore = await cookies()
-    const authCookie = cookieStore.get('admin_authenticated')
+    const currentUser = await getSession()
 
     // If not authenticated, only return published blogs
     const supabase = await createAdminClient()
@@ -16,7 +16,7 @@ export async function GET() {
       .select('*')
       .order('created_at', { ascending: false })
 
-    if (!authCookie || authCookie.value !== 'true') {
+    if (!currentUser) {
       query = query.eq('status', 'published')
     }
 
@@ -36,10 +36,9 @@ export async function GET() {
 // POST create new blog
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = await cookies()
-    const authCookie = cookieStore.get('admin_authenticated')
+    const currentUser = await getSession()
 
-    if (!authCookie || authCookie.value !== 'true') {
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
       excerpt: excerpt || null,
       content,
       cover_image: coverImage || null,
-      author: author || 'Sabi Consults',
+      author: author || (await getBrand()).name,
       status: status || 'draft',
       updated_at: new Date().toISOString(),
     }

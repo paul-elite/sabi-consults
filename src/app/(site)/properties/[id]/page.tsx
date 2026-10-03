@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getSettings } from '@/lib/settings'
 import { getPropertyById } from '@/lib/properties'
 import { Suspense } from 'react'
 import ContactForm from '@/components/ContactForm'
@@ -24,27 +25,30 @@ interface PropertyPageProps {
 
 export default async function PropertyDetailPage({ params }: PropertyPageProps) {
   const { id } = await params
-  const property = await getPropertyById(id)
+  const [property, settings] = await Promise.all([getPropertyById(id), getSettings()])
 
   if (!property) {
     notFound()
   }
 
+  const phone = settings.whatsapp_number.replace(/\D/g, '')
+  const waLink = `https://wa.me/${phone}?text=${encodeURIComponent(`Hi, I'm interested in ${property.title} (${property.district})`)}`
+
   return (
-    <div className="pt-20">
+    <div className="pt-16 lg:pt-20">
       {/* Breadcrumb */}
       <div className="bg-white border-b border-neutral-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
           <nav className="flex items-center gap-2 text-sm">
-            <Link href="/" className="text-neutral-500 hover:text-[#1a1a1a]">
+            <Link href="/" className="text-neutral-500 hover:text-ink">
               Home
             </Link>
             <span className="text-neutral-300">/</span>
-            <Link href="/properties" className="text-neutral-500 hover:text-[#1a1a1a]">
+            <Link href="/properties" className="text-neutral-500 hover:text-ink">
               Properties
             </Link>
             <span className="text-neutral-300">/</span>
-            <span className="text-[#1a1a1a]">{property.district}</span>
+            <span className="text-ink">{property.district}</span>
           </nav>
         </div>
       </div>
@@ -88,12 +92,12 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
               <div>
                 <div className="flex items-center gap-3 mb-3">
                   <span className={`px-3 py-1 text-xs font-medium uppercase tracking-wider ${
-                    property.type === 'land' ? 'bg-[#0055CC] text-white' : 'bg-[#f8f6f3] text-[#0055CC]'
+                    property.type === 'land' ? 'bg-brand text-white' : 'bg-surface text-brand'
                   }`}>
                     {property.type === 'land' ? 'Land' : 'House'}
                   </span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-light text-[#1a1a1a] mb-2">
+                <h1 className="text-3xl md:text-4xl font-light text-ink mb-2">
                   {property.title}
                 </h1>
                 <p className="text-neutral-600 flex items-center gap-2">
@@ -109,37 +113,37 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 border-y border-neutral-200">
                 {property.bedrooms && (
                   <div>
-                    <p className="text-2xl font-light text-[#1a1a1a]">{property.bedrooms}</p>
+                    <p className="text-2xl font-light text-ink">{property.bedrooms}</p>
                     <p className="text-sm text-neutral-500">Bedrooms</p>
                   </div>
                 )}
                 {property.bathrooms && (
                   <div>
-                    <p className="text-2xl font-light text-[#1a1a1a]">{property.bathrooms}</p>
+                    <p className="text-2xl font-light text-ink">{property.bathrooms}</p>
                     <p className="text-sm text-neutral-500">Bathrooms</p>
                   </div>
                 )}
                 {property.landSize && (
                   <div>
-                    <p className="text-2xl font-light text-[#1a1a1a]">{property.landSize.toLocaleString()}</p>
+                    <p className="text-2xl font-light text-ink">{property.landSize.toLocaleString()}</p>
                     <p className="text-sm text-neutral-500">Sq. Meters</p>
                   </div>
                 )}
                 {property.bq !== undefined && property.bq > 0 && (
                   <div>
-                    <p className="text-2xl font-light text-[#1a1a1a]">{property.bq}</p>
+                    <p className="text-2xl font-light text-ink">{property.bq}</p>
                     <p className="text-sm text-neutral-500">BQ</p>
                   </div>
                 )}
                 <div>
-                  <p className="text-2xl font-light text-[#1a1a1a]">{property.district}</p>
+                  <p className="text-2xl font-light text-ink">{property.district}</p>
                   <p className="text-sm text-neutral-500">District</p>
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <h2 className="text-xl font-medium text-[#1a1a1a] mb-4">Description</h2>
+                <h2 className="text-xl font-medium text-ink mb-4">Description</h2>
                 <p className="text-neutral-600 leading-relaxed whitespace-pre-line">
                   {property.description}
                 </p>
@@ -148,7 +152,7 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
               {/* Variations / Unit Types */}
               {property.variations && property.variations.length > 0 && (
                 <div>
-                  <h2 className="text-xl font-medium text-[#1a1a1a] mb-4">
+                  <h2 className="text-xl font-medium text-ink mb-4">
                     {property.type === 'land' ? 'Available Plot Sizes' : 'Available Unit Types'}
                   </h2>
                   <div className="space-y-3">
@@ -158,13 +162,13 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                         className={`border p-4 ${
                           variation.status === 'sold'
                             ? 'bg-neutral-50 border-neutral-200 opacity-60'
-                            : 'bg-white border-neutral-200 hover:border-[#0055CC]'
+                            : 'bg-white border-neutral-200 hover:border-brand'
                         } transition-colors`}
                       >
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-medium text-[#1a1a1a]">{variation.name}</h3>
+                              <h3 className="font-medium text-ink">{variation.name}</h3>
                               {variation.status === 'sold' && (
                                 <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium uppercase">
                                   Sold Out
@@ -190,13 +194,13 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                                 <span>{variation.landSize.toLocaleString()} sqm</span>
                               )}
                               {variation.unitsAvailable !== undefined && variation.unitsAvailable > 0 && (
-                                <span className="text-[#0055CC]">{variation.unitsAvailable} units left</span>
+                                <span className="text-brand">{variation.unitsAvailable} units left</span>
                               )}
                             </div>
                           </div>
                           {variation.price && (
                             <div className="text-right">
-                              <p className="text-lg font-medium text-[#0055CC]">
+                              <p className="text-lg font-medium text-brand">
                                 {formatPrice(variation.price)}
                               </p>
                             </div>
@@ -211,11 +215,11 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
               {/* Features */}
               {property.features.length > 0 && (
                 <div>
-                  <h2 className="text-xl font-medium text-[#1a1a1a] mb-4">Features & Amenities</h2>
+                  <h2 className="text-xl font-medium text-ink mb-4">Features & Amenities</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {property.features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-3">
-                        <svg className="w-5 h-5 text-[#0055CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                         <span className="text-neutral-600">{feature}</span>
@@ -227,7 +231,7 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
 
               {/* Map */}
               <div>
-                <h2 className="text-xl font-medium text-[#1a1a1a] mb-4">Location</h2>
+                <h2 className="text-xl font-medium text-ink mb-4">Location</h2>
                 <div className="h-80 border border-neutral-200">
                   <Suspense fallback={<div className="w-full h-full bg-neutral-100" />}>
                     <MapWrapper selectedProperty={property} />
@@ -240,25 +244,25 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
             <div className="lg:col-span-1">
               <div className="sticky top-28 space-y-6">
                 {/* Price Card */}
-                <div className="bg-[#1a1a1a] text-white p-8">
+                <div className="bg-ink text-white p-8">
                   <p className="text-sm text-neutral-400 mb-2">Price</p>
                   <p className="text-3xl font-light mb-1">
-                    {formatPrice(property.price)}
+                    {property.price > 0 ? formatPrice(property.price) : (property.priceLabel || "Price on request")}
                   </p>
-                  {property.priceLabel && (
+                  {property.priceLabel && property.price > 0 && (
                     <p className="text-sm text-neutral-400">{property.priceLabel}</p>
                   )}
                 </div>
 
                 {/* Contact Card */}
                 <div className="bg-white border border-neutral-200 p-6">
-                  <h3 className="font-medium text-[#1a1a1a] mb-4">Interested in this property?</h3>
+                  <h3 className="font-medium text-ink mb-4">Interested in this property?</h3>
                   <ContactForm propertyId={property.id} propertyTitle={property.title} />
                 </div>
 
                 {/* WhatsApp CTA */}
                 <a
-                  href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '2348000000000'}?text=Hi, I'm interested in: ${property.title} (${property.district})`}
+                  href={waLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-3 w-full py-4 bg-[#25D366] text-white font-medium hover:bg-[#20bd5a] transition-colors"
@@ -273,6 +277,17 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
           </div>
         </div>
       </section>
+
+      {/* Phone action bar: always within thumb reach */}
+      <div className="lg:hidden h-20" aria-hidden="true" />
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-[1000] bg-white border-t border-neutral-200 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex gap-3">
+        <a href={`tel:+${phone}`} className="flex-1 h-12 grid place-items-center border border-ink/20 text-ink font-medium">
+          Call
+        </a>
+        <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex-[2] h-12 grid place-items-center bg-[#25D366] text-white font-medium">
+          Chat on WhatsApp
+        </a>
+      </div>
     </div>
   )
 }

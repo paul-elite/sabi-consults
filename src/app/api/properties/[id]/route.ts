@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
+import { getSession } from '@/lib/auth'
 
 // GET single property
 export async function GET(
@@ -8,7 +8,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const supabase = await createClient()
+  // Signed-in staff also see sold and hidden listings
+  const viewer = await getSession()
+  const supabase = viewer ? await createAdminClient() : await createClient()
 
   const { data, error } = await supabase
     .from('properties')
@@ -31,10 +33,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const cookieStore = await cookies()
-  const session = cookieStore.get('admin_session')
+  const currentUser = await getSession()
 
-  if (!session || session.value !== 'authenticated') {
+  if (!currentUser) {
     return NextResponse.json(
       { error: 'Unauthorized' },
       { status: 401 }
@@ -97,10 +98,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const cookieStore = await cookies()
-  const session = cookieStore.get('admin_session')
+  const currentUser = await getSession()
 
-  if (!session || session.value !== 'authenticated') {
+  if (!currentUser) {
     return NextResponse.json(
       { error: 'Unauthorized' },
       { status: 401 }

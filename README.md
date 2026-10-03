@@ -1,200 +1,91 @@
-# Sabi Consults - Premium Real Estate in Abuja
+# Sabi Consults – real estate website for Abuja
 
-A modern, search-first real estate website built with Next.js 16, Tailwind CSS, TypeScript, and Supabase.
+A mobile-first property website with an admin area, built with Next.js 16, Tailwind CSS 4 and Supabase.
+Any company can run its own copy: the name, logo and colours are set from the admin area, not the code.
 
-## Features
+## What's included
 
-### Public Features
-- **Search-First Homepage**: Central search module with location, property type, and price filters
-- **Property Listings**: Clean, editorial property cards with filtering by district
-- **Property Details**: Large imagery, structured information, and interactive map
-- **Abuja Map**: Simplified black & white map showing property locations
-- **WhatsApp Integration**: Click-to-chat CTAs throughout the site
-- **Contact Forms**: Lead capture with property-specific inquiries
-- **Responsive Design**: Mobile-first, premium experience on all devices
+**Website:** homepage search, land and house listings with plot sizes and unit types, property pages with a sticky Call / WhatsApp bar on phones, an Abuja map, blog, team, services and contact pages.
 
-### Admin Dashboard
-- **Staff Authentication**: Secure login for property management
-- **Property Management**: Add, edit, and delete property listings
-- **Map Preview**: Visual coordinates picker when adding properties
-- **Inquiry Management**: View and manage contact form submissions
+**Admin (`/admin`):**
 
-## Tech Stack
+| Role | Can do |
+|---|---|
+| Super admin | Everything, plus **Branding** (name, logo, colours) and **Staff accounts** |
+| Admin | Listings, inquiries, blog, team and contact settings |
+| Staff | Listings, inquiries, blog and team |
 
-- **Framework**: Next.js 16 (App Router)
-- **Styling**: Tailwind CSS 4
-- **Language**: TypeScript
-- **Database**: Supabase (PostgreSQL)
-- **Maps**: Leaflet with CartoDB grayscale tiles
-- **Authentication**: Cookie-based sessions
+The owner sign-in from `ADMIN_EMAIL` / `ADMIN_PASSWORD` is always a super admin, so a new copy can be set up before any accounts exist.
 
-## Getting Started
+## Set up a new copy (about 15 minutes)
 
-### 1. Clone and Install
-
+### 1. Get the code
+Fork this repository on GitHub (or "Use this template"), then:
 ```bash
+git clone https://github.com/YOUR-ACCOUNT/sabi-consults.git
 cd sabi-consults
 npm install
 ```
 
-### 2. Set Up Supabase
+### 2. Create the database
+1. Create a free project at [supabase.com](https://supabase.com).
+2. Open **SQL Editor**, paste the contents of [`supabase/setup.sql`](supabase/setup.sql) and click **Run**.
+   This creates every table, security rule and the `images` storage bucket. It's safe to run again later.
+3. Optional: run [`supabase/seed.sql`](supabase/seed.sql) to add sample Abuja listings and team members.
+4. From **Project Settings > API**, copy the Project URL, the `anon` key and the `service_role` key.
 
-1. Create a new project at [supabase.com](https://supabase.com)
-
-2. Go to **SQL Editor** and run the schema from `supabase/schema.sql`
-
-3. Get your API keys from **Settings > API**:
-   - Project URL
-   - `anon` public key
-   - `service_role` secret key
-
-### 3. Configure Environment Variables
-
-Create `.env.local`:
-
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-
-# Admin (change these!)
-ADMIN_EMAIL=admin@sabiconsults.com
-ADMIN_PASSWORD=SabiAdmin2024!
-
-# WhatsApp
-NEXT_PUBLIC_WHATSAPP_NUMBER=2348000000000
+### 3. Configure
+```bash
+cp .env.local.example .env.local
 ```
+Fill in the Supabase values, your owner email and password, and a `SESSION_SECRET` (`openssl rand -base64 32`).
 
-### 4. Run Development Server
-
+### 4. Run it
 ```bash
 npm run dev
 ```
+Open http://localhost:3000, then sign in at http://localhost:3000/admin.
 
-Open [http://localhost:3000](http://localhost:3000)
+### 5. Make it yours
+In the admin area, as the owner:
+1. **Branding**: company name, tagline, logo, browser icon and colour palette. Changes show across the site on save.
+2. **Contact settings**: phone, WhatsApp number, email, address and Instagram handle.
+3. **Staff accounts**: give each person their own sign-in and role, so nobody shares the owner password.
 
-### 5. Production Build
+### 6. Deploy to Vercel
+1. Push your repository to GitHub.
+2. In Vercel, **Add New > Project** and import it.
+3. Add every variable from `.env.local.example` under **Environment Variables**.
+4. Deploy, then add your domain under **Settings > Domains**.
 
-```bash
-npm run build
-npm start
-```
+## Updating an existing database
+Run `supabase/setup.sql` again. It only adds what's missing (new columns, the super admin role, brand settings) and never deletes data. The old step-by-step scripts are in `supabase/legacy/` for reference only. Don't run `legacy/migration-v2.sql`: it drops the properties table.
 
-## Project Structure
-
+## Project structure
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── admin/             # Admin dashboard
-│   ├── api/               # API routes (Supabase)
-│   ├── properties/        # Property pages
-│   ├── about/             # About page
-│   ├── services/          # Services page
-│   ├── contact/           # Contact page
-│   └── page.tsx           # Homepage
-├── components/            # React components
-├── data/                  # Static data (districts, testimonials)
-└── lib/
-    ├── supabase/          # Supabase client & types
-    ├── properties.ts      # Property data functions
-    └── types.ts           # TypeScript types
+  app/(site)/        public pages
+  app/admin/         admin pages (branding, users, properties, blog, team, settings)
+  app/api/           API routes; every write checks the signed-in role
+  components/        Header, Footer, Logo, BrandProvider, admin navigation, etc.
+  lib/auth.ts        sessions, password hashing, roles
+  lib/brand.ts       loads branding from the database
+  lib/brand-shared.ts palettes, colour and contrast helpers
+supabase/
+  setup.sql          the whole database, in one idempotent script
+  seed.sql           optional sample data
 ```
 
-## Database Schema
+## How branding works
+Brand values live in the `site_settings` table (`brand_name`, `brand_logo_url`, `brand_color_primary`, …).
+The root layout reads them and sets CSS variables (`--color-brand`, `--color-ink`, `--color-surface`) on the page.
+Tailwind classes such as `bg-brand`, `text-ink` and `bg-surface` use those variables, so use these classes
+(not hard-coded hex colours) when adding new UI, and it will follow the palette automatically.
 
-### Properties Table
-| Column | Type | Description |
-|--------|------|-------------|
-| id | uuid | Primary key |
-| title | text | Property title |
-| description | text | Full description |
-| price | bigint | Price in Naira |
-| price_label | text | e.g., "Per Annum" |
-| type | text | 'sale' or 'rent' |
-| property_type | text | house/apartment/villa/land/commercial |
-| district | text | Abuja district |
-| address | text | Full address |
-| latitude | float | Map coordinate |
-| longitude | float | Map coordinate |
-| bedrooms | int | Number of bedrooms |
-| bathrooms | int | Number of bathrooms |
-| size | int | Size in sqm |
-| images | text[] | Image URLs |
-| features | text[] | Feature list |
-| status | text | available/sold/rented/pending |
-| featured | boolean | Show on homepage |
+## Security notes
+- Sessions are HMAC-signed, HTTP-only cookies; passwords are hashed with scrypt.
+- The `service_role` key stays on the server. The browser only uses the `anon` key, which row-level security limits to published content and sending inquiries.
+- Sign-in attempts are rate-limited per IP and email.
 
-### Inquiries Table
-| Column | Type | Description |
-|--------|------|-------------|
-| id | uuid | Primary key |
-| name | text | Contact name |
-| email | text | Contact email |
-| phone | text | Contact phone |
-| message | text | Inquiry message |
-| property_id | uuid | Related property (optional) |
-| status | text | new/contacted/closed |
-
-## Admin Access
-
-Access the admin panel at `/admin`
-
-Default credentials (change in production):
-- **Email**: admin@sabiconsults.com
-- **Password**: SabiAdmin2024!
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push to GitHub
-2. Import to Vercel
-3. Add environment variables
-4. Deploy
-
-### Environment Variables for Production
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your-production-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-ADMIN_EMAIL=your-secure-email
-ADMIN_PASSWORD=your-secure-password
-NEXT_PUBLIC_WHATSAPP_NUMBER=your-whatsapp-number
-```
-
-## Districts Covered
-
-- Maitama
-- Asokoro
-- Wuse II
-- Jabi
-- Gwarinpa
-- Katampe
-- Life Camp
-- Utako
-
-## Customization
-
-### Colors
-
-Edit `src/app/globals.css`:
-
-```css
-@theme {
-  --color-charcoal: #1a1a1a;
-  --color-accent: #8b7355;
-}
-```
-
-### WhatsApp Number
-
-Update in `.env.local`:
-```env
-NEXT_PUBLIC_WHATSAPP_NUMBER=your-number
-```
-
-## License
-
-Private - Sabi Consults
+## Scripts
+`npm run dev` · `npm run build` · `npm start` · `npm run typecheck`

@@ -10,13 +10,13 @@ export default async function TeamSection() {
   }
 
   return (
-    <section className="py-24 bg-[#f8f6f3]">
+    <section className="py-24 bg-surface">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-sm font-medium text-[#0055CC] uppercase tracking-wider mb-2">
+          <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
             Our Team
           </p>
-          <h2 className="text-3xl md:text-4xl font-light text-[#1a1a1a] mb-4">
+          <h2 className="text-3xl md:text-4xl font-light text-ink mb-4">
             Meet the Experts
           </h2>
           <p className="text-neutral-600 max-w-2xl mx-auto">
@@ -49,8 +49,8 @@ export default async function TeamSection() {
 
               {/* Info */}
               <div className="p-6">
-                <h3 className="text-lg font-medium text-[#1a1a1a]">{member.name}</h3>
-                <p className="text-sm text-[#0055CC] mb-3">{member.role}</p>
+                <h3 className="text-lg font-medium text-ink">{member.name}</h3>
+                <p className="text-sm text-brand mb-3">{member.role}</p>
 
                 {member.bio && (
                   <p className="text-sm text-neutral-600 line-clamp-3 mb-4">
@@ -63,7 +63,7 @@ export default async function TeamSection() {
                   {member.email && (
                     <a
                       href={`mailto:${member.email}`}
-                      className="p-2 text-neutral-400 hover:text-[#0055CC] transition-colors"
+                      className="p-2 text-neutral-400 hover:text-brand transition-colors"
                       title={`Email ${member.name}`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +76,7 @@ export default async function TeamSection() {
                       href={member.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 text-neutral-400 hover:text-[#0055CC] transition-colors"
+                      className="p-2 text-neutral-400 hover:text-brand transition-colors"
                       title={`${member.name}'s LinkedIn`}
                     >
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,7 @@ export default async function TeamSection() {
                       href={member.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 text-neutral-400 hover:text-[#0055CC] transition-colors"
+                      className="p-2 text-neutral-400 hover:text-brand transition-colors"
                       title={`${member.name}'s Twitter`}
                     >
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

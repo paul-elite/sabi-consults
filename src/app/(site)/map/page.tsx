@@ -8,7 +8,7 @@ import { Property } from '@/lib/types'
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
-  title: 'Property Map | Sabi Consults',
+  title: 'Property Map',
   description: 'Explore available properties across Abuja on our interactive map. Find houses and land in Maitama, Asokoro, Wuse II, and other premium districts.',
 }
 
@@ -31,13 +31,13 @@ export default async function MapPage() {
   const landCount = availableProperties.filter(p => p.type === 'land').length
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-16 lg:pt-20">
       {/* Header */}
       <div className="bg-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-light text-[#1a1a1a]">
+              <h1 className="text-2xl md:text-3xl font-light text-ink">
                 Property Map
               </h1>
               <p className="text-neutral-600 mt-1">
@@ -48,7 +48,7 @@ export default async function MapPage() {
             {/* Legend */}
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-[#0055CC]"></div>
+                <div className="w-4 h-4 rounded-full bg-brand"></div>
                 <span className="text-sm text-neutral-600">Houses ({houseCount})</span>
               </div>
               <div className="flex items-center gap-2">
@@ -68,7 +68,7 @@ export default async function MapPage() {
               <p className="text-neutral-500 mb-4">{error}</p>
               <Link
                 href="/properties"
-                className="px-4 py-2 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors"
+                className="px-4 py-2 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
               >
                 View Properties List
               </Link>
@@ -92,7 +92,7 @@ export default async function MapPage() {
         <div className="absolute bottom-6 left-6 z-[1000] flex flex-col gap-2">
           <Link
             href="/properties"
-            className="px-4 py-2 bg-white shadow-lg text-sm font-medium text-[#1a1a1a] hover:bg-neutral-50 transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-white shadow-lg text-sm font-medium text-ink hover:bg-neutral-50 transition-colors flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -104,7 +104,7 @@ export default async function MapPage() {
         {/* Property Count Badge */}
         {!error && (
           <div className="absolute top-4 right-4 z-[1000] bg-white shadow-lg px-4 py-2">
-            <p className="text-sm font-medium text-[#1a1a1a]">
+            <p className="text-sm font-medium text-ink">
               {availableProperties.length} Properties
             </p>
             <p className="text-xs text-neutral-500">Click markers for details</p>

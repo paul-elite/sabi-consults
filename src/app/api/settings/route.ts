@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { revalidatePath } from 'next/cache'
+import { requireRole } from '@/lib/auth'
+
+const EDITABLE = ['whatsapp_number', 'phone_number', 'email', 'instagram_handle', 'address']
 
 const defaultSettings = {
   whatsapp_number: '2349160531000',
@@ -55,23 +59,13 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
     }
 
-    // Verify admin authentication
-    const authHeader = request.headers.get('Authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const token = authHeader.split(' ')[1]
-    const expectedEmail = process.env.ADMIN_EMAIL
-    const expectedPassword = process.env.ADMIN_PASSWORD
-    const expectedToken = Buffer.from(`${expectedEmail}:${expectedPassword}`).toString('base64')
-
-    if (token !== expectedToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await requireRole('admin')
+    if (auth instanceof NextResponse) return auth
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
-    const updates = await request.json()
+    const body = await request.json()
+    // Only contact settings here; brand settings go through /api/branding (super admin)
+    const updates = Object.fromEntries(Object.entries(body).filter(([k, v]) => EDITABLE.includes(k) && typeof v === 'string'))
 
     // Update each setting
     for (const [key, value] of Object.entries(updates)) {
@@ -89,6 +83,7 @@ export async function PUT(request: Request) {
       }
     }
 
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error updating settings:', error)

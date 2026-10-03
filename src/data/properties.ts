@@ -2,8 +2,13 @@ import { Property, District, Testimonial } from '@/lib/types'
 
 // Abuja districts with coordinates
 export const districts: District[] = [
-  { id: 'maitama', name: 'Maitama', description: 'Diplomatic and high-end residential area', latitude: 9.0820, longitude: 7.4878 },
   { id: 'asokoro', name: 'Asokoro', description: 'Exclusive residential district near Aso Rock', latitude: 9.0406, longitude: 7.5149 },
+  { id: 'guzape', name: 'Guzape', description: 'Fast-rising hillside district beside Asokoro', latitude: 9.0168, longitude: 7.5095 },
+  { id: 'kubwa', name: 'Kubwa', description: 'Connected, fast-growing family suburb', latitude: 9.1555, longitude: 7.3225 },
+  { id: 'lugbe', name: 'Lugbe', description: 'Affordable plots on the airport road', latitude: 8.9770, longitude: 7.3712 },
+  { id: 'galadima', name: 'Galadima', description: 'Growing district opposite Sun City Estate', latitude: 9.0472, longitude: 7.4398 },
+  { id: 'jikwoyi', name: 'Jikwoyi', description: 'Emerging residential area off the Keffi road', latitude: 8.9893, longitude: 7.5741 },
+  { id: 'maitama', name: 'Maitama', description: 'Diplomatic and high-end residential area', latitude: 9.0820, longitude: 7.4878 },
   { id: 'wuse2', name: 'Wuse II', description: 'Vibrant commercial and residential hub', latitude: 9.0677, longitude: 7.4626 },
   { id: 'jabi', name: 'Jabi', description: 'Modern district with Jabi Lake', latitude: 9.0736, longitude: 7.4237 },
   { id: 'gwarinpa', name: 'Gwarinpa', description: 'Africa\'s largest housing estate', latitude: 9.1019, longitude: 7.3925 },

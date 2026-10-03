@@ -1,67 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { validateAdmin } from '@/lib/store'
-import { cookies } from 'next/headers'
+import { authenticate, startSession, endSession, getSession } from '@/lib/auth'
 
-// POST login
+// Simple in-memory throttle: 8 attempts per 10 minutes per IP + email
+const attempts = new Map<string, { n: number; until: number }>()
+
+// POST /api/auth – sign in
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { email, password } = body
-
+    const { email, password } = await request.json()
     if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Enter your email and password' }, { status: 400 })
+    }
+    const key = `${request.headers.get('x-forwarded-for') || 'ip'}:${String(email).toLowerCase()}`
+    const now = Date.now()
+    const a = attempts.get(key)
+    if (a && a.n >= 8 && a.until > now) {
+      return NextResponse.json({ error: 'Too many attempts. Try again in a few minutes.' }, { status: 429 })
     }
 
-    const isValid = validateAdmin(email, password)
-
-    if (!isValid) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      )
+    const user = await authenticate(String(email), String(password))
+    if (!user) {
+      attempts.set(key, { n: (a && a.until > now ? a.n : 0) + 1, until: now + 10 * 60 * 1000 })
+      return NextResponse.json({ error: 'That email and password don’t match an active account' }, { status: 401 })
     }
-
-    // Set session cookie
-    const cookieStore = await cookies()
-    cookieStore.set('admin_session', 'authenticated', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24, // 24 hours
-      path: '/',
-    })
-
-    return NextResponse.json({ success: true })
-  } catch {
-    return NextResponse.json(
-      { error: 'Invalid request' },
-      { status: 400 }
-    )
+    attempts.delete(key)
+    await startSession(user)
+    return NextResponse.json({ success: true, user })
+  } catch (e) {
+    console.error('Sign-in error:', e)
+    return NextResponse.json({ error: 'Sign-in failed. Check the server configuration.' }, { status: 500 })
   }
 }
 
-// DELETE logout
+// DELETE /api/auth – sign out
 export async function DELETE() {
-  const cookieStore = await cookies()
-  cookieStore.delete('admin_session')
+  await endSession()
   return NextResponse.json({ success: true })
 }
 
-// GET check session
+// GET /api/auth – who is signed in (never returns secrets)
 export async function GET() {
-  const cookieStore = await cookies()
-  const session = cookieStore.get('admin_session')
-
-  if (session && session.value === 'authenticated') {
-    // Return token for API calls that need authentication
-    const token = Buffer.from(
-      `${process.env.ADMIN_EMAIL}:${process.env.ADMIN_PASSWORD}`
-    ).toString('base64')
-    return NextResponse.json({ authenticated: true, token })
-  }
-
-  return NextResponse.json({ authenticated: false })
+  const user = await getSession()
+  return NextResponse.json(user ? { authenticated: true, user } : { authenticated: false })
 }

@@ -10,6 +10,7 @@ export default function AdminDashboard() {
   const [properties, setProperties] = useState<Property[]>([])
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
   const [activeTab, setActiveTab] = useState<'properties' | 'inquiries'>('properties')
 
   useEffect(() => {
@@ -32,8 +33,9 @@ export default function AdminDashboard() {
         const propertiesData = await propertiesRes.json()
         const inquiriesData = await inquiriesRes.json()
 
-        setProperties(propertiesData)
-        setInquiries(inquiriesData)
+        setProperties(Array.isArray(propertiesData) ? propertiesData : [])
+        setInquiries(Array.isArray(inquiriesData) ? inquiriesData : [])
+        if (!propertiesRes.ok || !inquiriesRes.ok) setLoadError('Some data couldn’t be loaded. Check the database connection, then refresh.')
       } catch {
         console.error('Failed to fetch data')
       } finally {
@@ -44,10 +46,6 @@ export default function AdminDashboard() {
     checkAuthAndFetch()
   }, [router])
 
-  const handleLogout = async () => {
-    await fetch('/api/auth', { method: 'DELETE' })
-    router.push('/admin')
-  }
 
   const handleDeleteProperty = async (id: string) => {
     if (!confirm('Are you sure you want to delete this property?')) return
@@ -72,61 +70,31 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen">
-      {/* Admin Header */}
-      <header className="bg-[#1a1a1a] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/admin/dashboard" className="text-xl font-semibold">
-              Sabi<span className="text-[#0055CC]">Consults</span>
-              <span className="text-xs font-normal text-neutral-400 ml-2">Admin</span>
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/admin/blog" className="text-sm text-neutral-400 hover:text-white transition-colors">
-              Blog
-            </Link>
-            <Link href="/admin/team" className="text-sm text-neutral-400 hover:text-white transition-colors">
-              Team
-            </Link>
-            <Link href="/admin/settings" className="text-sm text-neutral-400 hover:text-white transition-colors">
-              Settings
-            </Link>
-            <Link href="/" target="_blank" className="text-sm text-neutral-400 hover:text-white transition-colors">
-              View Site
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="text-sm text-neutral-400 hover:text-white transition-colors"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
 
       {/* Dashboard Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        {loadError && <p role="alert" className="mb-6 p-3 bg-red-50 text-red-700 text-sm">{loadError}</p>}
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white border border-neutral-200 p-6">
             <p className="text-sm text-neutral-500 mb-1">Total Properties</p>
-            <p className="text-3xl font-light text-[#1a1a1a]">{properties.length}</p>
+            <p className="text-3xl font-light text-ink">{properties.length}</p>
           </div>
           <div className="bg-white border border-neutral-200 p-6">
             <p className="text-sm text-neutral-500 mb-1">Available</p>
-            <p className="text-3xl font-light text-[#1a1a1a]">
+            <p className="text-3xl font-light text-ink">
               {properties.filter(p => p.status === 'available').length}
             </p>
           </div>
           <div className="bg-white border border-neutral-200 p-6">
             <p className="text-sm text-neutral-500 mb-1">Featured</p>
-            <p className="text-3xl font-light text-[#1a1a1a]">
+            <p className="text-3xl font-light text-ink">
               {properties.filter(p => p.featured).length}
             </p>
           </div>
           <div className="bg-white border border-neutral-200 p-6">
             <p className="text-sm text-neutral-500 mb-1">New Inquiries</p>
-            <p className="text-3xl font-light text-[#1a1a1a]">
+            <p className="text-3xl font-light text-ink">
               {inquiries.filter(i => i.status === 'new').length}
             </p>
           </div>
@@ -138,8 +106,8 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('properties')}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'properties'
-                ? 'bg-[#1a1a1a] text-white'
-                : 'bg-white text-neutral-600 hover:text-[#1a1a1a]'
+                ? 'bg-ink text-white'
+                : 'bg-white text-neutral-600 hover:text-ink'
             }`}
           >
             Properties
@@ -148,8 +116,8 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('inquiries')}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'inquiries'
-                ? 'bg-[#1a1a1a] text-white'
-                : 'bg-white text-neutral-600 hover:text-[#1a1a1a]'
+                ? 'bg-ink text-white'
+                : 'bg-white text-neutral-600 hover:text-ink'
             }`}
           >
             Inquiries
@@ -165,10 +133,10 @@ export default function AdminDashboard() {
         {activeTab === 'properties' && (
           <div className="bg-white border border-neutral-200">
             <div className="p-4 border-b border-neutral-200 flex items-center justify-between">
-              <h2 className="font-medium text-[#1a1a1a]">All Properties</h2>
+              <h2 className="font-medium text-ink">All Properties</h2>
               <Link
                 href="/admin/properties/new"
-                className="px-4 py-2 bg-[#1a1a1a] text-white text-sm font-medium hover:bg-[#2d2d2d] transition-colors"
+                className="px-4 py-2 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors"
               >
                 Add Property
               </Link>
@@ -210,9 +178,9 @@ export default function AdminDashboard() {
                             />
                           )}
                           <div>
-                            <p className="font-medium text-[#1a1a1a] text-sm">{property.title}</p>
+                            <p className="font-medium text-ink text-sm">{property.title}</p>
                             {property.featured && (
-                              <span className="text-xs text-[#0055CC]">Featured</span>
+                              <span className="text-xs text-brand">Featured</span>
                             )}
                           </div>
                         </div>
@@ -239,7 +207,7 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/properties/${property.id}`}
-                            className="text-sm text-[#0055CC] hover:underline"
+                            className="text-sm text-brand hover:underline"
                           >
                             Edit
                           </Link>
@@ -263,7 +231,7 @@ export default function AdminDashboard() {
         {activeTab === 'inquiries' && (
           <div className="bg-white border border-neutral-200">
             <div className="p-4 border-b border-neutral-200">
-              <h2 className="font-medium text-[#1a1a1a]">Contact Inquiries</h2>
+              <h2 className="font-medium text-ink">Contact Inquiries</h2>
             </div>
             {inquiries.length > 0 ? (
               <div className="divide-y divide-neutral-100">
@@ -272,7 +240,7 @@ export default function AdminDashboard() {
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-medium text-[#1a1a1a]">{inquiry.name}</h3>
+                          <h3 className="font-medium text-ink">{inquiry.name}</h3>
                           <span className={`px-2 py-0.5 text-xs font-medium uppercase ${
                             inquiry.status === 'new'
                               ? 'bg-blue-100 text-blue-700'
@@ -288,7 +256,7 @@ export default function AdminDashboard() {
                         </p>
                         <p className="text-sm text-neutral-600">{inquiry.message}</p>
                         {inquiry.propertyId && (
-                          <p className="text-xs text-[#0055CC] mt-2">
+                          <p className="text-xs text-brand mt-2">
                             Property ID: {inquiry.propertyId}
                           </p>
                         )}

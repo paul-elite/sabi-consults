@@ -1,6 +1,7 @@
+import { getBrand } from '@/lib/brand'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
+import { getSession } from '@/lib/auth'
 
 // GET single blog by ID
 export async function GET(
@@ -37,10 +38,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cookieStore = await cookies()
-    const authCookie = cookieStore.get('admin_authenticated')
+    const currentUser = await getSession()
 
-    if (!authCookie || authCookie.value !== 'true') {
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -63,7 +63,7 @@ export async function PUT(
       excerpt: excerpt || null,
       content,
       cover_image: coverImage || null,
-      author: author || 'Sabi Consults',
+      author: author || (await getBrand()).name,
       status,
       updated_at: new Date().toISOString(),
     }
@@ -103,10 +103,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cookieStore = await cookies()
-    const authCookie = cookieStore.get('admin_authenticated')
+    const currentUser = await getSession()
 
-    if (!authCookie || authCookie.value !== 'true') {
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

@@ -39,7 +39,7 @@ export default function PropertySearch({ variant = 'hero', className = '' }: Pro
         </select>
         <button
           type="submit"
-          className="px-8 py-3 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors"
+          className="px-8 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
         >
           Search
         </button>
@@ -56,8 +56,8 @@ export default function PropertySearch({ variant = 'hero', className = '' }: Pro
           onClick={() => setType('house')}
           className={`flex-1 py-4 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
             type === 'house'
-              ? 'bg-[#0055CC] text-white'
-              : 'bg-white text-neutral-600 hover:text-[#0055CC]'
+              ? 'bg-brand text-white'
+              : 'bg-white text-neutral-600 hover:text-brand'
           }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,8 +70,8 @@ export default function PropertySearch({ variant = 'hero', className = '' }: Pro
           onClick={() => setType('land')}
           className={`flex-1 py-4 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
             type === 'land'
-              ? 'bg-[#0055CC] text-white'
-              : 'bg-white text-neutral-600 hover:text-[#0055CC]'
+              ? 'bg-brand text-white'
+              : 'bg-white text-neutral-600 hover:text-brand'
           }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,7 +126,7 @@ export default function PropertySearch({ variant = 'hero', className = '' }: Pro
         {/* Search Button */}
         <button
           type="submit"
-          className="w-full py-4 bg-[#0055CC] text-white text-sm font-medium uppercase tracking-wider hover:bg-[#0044aa] transition-colors"
+          className="w-full py-4 bg-brand text-white text-sm font-medium uppercase tracking-wider hover:bg-brand-dark transition-colors"
         >
           Search Properties
         </button>

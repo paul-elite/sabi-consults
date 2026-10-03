@@ -45,7 +45,7 @@ export default function AbujaMap({
       // Blue marker for houses
       const houseIcon = L.divIcon({
         html: `<svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 0C7.164 0 0 7.164 0 16c0 12 16 24 16 24s16-12 16-24c0-8.836-7.164-16-16-16z" fill="#0055CC"/>
+          <path d="M16 0C7.164 0 0 7.164 0 16c0 12 16 24 16 24s16-12 16-24c0-8.836-7.164-16-16-16z" style="fill:var(--color-brand)"/>
           <path d="M16 8l-8 6v10h5v-6h6v6h5V14l-8-6z" fill="#ffffff"/>
         </svg>`,
         className: 'custom-marker-house',
@@ -99,7 +99,7 @@ export default function AbujaMap({
         if (showPopups) {
           marker.bindPopup(`
             <div style="font-family: system-ui, sans-serif; min-width: 200px;">
-              <p style="font-weight: 600; font-size: 14px; margin: 0 0 4px 0; color: #1a1a1a;">${selectedProperty.title}</p>
+              <p style="font-weight: 600; font-size: 14px; margin: 0 0 4px 0; color: var(--color-ink);">${selectedProperty.title}</p>
               <p style="font-size: 12px; color: #666; margin: 0;">${selectedProperty.district}</p>
             </div>
           `)
@@ -124,16 +124,16 @@ export default function AbujaMap({
             marker.bindPopup(`
               <div style="font-family: system-ui, sans-serif; min-width: 220px;">
                 <div style="display: flex; gap: 6px; margin-bottom: 8px;">
-                  <span style="background: ${property.type === 'land' ? '#059669' : '#0055CC'}; color: white; font-size: 10px; padding: 2px 6px; text-transform: uppercase; font-weight: 500;">${typeLabel}</span>
+                  <span style="background: ${property.type === 'land' ? '#059669' : 'var(--color-brand)'}; color: white; font-size: 10px; padding: 2px 6px; text-transform: uppercase; font-weight: 500;">${typeLabel}</span>
                   ${property.featured ? '<span style="background: #f59e0b; color: white; font-size: 10px; padding: 2px 6px; text-transform: uppercase; font-weight: 500;">Featured</span>' : ''}
                 </div>
-                <p style="font-weight: 600; font-size: 14px; margin: 0 0 4px 0; color: #1a1a1a;">${property.title}</p>
+                <p style="font-weight: 600; font-size: 14px; margin: 0 0 4px 0; color: var(--color-ink);">${property.title}</p>
                 <p style="font-size: 12px; color: #666; margin: 0 0 8px 0;">${property.address}</p>
                 <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid #eee;">
-                  <span style="font-weight: 600; color: #0055CC; font-size: 14px;">${formatPrice(property.price)}</span>
+                  <span style="font-weight: 600; color: var(--color-brand); font-size: 14px;">${formatPrice(property.price)}</span>
                   ${details ? `<span style="font-size: 12px; color: #666;">${details}</span>` : ''}
                 </div>
-                <a href="/properties/${property.id}" style="display: block; text-align: center; margin-top: 10px; padding: 8px; background: #0055CC; color: white; text-decoration: none; font-size: 12px; font-weight: 500;">View Property</a>
+                <a href="/properties/${property.id}" style="display: block; text-align: center; margin-top: 10px; padding: 8px; background: var(--color-brand); color: white; text-decoration: none; font-size: 12px; font-weight: 500;">View Property</a>
               </div>
             `, { maxWidth: 280 })
           }

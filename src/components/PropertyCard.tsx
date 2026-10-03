@@ -47,14 +47,14 @@ export default function PropertyCard({ property, variant = 'default' }: Property
 
         {/* Status Badge */}
         {property.status !== 'available' && (
-          <div className="absolute top-4 left-4 px-3 py-1 bg-[#1a1a1a] text-white text-xs font-medium uppercase tracking-wider">
+          <div className="absolute top-4 left-4 px-3 py-1 bg-ink text-white text-xs font-medium uppercase tracking-wider">
             {property.status}
           </div>
         )}
 
         {/* Type Badge */}
         <div className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium uppercase tracking-wider ${
-          isLand ? 'bg-[#0055CC] text-white' : 'bg-white/90 text-[#1a1a1a]'
+          isLand ? 'bg-brand text-white' : 'bg-white/90 text-ink'
         }`}>
           {isLand ? 'Land' : 'House'}
         </div>
@@ -63,12 +63,12 @@ export default function PropertyCard({ property, variant = 'default' }: Property
       {/* Content */}
       <div className="p-5">
         {/* District */}
-        <p className="text-xs font-medium text-[#0055CC] uppercase tracking-wider mb-2">
+        <p className="text-xs font-medium text-brand uppercase tracking-wider mb-2">
           {property.district}
         </p>
 
         {/* Title */}
-        <h3 className={`font-medium text-[#1a1a1a] group-hover:text-[#0055CC] transition-colors ${
+        <h3 className={`font-medium text-ink group-hover:text-brand transition-colors ${
           isFeatured ? 'text-lg mb-2' : 'text-base mb-1'
         }`}>
           {property.title}
@@ -102,10 +102,10 @@ export default function PropertyCard({ property, variant = 'default' }: Property
 
         {/* Price */}
         <div className="flex items-baseline gap-2">
-          <span className={`font-semibold text-[#1a1a1a] ${isFeatured ? 'text-xl' : 'text-lg'}`}>
-            {formatPrice(property.price)}
+          <span className={`font-semibold text-ink ${isFeatured ? 'text-xl' : 'text-lg'}`}>
+            {property.price > 0 ? formatPrice(property.price) : (property.priceLabel || "Price on request")}
           </span>
-          {property.priceLabel && (
+          {property.priceLabel && property.price > 0 && (
             <span className="text-sm text-neutral-500">{property.priceLabel}</span>
           )}
         </div>

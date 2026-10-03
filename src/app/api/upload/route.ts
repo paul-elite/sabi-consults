@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
+import { getSession } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const cookieStore = await cookies()
-    const authCookie = cookieStore.get('admin_authenticated')
+    const currentUser = await getSession()
 
-    if (!authCookie || authCookie.value !== 'true') {
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -20,9 +19,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon']
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.' }, { status: 400 })
+      return NextResponse.json({ error: 'Use a JPG, PNG, WebP, GIF, SVG or ICO image.' }, { status: 400 })
     }
 
     // Validate file size (max 5MB)
@@ -37,7 +36,9 @@ export async function POST(request: NextRequest) {
     const ext = file.name.split('.').pop()
     const timestamp = Date.now()
     const randomStr = Math.random().toString(36).substring(2, 8)
-    const filename = `properties/${timestamp}-${randomStr}.${ext}`
+    const requested = String(formData.get('folder') || 'properties')
+    const folder = ['properties', 'brand', 'team', 'blog'].includes(requested) ? requested : 'properties'
+    const filename = `${folder}/${timestamp}-${randomStr}.${ext}`
 
     // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer()
@@ -72,10 +73,9 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // Check authentication
-    const cookieStore = await cookies()
-    const authCookie = cookieStore.get('admin_authenticated')
+    const currentUser = await getSession()
 
-    if (!authCookie || authCookie.value !== 'true') {
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

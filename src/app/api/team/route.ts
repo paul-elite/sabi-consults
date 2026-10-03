@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
+import { getSession } from '@/lib/auth'
 
 // GET all team members
 export async function GET() {
   try {
-    const cookieStore = await cookies()
-    const authCookie = cookieStore.get('admin_authenticated')
+    const currentUser = await getSession()
     const supabase = await createAdminClient()
 
     // If authenticated, return all members; otherwise only active ones
@@ -15,7 +14,7 @@ export async function GET() {
       .select('*')
       .order('display_order', { ascending: true })
 
-    if (!authCookie || authCookie.value !== 'true') {
+    if (!currentUser) {
       query = query.eq('is_active', true)
     }
 
@@ -35,10 +34,9 @@ export async function GET() {
 // POST create new team member
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = await cookies()
-    const authCookie = cookieStore.get('admin_authenticated')
+    const currentUser = await getSession()
 
-    if (!authCookie || authCookie.value !== 'true') {
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

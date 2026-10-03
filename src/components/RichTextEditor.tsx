@@ -206,7 +206,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
       <div
         ref={editorRef}
         contentEditable
-        className="min-h-[400px] p-4 focus:outline-none prose prose-sm max-w-none prose-headings:font-semibold prose-h2:text-xl prose-h3:text-lg prose-h4:text-base prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0 prose-a:text-[#0055CC] prose-img:max-w-full prose-img:h-auto"
+        className="min-h-[400px] p-4 focus:outline-none prose prose-sm max-w-none prose-headings:font-semibold prose-h2:text-xl prose-h3:text-lg prose-h4:text-base prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0 prose-a:text-brand prose-img:max-w-full prose-img:h-auto"
         onInput={handleInput}
         onPaste={handlePaste}
         dangerouslySetInnerHTML={{ __html: value }}

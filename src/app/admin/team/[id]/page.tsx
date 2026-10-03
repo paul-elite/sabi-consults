@@ -106,25 +106,25 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Header */}
-      <header className="bg-[#1a1a1a] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/admin/team" className="text-neutral-400 hover:text-white transition-colors">
+            <Link href="/admin/team" className="text-neutral-500 hover:text-ink transition-colors">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
-            <span className="text-xl font-semibold">Edit Team Member</span>
+            <span className="text-lg font-semibold text-ink">Edit Team Member</span>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Form */}
       <main className="max-w-3xl mx-auto px-6 py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Photo */}
           <div className="bg-white border border-neutral-200 p-6">
-            <h2 className="font-medium text-[#1a1a1a] mb-4">Photo</h2>
+            <h2 className="font-medium text-ink mb-4">Photo</h2>
             <ImageUploader
               images={image}
               onChange={setImage}
@@ -134,7 +134,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
 
           {/* Basic Info */}
           <div className="bg-white border border-neutral-200 p-6">
-            <h2 className="font-medium text-[#1a1a1a] mb-4">Basic Information</h2>
+            <h2 className="font-medium text-ink mb-4">Basic Information</h2>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -179,7 +179,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
 
           {/* Contact Info */}
           <div className="bg-white border border-neutral-200 p-6">
-            <h2 className="font-medium text-[#1a1a1a] mb-4">Contact & Social</h2>
+            <h2 className="font-medium text-ink mb-4">Contact & Social</h2>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -235,7 +235,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
 
           {/* Settings */}
           <div className="bg-white border border-neutral-200 p-6">
-            <h2 className="font-medium text-[#1a1a1a] mb-4">Settings</h2>
+            <h2 className="font-medium text-ink mb-4">Settings</h2>
             <div className="flex flex-wrap items-end gap-6">
               <div>
                 <label className="block text-sm font-medium text-neutral-600 mb-1">
@@ -256,7 +256,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
                   type="checkbox"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="w-4 h-4 text-[#0055CC] border-neutral-300 focus:ring-[#0055CC]"
+                  className="w-4 h-4 text-brand border-neutral-300 focus:ring-brand"
                 />
                 <span className="text-sm text-neutral-600">Active (visible on website)</span>
               </label>
@@ -278,7 +278,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-3 bg-[#1a1a1a] text-white text-sm font-medium hover:bg-[#2d2d2d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-3 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>

@@ -317,25 +317,25 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
   return (
     <div className="min-h-screen">
       {/* Admin Header */}
-      <header className="bg-[#1a1a1a] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/admin/dashboard" className="text-neutral-400 hover:text-white transition-colors">
+            <Link href="/admin/dashboard" className="text-neutral-500 hover:text-ink transition-colors">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
-            <span className="text-xl font-semibold">Edit Property</span>
+            <span className="text-lg font-semibold text-ink">Edit Property</span>
           </div>
           <Link
             href={`/properties/${id}`}
             target="_blank"
-            className="text-sm text-neutral-400 hover:text-white transition-colors"
+            className="text-sm text-neutral-500 hover:text-ink transition-colors"
           >
             View on Site
           </Link>
         </div>
-      </header>
+      </div>
 
       {/* Form */}
       <main className="max-w-7xl mx-auto px-6 py-8">
@@ -344,7 +344,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
           <div className="lg:col-span-2 space-y-8">
             {/* Basic Info */}
             <div className="bg-white border border-neutral-200 p-6">
-              <h2 className="font-medium text-[#1a1a1a] mb-6">Basic Information</h2>
+              <h2 className="font-medium text-ink mb-6">Basic Information</h2>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-neutral-600 mb-1">
@@ -418,7 +418,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
 
             {/* Property Details */}
             <div className="bg-white border border-neutral-200 p-6">
-              <h2 className="font-medium text-[#1a1a1a] mb-2">Property Details</h2>
+              <h2 className="font-medium text-ink mb-2">Property Details</h2>
               <p className="text-sm text-neutral-500 mb-6">Default details for single unit properties.</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
@@ -480,11 +480,11 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
             {/* Variations */}
             <div className="bg-white border border-neutral-200 p-6">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="font-medium text-[#1a1a1a]">Variations (Optional)</h2>
+                <h2 className="font-medium text-ink">Variations (Optional)</h2>
                 <button
                   type="button"
                   onClick={addVariation}
-                  className="px-3 py-1.5 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors"
+                  className="px-3 py-1.5 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
                 >
                   + Add Variation
                 </button>
@@ -629,7 +629,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
 
             {/* Location */}
             <div className="bg-white border border-neutral-200 p-6">
-              <h2 className="font-medium text-[#1a1a1a] mb-6">Location</h2>
+              <h2 className="font-medium text-ink mb-6">Location</h2>
               <div className="space-y-4">
                 {/* Google Maps URL Input */}
                 <div>
@@ -741,7 +741,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
 
             {/* Images */}
             <div className="bg-white border border-neutral-200 p-6">
-              <h2 className="font-medium text-[#1a1a1a] mb-6">Property Images</h2>
+              <h2 className="font-medium text-ink mb-6">Property Images</h2>
               <ImageUploader
                 images={images}
                 onChange={setImages}
@@ -751,7 +751,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
 
             {/* Features */}
             <div className="bg-white border border-neutral-200 p-6">
-              <h2 className="font-medium text-[#1a1a1a] mb-6">Features</h2>
+              <h2 className="font-medium text-ink mb-6">Features</h2>
               <div>
                 <label className="block text-sm font-medium text-neutral-600 mb-1">
                   Property Features (one per line)
@@ -771,7 +771,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
             <div className="sticky top-8 space-y-6">
               {/* Publish Settings */}
               <div className="bg-white border border-neutral-200 p-6">
-                <h2 className="font-medium text-[#1a1a1a] mb-6">Publish Settings</h2>
+                <h2 className="font-medium text-ink mb-6">Publish Settings</h2>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-neutral-600 mb-1">
@@ -793,7 +793,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                       type="checkbox"
                       checked={form.featured}
                       onChange={(e) => setForm({ ...form, featured: e.target.checked })}
-                      className="w-4 h-4 text-[#0055CC] border-neutral-300 focus:ring-[#0055CC]"
+                      className="w-4 h-4 text-brand border-neutral-300 focus:ring-brand"
                     />
                     <span className="text-sm text-neutral-600">Featured Property</span>
                   </label>
@@ -808,7 +808,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full py-3 bg-[#1a1a1a] text-white text-sm font-medium uppercase tracking-wider hover:bg-[#2d2d2d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 bg-ink text-white text-sm font-medium uppercase tracking-wider hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>

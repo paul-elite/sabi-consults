@@ -121,7 +121,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
       <div
         className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
           dragActive
-            ? 'border-[#0055CC] bg-blue-50'
+            ? 'border-brand bg-blue-50'
             : 'border-neutral-300 hover:border-neutral-400'
         } ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
         onDragEnter={handleDrag}
@@ -151,7 +151,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
-                className="text-[#0055CC] font-medium hover:underline"
+                className="text-brand font-medium hover:underline"
               >
                 browse files
               </button>
@@ -182,7 +182,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
 
               {/* First image badge */}
               {index === 0 && (
-                <span className="absolute top-2 left-2 px-2 py-0.5 bg-[#0055CC] text-white text-xs font-medium">
+                <span className="absolute top-2 left-2 px-2 py-0.5 bg-brand text-white text-xs font-medium">
                   Main
                 </span>
               )}

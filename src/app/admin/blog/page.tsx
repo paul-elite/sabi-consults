@@ -41,7 +41,7 @@ export default function AdminBlogPage() {
 
         const res = await fetch('/api/blogs')
         const data = await res.json()
-        setBlogs(data)
+        setBlogs(Array.isArray(data) ? data : [])
       } catch (error) {
         console.error('Error:', error)
       } finally {
@@ -79,24 +79,24 @@ export default function AdminBlogPage() {
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Header */}
-      <header className="bg-[#1a1a1a] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/admin/dashboard" className="text-neutral-400 hover:text-white transition-colors">
+            <Link href="/admin/dashboard" className="text-neutral-500 hover:text-ink transition-colors">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
-            <span className="text-xl font-semibold">Blog Posts</span>
+            <span className="text-lg font-semibold text-ink">Blog Posts</span>
           </div>
           <Link
             href="/admin/blog/new"
-            className="px-4 py-2 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors"
+            className="px-4 py-2 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
           >
             New Post
           </Link>
         </div>
-      </header>
+      </div>
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
@@ -108,7 +108,7 @@ export default function AdminBlogPage() {
             <p className="text-neutral-500 mb-4">No blog posts yet</p>
             <Link
               href="/admin/blog/new"
-              className="inline-flex px-6 py-3 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors"
+              className="inline-flex px-6 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
             >
               Create Your First Post
             </Link>
@@ -130,7 +130,7 @@ export default function AdminBlogPage() {
                   <tr key={blog.id} className="hover:bg-neutral-50">
                     <td className="px-6 py-4">
                       <div>
-                        <p className="font-medium text-[#1a1a1a]">{blog.title}</p>
+                        <p className="font-medium text-ink">{blog.title}</p>
                         <p className="text-sm text-neutral-500 truncate max-w-md">{blog.excerpt || 'No excerpt'}</p>
                       </div>
                     </td>
@@ -163,7 +163,7 @@ export default function AdminBlogPage() {
                         )}
                         <Link
                           href={`/admin/blog/${blog.id}`}
-                          className="p-2 text-neutral-400 hover:text-[#0055CC] transition-colors"
+                          className="p-2 text-neutral-400 hover:text-brand transition-colors"
                           title="Edit"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

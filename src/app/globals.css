@@ -3,14 +3,24 @@
 
 /* Custom theme configuration for Sabi Consults */
 @theme {
-  /* Color palette - clean blue and white */
-  --color-charcoal: #1a1a1a;
-  --color-charcoal-light: #2d2d2d;
-  --color-cream: #f8f9fc;
-  --color-cream-dark: #e8eef5;
+  /* Brand palette. These are defaults: the live values come from
+     /admin/branding and are injected on <html> by the root layout. */
+  --color-brand: #0055CC;
+  --color-brand-dark: color-mix(in oklab, var(--color-brand) 82%, black);
+  --color-brand-soft: color-mix(in oklab, var(--color-brand) 10%, white);
+  --color-on-brand: #ffffff;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: color-mix(in oklab, var(--color-ink) 88%, white);
+  --color-surface: #f8f6f3;
+
+  /* Legacy names kept so older classes keep working */
+  --color-charcoal: var(--color-ink);
+  --color-charcoal-light: var(--color-ink-soft);
+  --color-cream: var(--color-surface);
+  --color-cream-dark: color-mix(in oklab, var(--color-surface) 92%, black);
   --color-stone: #9c9890;
-  --color-accent: #0055CC; /* Primary blue */
-  --color-accent-dark: #0044aa;
+  --color-accent: var(--color-brand);
+  --color-accent-dark: var(--color-brand-dark);
 
   /* Typography - Merriweather for headings, Helvetica/Inter for body */
   --font-family-heading: var(--font-merriweather), Georgia, 'Times New Roman', serif;
@@ -25,7 +35,7 @@ html {
 body {
   font-family: var(--font-family-body);
   background-color: #ffffff;
-  color: var(--color-charcoal);
+  color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
@@ -130,4 +140,19 @@ button, input, select, textarea {
 
 .tracking-tighter {
   letter-spacing: -0.03em;
+}
+
+/* ---------- Mobile comfort ---------- */
+html { -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; }
+/* 16px inputs stop iOS Safari zooming into form fields */
+@media (max-width: 767px) {
+  input, select, textarea { font-size: 16px !important; }
+}
+:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }

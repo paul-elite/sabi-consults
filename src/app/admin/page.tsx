@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useBrand } from '@/components/BrandProvider'
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const brand = useBrand()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -68,15 +70,15 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-[#1a1a1a]">
-            Sabi<span className="text-[#0055CC]">Consults</span>
+          <h1 className="text-2xl font-semibold tracking-tight text-ink">
+            {brand.name}
           </h1>
           <p className="text-sm text-neutral-500 mt-2">Staff Portal</p>
         </div>
 
         {/* Login Form */}
         <div className="bg-white border border-neutral-200 p-8">
-          <h2 className="text-xl font-medium text-[#1a1a1a] mb-6">Sign In</h2>
+          <h2 className="text-xl font-medium text-ink mb-6">Sign In</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -116,7 +118,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#1a1a1a] text-white text-sm font-medium uppercase tracking-wider hover:bg-[#2d2d2d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-ink text-white text-sm font-medium uppercase tracking-wider hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>

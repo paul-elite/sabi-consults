@@ -44,12 +44,12 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
   const hasFilters = params.type || params.district || params.priceRange
 
   return (
-    <div className="pt-20">
+    <div className="pt-16 lg:pt-20">
       {/* Header */}
-      <section className="bg-[#f8f6f3] py-16">
+      <section className="bg-surface py-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl">
-            <h1 className="text-4xl font-light text-[#1a1a1a] mb-4">
+            <h1 className="text-4xl font-light text-ink mb-4">
               {params.district ? `Properties in ${params.district}` : 'All Properties'}
             </h1>
             <p className="text-neutral-600">
@@ -68,21 +68,21 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
               <div className="sticky top-28 space-y-8">
                 {/* Search Form */}
                 <div className="bg-white border border-neutral-200 p-6">
-                  <h3 className="font-medium text-[#1a1a1a] mb-4">Filter Properties</h3>
+                  <h3 className="font-medium text-ink mb-4">Filter Properties</h3>
                   <PropertySearch variant="compact" className="flex-col" />
                 </div>
 
                 {/* Districts Quick Links */}
                 <div className="bg-white border border-neutral-200 p-6">
-                  <h3 className="font-medium text-[#1a1a1a] mb-4">Districts</h3>
+                  <h3 className="font-medium text-ink mb-4">Districts</h3>
                   <ul className="space-y-2">
                     {districts.map((district) => (
                       <li key={district.id}>
                         <a
                           href={`/properties?district=${district.name}`}
-                          className={`text-sm hover:text-[#0055CC] transition-colors ${
+                          className={`text-sm hover:text-brand transition-colors ${
                             params.district?.toLowerCase() === district.name.toLowerCase()
-                              ? 'text-[#0055CC] font-medium'
+                              ? 'text-brand font-medium'
                               : 'text-neutral-600'
                           }`}
                         >
@@ -96,7 +96,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 {/* Map Preview */}
                 <div className="bg-white border border-neutral-200 overflow-hidden">
                   <div className="p-4 border-b border-neutral-200">
-                    <h3 className="font-medium text-[#1a1a1a] text-sm">Abuja Map</h3>
+                    <h3 className="font-medium text-ink text-sm">Abuja Map</h3>
                   </div>
                   <div className="h-64">
                     <Suspense fallback={<div className="w-full h-full bg-neutral-100" />}>
@@ -114,7 +114,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 <p className="text-sm text-neutral-600">
                   {properties.length} {properties.length === 1 ? 'property' : 'properties'} found
                   {hasFilters && (
-                    <a href="/properties" className="ml-2 text-[#0055CC] hover:underline">
+                    <a href="/properties" className="ml-2 text-brand hover:underline">
                       Clear filters
                     </a>
                   )}
@@ -133,7 +133,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                   <p className="text-neutral-600 mb-4">No properties match your criteria.</p>
                   <a
                     href="/properties"
-                    className="text-sm font-medium text-[#0055CC] hover:underline"
+                    className="text-sm font-medium text-brand hover:underline"
                   >
                     View all properties
                   </a>

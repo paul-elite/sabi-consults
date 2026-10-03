@@ -1,11 +1,12 @@
 import Link from 'next/link'
+import { getBrand } from '@/lib/brand'
 import Image from 'next/image'
 import { getAllBlogs } from '@/lib/blogs'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
-  title: 'Blog | Sabi Consults',
+  title: 'Blog',
   description: 'Expert insights on Abuja real estate, investment tips, market trends, and guides for property buyers in Nigeria.',
 }
 
@@ -18,19 +19,20 @@ function formatDate(dateString: string): string {
 }
 
 export default async function BlogPage() {
+  const brand = await getBrand()
   const blogs = await getAllBlogs()
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-16 lg:pt-20">
       {/* Hero */}
-      <section className="bg-[#1a1a1a] py-16 md:py-24">
+      <section className="bg-ink py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-sm font-medium text-[#0055CC] uppercase tracking-wider mb-4">
+            <p className="text-sm font-medium text-brand uppercase tracking-wider mb-4">
               Insights & Updates
             </p>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-white mb-6">
-              Sabi Consults Blog
+              {brand.name} blog
             </h1>
             <p className="text-lg text-neutral-400">
               Expert insights on Abuja real estate, investment guides, market trends,
@@ -84,7 +86,7 @@ export default async function BlogPage() {
                         </time>
                       </div>
 
-                      <h2 className={`font-medium text-[#1a1a1a] group-hover:text-[#0055CC] transition-colors ${index === 0 ? 'text-2xl md:text-3xl' : 'text-xl'}`}>
+                      <h2 className={`font-medium text-ink group-hover:text-brand transition-colors ${index === 0 ? 'text-2xl md:text-3xl' : 'text-xl'}`}>
                         {blog.title}
                       </h2>
 
@@ -94,7 +96,7 @@ export default async function BlogPage() {
                         </p>
                       )}
 
-                      <span className="inline-flex items-center gap-1 text-sm font-medium text-[#0055CC] mt-4">
+                      <span className="inline-flex items-center gap-1 text-sm font-medium text-brand mt-4">
                         Read More
                         <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -110,9 +112,9 @@ export default async function BlogPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-[#f8f6f3]">
+      <section className="py-16 bg-surface">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-light text-[#1a1a1a] mb-4">
+          <h2 className="text-2xl md:text-3xl font-light text-ink mb-4">
             Have Questions About Abuja Real Estate?
           </h2>
           <p className="text-neutral-600 mb-8">
@@ -120,7 +122,7 @@ export default async function BlogPage() {
           </p>
           <Link
             href="/contact"
-            className="inline-flex px-8 py-4 bg-[#0055CC] text-white text-sm font-medium uppercase tracking-wider hover:bg-[#0044aa] transition-colors"
+            className="inline-flex px-8 py-4 bg-brand text-white text-sm font-medium uppercase tracking-wider hover:bg-brand-dark transition-colors"
           >
             Get in Touch
           </Link>

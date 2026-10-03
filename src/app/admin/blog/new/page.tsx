@@ -27,7 +27,7 @@ export default function NewBlogPage() {
     title: '',
     slug: '',
     excerpt: '',
-    author: 'Sabi Consults',
+    author: '',
     status: 'draft' as 'draft' | 'published',
   })
   const [content, setContent] = useState('')
@@ -94,18 +94,18 @@ export default function NewBlogPage() {
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Header */}
-      <header className="bg-[#1a1a1a] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/admin/blog" className="text-neutral-400 hover:text-white transition-colors">
+            <Link href="/admin/blog" className="text-neutral-500 hover:text-ink transition-colors">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
-            <span className="text-xl font-semibold">New Blog Post</span>
+            <span className="text-lg font-semibold text-ink">New Blog Post</span>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Form */}
       <main className="max-w-5xl mx-auto px-6 py-8">
@@ -163,7 +163,7 @@ export default function NewBlogPage() {
 
           {/* Cover Image */}
           <div className="bg-white border border-neutral-200 p-6">
-            <h2 className="font-medium text-[#1a1a1a] mb-4">Cover Image</h2>
+            <h2 className="font-medium text-ink mb-4">Cover Image</h2>
             <ImageUploader
               images={coverImage}
               onChange={setCoverImage}
@@ -173,7 +173,7 @@ export default function NewBlogPage() {
 
           {/* Content */}
           <div className="bg-white border border-neutral-200 p-6">
-            <h2 className="font-medium text-[#1a1a1a] mb-4">Content *</h2>
+            <h2 className="font-medium text-ink mb-4">Content *</h2>
             <RichTextEditor
               value={content}
               onChange={setContent}
@@ -225,7 +225,7 @@ export default function NewBlogPage() {
                 <button
                   type="submit"
                   disabled={loading || !content.trim()}
-                  className="px-6 py-3 bg-[#0055CC] text-white text-sm font-medium hover:bg-[#0044aa] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Creating...' : form.status === 'published' ? 'Publish' : 'Save Draft'}
                 </button>
