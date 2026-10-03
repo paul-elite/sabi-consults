@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/auth'
+import { getSession, sameOrigin } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
     const currentUser = await getSession()
 
-    if (!currentUser) {
+    if (!currentUser || !(await sameOrigin())) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -33,7 +33,9 @@ export async function POST(request: NextRequest) {
     const supabase = await createAdminClient()
 
     // Generate unique filename
-    const ext = file.name.split('.').pop()
+    // Pick the extension from the checked file type, never from the file name
+    const EXT: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'image/x-icon': 'ico', 'image/vnd.microsoft.icon': 'ico' }
+    const ext = EXT[file.type]
     const timestamp = Date.now()
     const randomStr = Math.random().toString(36).substring(2, 8)
     const requested = String(formData.get('folder') || 'properties')
@@ -43,6 +45,14 @@ export async function POST(request: NextRequest) {
     // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer()
     const buffer = new Uint8Array(arrayBuffer)
+
+    // SVGs are text and can hide scripts: refuse any that contain them
+    if (file.type === 'image/svg+xml') {
+      const text = new TextDecoder().decode(buffer).toLowerCase()
+      if (/<script|javascript:|\son[a-z]+\s*=|<foreignobject|<iframe|<embed/.test(text)) {
+        return NextResponse.json({ error: 'This SVG contains scripts. Export it again as a plain SVG or PNG.' }, { status: 400 })
+      }
+    }
 
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
@@ -75,7 +85,7 @@ export async function DELETE(request: NextRequest) {
     // Check authentication
     const currentUser = await getSession()
 
-    if (!currentUser) {
+    if (!currentUser || !(await sameOrigin())) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

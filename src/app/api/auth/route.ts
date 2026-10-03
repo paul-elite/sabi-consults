@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { authenticate, startSession, endSession, getSession } from '@/lib/auth'
+import { authenticate, startSession, endSession, getSession, sameOrigin } from '@/lib/auth'
 
 // Simple in-memory throttle: 8 attempts per 10 minutes per IP + email
 const attempts = new Map<string, { n: number; until: number }>()
 
 // POST /api/auth – sign in
 export async function POST(request: NextRequest) {
+  if (!(await sameOrigin())) return NextResponse.json({ error: 'Request blocked' }, { status: 403 })
   try {
     const { email, password } = await request.json()
     if (!email || !password) {

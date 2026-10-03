@@ -1,112 +1,76 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Property } from '@/lib/types'
+import { priceHeadline, propertyFacts } from '@/lib/format'
 
 interface PropertyCardProps {
   property: Property
   variant?: 'default' | 'featured'
+  priority?: boolean
 }
 
-// Format price in Nigerian Naira
-function formatPrice(price: number): string {
-  if (price >= 1000000000) {
-    return `₦${(price / 1000000000).toFixed(1)}B`
-  }
-  if (price >= 1000000) {
-    return `₦${(price / 1000000).toFixed(0)}M`
-  }
-  return `₦${price.toLocaleString()}`
-}
-
-export default function PropertyCard({ property, variant = 'default' }: PropertyCardProps) {
-  const isFeatured = variant === 'featured'
+export default function PropertyCard({ property, variant = 'default', priority = false }: PropertyCardProps) {
+  const { amount, label } = priceHeadline(property)
+  const facts = propertyFacts(property)
+  const options = property.variations?.length || 0
   const isLand = property.type === 'land'
 
   return (
     <Link
       href={`/properties/${property.id}`}
-      className="group block bg-white overflow-hidden"
+      className="group block rounded-xl focus-visible:outline-offset-4"
+      aria-label={`${property.title}, ${property.district}. ${label} ${amount}`}
     >
-      {/* Image Container */}
-      <div className={`relative overflow-hidden ${isFeatured ? 'aspect-[4/3]' : 'aspect-[3/2]'}`}>
-        {property.images[0] ? (
+      <div className={`relative overflow-hidden rounded-xl bg-brand-soft ${variant === 'featured' ? 'aspect-[4/3]' : 'aspect-[4/3] sm:aspect-[3/2]'}`}>
+        {/* Placeholder shown behind the photo (and if it fails to load) */}
+        <svg className="absolute inset-0 m-auto w-10 h-10 text-brand/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z" />
+        </svg>
+        {property.images[0] && (
           <Image
             src={property.images[0]}
-            alt={property.title}
+            alt=""
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={priority}
+            className="object-cover text-transparent transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-        ) : (
-          <div className="w-full h-full bg-neutral-200 flex items-center justify-center">
-            <span className="text-neutral-400">No Image</span>
-          </div>
         )}
-        {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-
-        {/* Status Badge */}
-        {property.status !== 'available' && (
-          <div className="absolute top-4 left-4 px-3 py-1 bg-ink text-white text-xs font-medium uppercase tracking-wider">
-            {property.status}
-          </div>
-        )}
-
-        {/* Type Badge */}
-        <div className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium uppercase tracking-wider ${
-          isLand ? 'bg-brand text-white' : 'bg-white/90 text-ink'
-        }`}>
-          {isLand ? 'Land' : 'House'}
+        <div className="absolute top-3 left-3 flex gap-1.5">
+          <span className="px-2.5 py-1 rounded-full bg-white/95 text-ink text-xs font-medium shadow-sm">
+            {isLand ? 'Land' : 'House'}
+          </span>
+          {property.status === 'pending' && (
+            <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-medium">Selling fast</span>
+          )}
+          {property.status === 'sold' && (
+            <span className="px-2.5 py-1 rounded-full bg-ink text-white text-xs font-medium">Sold</span>
+          )}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-5">
-        {/* District */}
-        <p className="text-xs font-medium text-brand uppercase tracking-wider mb-2">
-          {property.district}
-        </p>
-
-        {/* Title */}
-        <h3 className={`font-medium text-ink group-hover:text-brand transition-colors ${
-          isFeatured ? 'text-lg mb-2' : 'text-base mb-1'
-        }`}>
+      <div className="pt-3.5 pb-1">
+        <p className="text-xs font-medium text-brand uppercase tracking-wider">{property.district}</p>
+        <h3 className="mt-1 text-[17px] leading-snug font-medium text-ink group-hover:text-brand transition-colors line-clamp-2">
           {property.title}
         </h3>
-
-        {/* Property Details */}
-        <div className="flex items-center gap-4 text-sm text-neutral-500 mb-3">
-          {isLand ? (
-            // Land details
-            property.landSize && (
-              <span>{property.landSize.toLocaleString()} sqm</span>
-            )
-          ) : (
-            // House details
-            <>
-              {property.bedrooms !== undefined && property.bedrooms > 0 && (
-                <span>{property.bedrooms} Bed{property.bedrooms > 1 ? 's' : ''}</span>
-              )}
-              {property.bathrooms !== undefined && property.bathrooms > 0 && (
-                <span>{property.bathrooms} Bath{property.bathrooms > 1 ? 's' : ''}</span>
-              )}
-              {property.bq !== undefined && property.bq > 0 && (
-                <span>{property.bq} BQ</span>
-              )}
-              {property.landSize !== undefined && property.landSize > 0 && (
-                <span>{property.landSize.toLocaleString()} sqm</span>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* Price */}
-        <div className="flex items-baseline gap-2">
-          <span className={`font-semibold text-ink ${isFeatured ? 'text-xl' : 'text-lg'}`}>
-            {property.price > 0 ? formatPrice(property.price) : (property.priceLabel || "Price on request")}
-          </span>
-          {property.priceLabel && property.price > 0 && (
-            <span className="text-sm text-neutral-500">{property.priceLabel}</span>
+        {facts.length > 0 && (
+          <p className="mt-1.5 text-sm text-neutral-500 flex flex-wrap items-center gap-x-2">
+            {facts.map((f, i) => (
+              <span key={f} className="inline-flex items-center gap-2">
+                {i > 0 && <span className="w-1 h-1 rounded-full bg-neutral-300" aria-hidden="true" />}
+                {f}
+              </span>
+            ))}
+          </p>
+        )}
+        <div className="mt-3 flex items-end justify-between gap-3">
+          <p className="text-ink">
+            {label && <span className="text-sm text-neutral-500 mr-1.5">{label}</span>}
+            <span className="text-xl font-semibold tracking-tight">{amount}</span>
+          </p>
+          {options > 1 && (
+            <span className="text-xs text-neutral-500 whitespace-nowrap pb-1">{options} options</span>
           )}
         </div>
       </div>

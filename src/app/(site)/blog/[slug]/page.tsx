@@ -1,3 +1,4 @@
+import { cleanHtml } from '@/lib/sanitize'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -113,7 +114,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               prose-ul:text-neutral-600 prose-ol:text-neutral-600
               prose-li:my-1
               prose-img:rounded-lg"
-            dangerouslySetInnerHTML={{ __html: blog.content }}
+            dangerouslySetInnerHTML={{ __html: cleanHtml(blog.content) }}
           />
 
           {/* Share */}

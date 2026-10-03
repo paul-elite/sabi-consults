@@ -5,7 +5,7 @@ import Image from 'next/image'
 import PropertySearch from '@/components/PropertySearch'
 import PropertyCard from '@/components/PropertyCard'
 import InstagramFeed from '@/components/InstagramFeed'
-import { getFeaturedProperties } from '@/lib/properties'
+import { getFeaturedProperties, filterProperties } from '@/lib/properties'
 import { testimonials, districts } from '@/data/properties'
 
 // Force dynamic rendering
@@ -13,12 +13,17 @@ export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
   const [brand, settings] = await Promise.all([getBrand(), getSettings()])
-  const featuredProperties = await getFeaturedProperties()
+  const [featured, available] = await Promise.all([getFeaturedProperties(), filterProperties({})])
+  // Top up with the newest listings so the section never looks empty
+  const featuredProperties = [...featured, ...available.filter(p => !featured.some(f => f.id === p.id))].slice(0, 4)
+  const counts = available.reduce<Record<string, number>>((acc, p) => { acc[p.district] = (acc[p.district] || 0) + 1; return acc }, {})
+  const activeDistricts = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8)
+    .map(([name, count]) => ({ name, count, description: districts.find(d => d.name === name)?.description || 'Abuja' }))
 
   return (
     <>
       {/* Hero Section - Search First */}
-      <section className="relative min-h-screen flex items-center justify-center pt-16 lg:pt-20">
+      <section className="relative min-h-[78svh] lg:min-h-[86vh] flex items-center justify-center pt-16 lg:pt-20 pb-10">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -32,12 +37,12 @@ export default async function HomePage() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-white mb-6 leading-tight">
+        <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <h1 className="text-[34px] sm:text-5xl lg:text-6xl font-light text-white mb-4 sm:mb-6 leading-tight">
             Find Your Perfect Property
             <span className="block font-medium">in Abuja</span>
           </h1>
-          <p className="text-lg md:text-xl text-white/80 mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-white/85 mb-8 sm:mb-12 max-w-2xl mx-auto">
             {brand.name} offers expert guidance for premium real estate in Nigeria&apos;s capital city
           </p>
 
@@ -48,7 +53,7 @@ export default async function HomePage() {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <div className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10" aria-hidden="true">
           <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center pt-2">
             <div className="w-1 h-2 bg-white/60 rounded-full animate-bounce" />
           </div>
@@ -56,9 +61,9 @@ export default async function HomePage() {
       </section>
 
       {/* Featured Properties */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+      <section className="py-14 md:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between gap-4 mb-8 md:mb-12">
             <div>
               <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
                 Curated Selection
@@ -69,46 +74,50 @@ export default async function HomePage() {
             </div>
             <Link
               href="/properties"
-              className="mt-4 md:mt-0 text-sm font-medium text-ink hover:text-brand transition-colors flex items-center gap-2"
+              className="shrink-0 text-sm font-medium text-ink hover:text-brand transition-colors flex items-center gap-1.5 min-h-11"
             >
-              View All Properties
+              View all
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Swipe on phones, grid from tablet up */}
+          <div className="-mx-4 px-4 sm:mx-0 sm:px-0 flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none">
             {featuredProperties.map((property) => (
-              <PropertyCard key={property.id} property={property} variant="featured" />
+              <div key={property.id} className="w-[82%] sm:w-auto shrink-0 snap-start">
+                <PropertyCard property={property} variant="featured" />
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Districts Section */}
-      <section className="py-24 bg-surface">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-12">
+      <section className="py-14 md:py-24 bg-surface">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 md:mb-12">
             <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
               Explore
             </p>
             <h2 className="text-3xl md:text-4xl font-light text-ink">
-              Premium Abuja Districts
+              Where we have properties
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {districts.slice(0, 8).map((district) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            {activeDistricts.map((district) => (
               <Link
-                key={district.id}
-                href={`/properties?district=${district.name}`}
-                className="group bg-white p-6 hover:bg-brand transition-colors duration-300"
+                key={district.name}
+                href={`/properties?district=${encodeURIComponent(district.name)}`}
+                className="group bg-white rounded-xl p-4 md:p-6 hover:bg-brand transition-colors duration-300"
               >
-                <h3 className="text-lg font-medium text-ink group-hover:text-white transition-colors">
+                <h3 className="text-base md:text-lg font-medium text-ink group-hover:text-white transition-colors flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2">
                   {district.name}
+                  <span className="text-xs font-normal text-neutral-400 group-hover:text-white/70">{district.count} {district.count === 1 ? 'listing' : 'listings'}</span>
                 </h3>
-                <p className="text-sm text-neutral-500 group-hover:text-white/80 mt-1 transition-colors">
+                <p className="hidden sm:block text-sm text-neutral-500 group-hover:text-white/80 mt-1 transition-colors">
                   {district.description}
                 </p>
               </Link>
@@ -118,8 +127,8 @@ export default async function HomePage() {
       </section>
 
       {/* Why us */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <section className="py-14 md:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
@@ -194,8 +203,8 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 bg-ink">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <section className="py-14 md:py-24 bg-ink">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
               Client Stories
@@ -228,7 +237,7 @@ export default async function HomePage() {
       <InstagramFeed />
 
       {/* CTA Section */}
-      <section className="py-24 bg-brand">
+      <section className="py-14 md:py-24 bg-brand">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-light text-white mb-6">
             Ready to Find Your Property?

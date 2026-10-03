@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/auth'
+import { getSession, sameOrigin } from '@/lib/auth'
 
 // GET single team member
 export async function GET(
@@ -39,7 +39,7 @@ export async function PUT(
   try {
     const currentUser = await getSession()
 
-    if (!currentUser) {
+    if (!currentUser || !(await sameOrigin())) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -87,7 +87,7 @@ export async function DELETE(
   try {
     const currentUser = await getSession()
 
-    if (!currentUser) {
+    if (!currentUser || !(await sameOrigin())) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

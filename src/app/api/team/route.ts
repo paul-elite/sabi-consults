@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/auth'
+import { getSession, sameOrigin } from '@/lib/auth'
 
 // GET all team members
 export async function GET() {
@@ -14,7 +14,7 @@ export async function GET() {
       .select('*')
       .order('display_order', { ascending: true })
 
-    if (!currentUser) {
+    if (!currentUser || !(await sameOrigin())) {
       query = query.eq('is_active', true)
     }
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   try {
     const currentUser = await getSession()
 
-    if (!currentUser) {
+    if (!currentUser || !(await sameOrigin())) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

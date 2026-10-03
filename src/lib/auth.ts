@@ -10,7 +10,7 @@
 //
 // A "break-glass" super admin always exists from ADMIN_EMAIL / ADMIN_PASSWORD,
 // so a fresh deployment can sign in before any accounts are created.
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { createHmac, randomBytes, scryptSync, timingSafeEqual } from 'crypto'
 import { createClient as createSupabase } from '@supabase/supabase-js'
@@ -145,8 +145,21 @@ export function hasRole(user: SessionUser | null, min: Role): boolean {
  *   const auth = await requireRole('admin'); if (auth instanceof NextResponse) return auth
  */
 export async function requireRole(min: Role = 'staff'): Promise<SessionUser | NextResponse> {
+  if (!(await sameOrigin())) return NextResponse.json({ error: 'Request blocked' }, { status: 403 })
   const user = await getSession()
   if (!user) return NextResponse.json({ error: 'Sign in to continue' }, { status: 401 })
   if (!hasRole(user, min)) return NextResponse.json({ error: 'You don’t have permission to do this' }, { status: 403 })
   return user
+}
+
+/**
+ * Blocks requests sent from other websites (cross-site request forgery).
+ * Browsers always send Origin on POST/PUT/DELETE; it must match this site.
+ */
+export async function sameOrigin(): Promise<boolean> {
+  const h = await headers()
+  const origin = h.get('origin')
+  if (!origin) return true // same-origin GETs and server-to-server calls
+  const host = h.get('x-forwarded-host') || h.get('host')
+  try { return new URL(origin).host === host } catch { return false }
 }

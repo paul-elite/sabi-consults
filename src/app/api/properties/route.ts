@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/auth'
+import { getSession, sameOrigin } from '@/lib/auth'
 
 // GET all properties
 export async function GET(request: NextRequest) {
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   // Check for admin session
   const currentUser = await getSession()
 
-  if (!currentUser) {
+  if (!currentUser || !(await sameOrigin())) {
     return NextResponse.json(
       { error: 'Unauthorized' },
       { status: 401 }

@@ -156,3 +156,8 @@ body { overflow-x: hidden; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Pages with a sticky phone action bar: keep the footer clear of it */
+@media (max-width: 1023px) {
+  body:has([data-action-bar]) footer { padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px)); }
+}

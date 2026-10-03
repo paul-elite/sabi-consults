@@ -159,8 +159,7 @@ CREATE TRIGGER update_team_members_updated_at BEFORE UPDATE ON team_members
 
 -- ---------------------------------------------------------------------
 -- Row level security.
--- The public (anon key) can only read what the website shows and send
--- inquiries. Everything else goes through the server with the service key.
+-- The public (anon key) can only read what the website shows. Everything else goes through the server with the service key.
 -- ---------------------------------------------------------------------
 ALTER TABLE properties ENABLE ROW LEVEL SECURITY;
 ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
@@ -173,9 +172,12 @@ DROP POLICY IF EXISTS "Public can view available properties" ON properties;
 CREATE POLICY "Public can view available properties" ON properties
   FOR SELECT USING (status IN ('available', 'pending'));
 
+-- Inquiries are written only by the server route (validated and rate-limited),
+-- so there is deliberately no public insert policy.
 DROP POLICY IF EXISTS "Anyone can create inquiries" ON inquiries;
-CREATE POLICY "Anyone can create inquiries" ON inquiries
-  FOR INSERT WITH CHECK (true);
+ALTER TABLE inquiries DROP CONSTRAINT IF EXISTS inquiries_lengths_check;
+ALTER TABLE inquiries ADD CONSTRAINT inquiries_lengths_check
+  CHECK (char_length(name) <= 120 AND char_length(email) <= 200 AND char_length(phone) <= 40 AND char_length(message) <= 3000) NOT VALID;
 
 DROP POLICY IF EXISTS "Public can view site settings" ON site_settings;
 CREATE POLICY "Public can view site settings" ON site_settings

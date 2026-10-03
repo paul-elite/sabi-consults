@@ -10,6 +10,7 @@ export const districts: District[] = [
   { id: 'gaduwa', name: 'Gaduwa', description: 'Quiet residential district south of the city centre', latitude: 8.9850, longitude: 7.4750 },
   { id: 'kukwaba', name: 'Kukwaba', description: 'Central district between Jabi and Wuye', latitude: 9.0460, longitude: 7.4430 },
   { id: 'idu', name: 'Idu', description: 'Industrial and new residential estates on the western edge', latitude: 9.0340, longitude: 7.3830 },
+  { id: 'apo', name: 'Apo', description: 'Established district south of the city centre', latitude: 8.9790, longitude: 7.4990 },
   { id: 'jikwoyi', name: 'Jikwoyi', description: 'Emerging residential area off the Keffi road', latitude: 8.9893, longitude: 7.5741 },
   { id: 'maitama', name: 'Maitama', description: 'Diplomatic and high-end residential area', latitude: 9.0820, longitude: 7.4878 },
   { id: 'wuse2', name: 'Wuse II', description: 'Vibrant commercial and residential hub', latitude: 9.0677, longitude: 7.4626 },

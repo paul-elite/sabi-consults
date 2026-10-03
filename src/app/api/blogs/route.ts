@@ -1,7 +1,8 @@
+import { cleanHtml, cleanText } from '@/lib/sanitize'
 import { getBrand } from '@/lib/brand'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/auth'
+import { getSession, sameOrigin } from '@/lib/auth'
 
 // GET all blogs (admin - includes drafts)
 export async function GET() {
@@ -16,7 +17,7 @@ export async function GET() {
       .select('*')
       .order('created_at', { ascending: false })
 
-    if (!currentUser) {
+    if (!currentUser || !(await sameOrigin())) {
       query = query.eq('status', 'published')
     }
 
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
   try {
     const currentUser = await getSession()
 
-    if (!currentUser) {
+    if (!currentUser || !(await sameOrigin())) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -55,12 +56,12 @@ export async function POST(request: NextRequest) {
     const supabase = await createAdminClient()
 
     const blogData: Record<string, unknown> = {
-      title,
+      title: cleanText(title, 200),
       slug,
-      excerpt: excerpt || null,
-      content,
+      excerpt: excerpt ? cleanText(excerpt, 500) : null,
+      content: cleanHtml(content),
       cover_image: coverImage || null,
-      author: author || (await getBrand()).name,
+      author: author ? cleanText(author, 100) : (await getBrand()).name,
       status: status || 'draft',
       updated_at: new Date().toISOString(),
     }

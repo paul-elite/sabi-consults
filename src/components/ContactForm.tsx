@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 
 interface ContactFormProps {
   propertyId?: string
@@ -15,6 +15,9 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
     message: propertyTitle ? `I'm interested in: ${propertyTitle}` : '',
   })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [errorText, setErrorText] = useState('')
+  const uid = useId()
+  const [website, setWebsite] = useState('') // spam trap, hidden from people
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,14 +30,19 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
         body: JSON.stringify({
           ...formData,
           propertyId,
+          website,
         }),
       })
 
-      if (!response.ok) throw new Error('Failed to submit')
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        throw new Error(data.error || 'Something went wrong')
+      }
 
       setStatus('success')
       setFormData({ name: '', email: '', phone: '', message: '' })
-    } catch {
+    } catch (err) {
+      setErrorText(err instanceof Error ? err.message : '')
       setStatus('error')
     }
   }
@@ -53,76 +61,79 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+        <label>Website<input tabIndex={-1} autoComplete="off" value={website} onChange={e => setWebsite(e.target.value)} /></label>
+      </div>
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-neutral-600 mb-1">
+        <label htmlFor={`${uid}-name`} className="block text-sm font-medium text-ink mb-1.5">
           Full Name
         </label>
         <input
           type="text"
-          id="name"
+          id={`${uid}-name`}
           required
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+          className="w-full px-4 py-3 rounded-lg bg-white border border-neutral-300 text-[15px] focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/15 transition"
           placeholder="Your full name"
         />
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-neutral-600 mb-1">
+        <label htmlFor={`${uid}-email`} className="block text-sm font-medium text-ink mb-1.5">
           Email Address
         </label>
         <input
           type="email"
-          id="email"
+          id={`${uid}-email`}
           required
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+          className="w-full px-4 py-3 rounded-lg bg-white border border-neutral-300 text-[15px] focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/15 transition"
           placeholder="you@example.com"
         />
       </div>
 
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-neutral-600 mb-1">
+        <label htmlFor={`${uid}-phone`} className="block text-sm font-medium text-ink mb-1.5">
           Phone Number
         </label>
         <input
           type="tel"
-          id="phone"
+          id={`${uid}-phone`}
           required
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+          className="w-full px-4 py-3 rounded-lg bg-white border border-neutral-300 text-[15px] focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/15 transition"
           placeholder="+234 800 000 0000"
         />
       </div>
 
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-neutral-600 mb-1">
+        <label htmlFor={`${uid}-message`} className="block text-sm font-medium text-ink mb-1.5">
           Message
         </label>
         <textarea
-          id="message"
+          id={`${uid}-message`}
           rows={4}
           required
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
+          className="w-full px-4 py-3 rounded-lg bg-white border border-neutral-300 text-[15px] focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/15 transition resize-none"
           placeholder="Tell us about your requirements..."
         />
       </div>
 
       {status === 'error' && (
-        <p className="text-sm text-red-600">Something went wrong. Please try again.</p>
+        <p role="alert" className="text-sm text-red-600">{errorText && errorText !== "Something went wrong" ? errorText : "That didn’t send. Check your details and try again, or WhatsApp us."}</p>
       )}
 
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="w-full py-3 bg-ink text-white text-sm font-medium uppercase tracking-wider hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full h-12 rounded-lg bg-brand text-on-brand font-medium hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {status === 'loading' ? 'Sending...' : 'Send Inquiry'}
+        {status === 'loading' ? 'Sending…' : 'Send enquiry'}
       </button>
     </form>
   )
