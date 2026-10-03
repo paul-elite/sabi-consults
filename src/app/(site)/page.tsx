@@ -61,14 +61,14 @@ export default async function HomePage() {
       </section>
 
       {/* Featured Properties */}
-      <section className="py-14 md:py-24 bg-white">
+      <section className="py-14 md:py-24 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between gap-4 mb-8 md:mb-12">
+          <div className="flex items-end justify-between gap-4 mb-8 md:mb-10">
             <div>
-              <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
+              <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">
                 Curated Selection
               </p>
-              <h2 className="text-3xl md:text-4xl font-light text-ink">
+              <h2 className="text-2xl md:text-3xl font-medium text-ink">
                 Featured Properties
               </h2>
             </div>
@@ -84,7 +84,7 @@ export default async function HomePage() {
           </div>
 
           {/* Swipe on phones, grid from tablet up */}
-          <div className="-mx-4 px-4 sm:mx-0 sm:px-0 flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none">
+          <div className="-mx-4 px-4 sm:mx-0 sm:px-0 flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none">
             {featuredProperties.map((property) => (
               <div key={property.id} className="w-[82%] sm:w-auto shrink-0 snap-start">
                 <PropertyCard property={property} variant="featured" />

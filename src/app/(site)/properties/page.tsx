@@ -61,14 +61,17 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
     : params.type === 'land' ? 'Land for sale' : params.type === 'house' ? 'Homes for sale' : 'All properties'
 
   return (
-    <div className="pt-16 lg:pt-20">
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-4">
-        <h1 className="text-3xl sm:text-4xl font-light text-ink">{heading}</h1>
-        <p className="mt-2 text-neutral-600 text-[15px]">Land and homes across Abuja, with plot sizes and flexible payment options.</p>
+    <div className="min-h-screen pt-16 lg:pt-20 bg-neutral-50">
+      {/* Header */}
+      <section className="bg-white border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-4">
+          <h1 className="text-2xl sm:text-3xl font-medium text-ink">{heading}</h1>
+          <p className="mt-1.5 text-neutral-500 text-[15px]">Land and homes across Abuja, with plot sizes and flexible payment options.</p>
+        </div>
       </section>
 
       {/* Filter chips: sticky under the header, scroll sideways on phones */}
-      <div className="sticky top-[calc(4rem+env(safe-area-inset-top))] lg:top-20 z-30 bg-white/95 backdrop-blur border-b border-neutral-200">
+      <div className="sticky top-[calc(4rem+env(safe-area-inset-top))] lg:top-20 z-30 bg-white border-b border-neutral-200">
         <nav aria-label="Filters" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex gap-2 overflow-x-auto scrollbar-none">
           <Link href={href({ type: undefined })} className={chip(!params.type)}>All</Link>
           <Link href={href({ type: 'house' })} className={chip(params.type === 'house')}>Houses</Link>
@@ -91,7 +94,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
         </nav>
       </div>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="flex items-center justify-between gap-4 mb-5">
           <p className="text-sm text-neutral-600 whitespace-nowrap" aria-live="polite">
             {properties.length} {properties.length === 1 ? 'property' : 'properties'}
@@ -109,14 +112,14 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
         </div>
 
         {properties.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-9">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {/* Map tile (tablet and up); phones get the floating Map button */}
-            <Link href="/map" className="hidden sm:flex relative rounded-xl overflow-hidden bg-brand-soft aspect-[3/2] items-center justify-center group">
-              <svg className="absolute inset-0 w-full h-full text-brand/10" aria-hidden="true">
-                <defs><pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="currentColor" strokeWidth="1" /></pattern></defs>
+            <Link href="/map" className="hidden sm:flex relative rounded-2xl overflow-hidden bg-white aspect-[4/3] sm:aspect-[3/2] items-center justify-center group shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow">
+              <svg className="absolute inset-0 w-full h-full text-neutral-100" aria-hidden="true">
+                <defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="currentColor" strokeWidth="1" /></pattern></defs>
                 <rect width="100%" height="100%" fill="url(#grid)" />
               </svg>
-              <span className="relative inline-flex items-center gap-2 h-11 px-5 rounded-full bg-brand text-on-brand text-sm font-medium shadow-md group-hover:bg-brand-dark transition-colors">
+              <span className="relative inline-flex items-center gap-2 h-11 px-5 rounded-full bg-ink text-white text-sm font-medium group-hover:bg-brand transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
                 Show on map
               </span>
