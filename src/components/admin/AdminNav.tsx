@@ -15,15 +15,17 @@ const UserContext = createContext<AdminUser | null>(null)
 export const useAdminUser = () => useContext(UserContext)
 export const canAccess = (u: AdminUser | null, min: AdminRole) => !!u && RANK[u.role] >= RANK[min]
 
-const LINKS: { href: string; label: string; min: AdminRole }[] = [
+const LINKS: { href: string; label: string; min: AdminRole; icon?: boolean }[] = [
   { href: '/admin/dashboard', label: 'Dashboard', min: 'staff' },
   { href: '/admin/blog', label: 'Blog', min: 'staff' },
   { href: '/admin/team', label: 'Team', min: 'staff' },
-  { href: '/admin/settings', label: 'Contact settings', min: 'admin' },
-  { href: '/admin/branding', label: 'Branding', min: 'super_admin' },
+  { href: '/admin/settings', label: 'Settings', min: 'admin' },
   { href: '/admin/users', label: 'Staff accounts', min: 'super_admin' },
   { href: '/admin/profile', label: 'Profile', min: 'staff' },
 ]
+
+// Branding is shown as a settings gear icon, not in the main nav
+const BRANDING_LINK = { href: '/admin/branding', label: 'Branding', min: 'super_admin' as AdminRole }
 
 export default function AdminNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -79,6 +81,19 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
             </nav>
             <div className="ml-auto hidden lg:flex items-center gap-4 text-sm">
               <Link href="/" target="_blank" className="text-neutral-500 hover:text-ink">View site ↗</Link>
+              {canAccess(user, BRANDING_LINK.min) && (
+                <Link
+                  href={BRANDING_LINK.href}
+                  aria-current={pathname?.startsWith(BRANDING_LINK.href) ? 'page' : undefined}
+                  aria-label="Branding settings"
+                  title="Branding"
+                  className={`w-9 h-9 rounded-lg grid place-items-center transition-colors ${pathname?.startsWith(BRANDING_LINK.href) ? 'bg-blue-50 text-[#0055cc]' : 'text-neutral-400 hover:text-ink hover:bg-neutral-100'}`}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                </Link>
+              )}
               <span className="w-px h-4 bg-neutral-200" />
               <span className="text-neutral-600">{user.name} <span className="text-neutral-400">· {roleLabel(user.role)}</span></span>
               <button onClick={signOut} className="px-3 py-1.5 text-neutral-500 hover:text-ink hover:bg-neutral-100 rounded-lg transition-colors">Sign out</button>
@@ -95,6 +110,14 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
               {links.map(l => (
                 <Link key={l.href} href={l.href} aria-current={pathname?.startsWith(l.href) ? 'page' : undefined} className={`block py-3 border-b border-neutral-100 ${pathname?.startsWith(l.href) ? 'text-[#0055cc] font-medium' : 'text-neutral-600'}`}>{l.label}</Link>
               ))}
+              {canAccess(user, BRANDING_LINK.min) && (
+                <Link href={BRANDING_LINK.href} aria-current={pathname?.startsWith(BRANDING_LINK.href) ? 'page' : undefined} className={`flex items-center gap-2 py-3 border-b border-neutral-100 ${pathname?.startsWith(BRANDING_LINK.href) ? 'text-[#0055cc] font-medium' : 'text-neutral-600'}`}>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                  Branding
+                </Link>
+              )}
               <Link href="/" target="_blank" className="block py-3 border-b border-neutral-100 text-neutral-600">View site ↗</Link>
               <div className="pt-4 flex items-center justify-between text-sm">
                 <span className="text-neutral-600">{user.name} · {roleLabel(user.role)}</span>
