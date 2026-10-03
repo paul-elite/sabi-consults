@@ -28,6 +28,15 @@ function UsersManager() {
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [created, setCreated] = useState<{ email: string; password: string } | null>(null)
+  const [linkCopied, setLinkCopied] = useState(false)
+
+  const joinLink = typeof window !== 'undefined' ? `${window.location.origin}/admin/join` : ''
+
+  const copyJoinLink = () => {
+    navigator.clipboard?.writeText(joinLink)
+    setLinkCopied(true)
+    setTimeout(() => setLinkCopied(false), 2000)
+  }
 
   const load = () =>
     fetch('/api/users', { cache: 'no-store' }).then(async r => {
@@ -92,6 +101,31 @@ function UsersManager() {
           <p className="text-sm text-neutral-500 mt-1">Give each person their own sign-in and the right level of access.</p>
         </div>
         {!showForm && <button onClick={() => { setShowForm(true); setCreated(null) }} className="h-11 px-5 bg-brand text-on-brand text-sm font-medium">Add account</button>}
+      </div>
+
+      {/* Self-registration link */}
+      <div className="mb-6 p-4 bg-white border border-neutral-200 rounded-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-ink mb-1">Staff registration link</p>
+            <p className="text-xs text-neutral-500">Share this link with staff to let them create their own accounts with biodata and photo.</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              readOnly
+              value={joinLink}
+              className="flex-1 sm:w-64 h-10 px-3 bg-neutral-50 border border-neutral-200 text-sm text-neutral-600 rounded"
+              onClick={e => (e.target as HTMLInputElement).select()}
+            />
+            <button
+              onClick={copyJoinLink}
+              className={`h-10 px-4 text-sm font-medium rounded transition-colors ${linkCopied ? 'bg-emerald-100 text-emerald-700' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'}`}
+            >
+              {linkCopied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+        </div>
       </div>
 
       {notice && <p role="status" className={`mb-4 p-3 text-sm ${notice.type === 'success' ? 'bg-emerald-50 text-emerald-800' : 'bg-red-50 text-red-700'}`}>{notice.text}</p>}
