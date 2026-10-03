@@ -53,29 +53,34 @@ export default async function Footer() {
           {/* Quick Links */}
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider mb-4">Navigation</h4>
-            <ul className="space-y-3">
+            <ul className="space-y-2.5">
               <li>
-                <Link href="/" className="inline-block py-1 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
+                <Link href="/" className="inline-block py-0.5 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/properties" className="inline-block py-1 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
+                <Link href="/properties" className="inline-block py-0.5 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
                   Properties
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="inline-block py-1 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
+                <Link href="/services" className="inline-block py-0.5 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
                   Services
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="inline-block py-1 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
+                <Link href="/resources" className="inline-block py-0.5 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
+                  Resources
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="inline-block py-0.5 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="inline-block py-1 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
+                <Link href="/contact" className="inline-block py-0.5 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
                   Contact
                 </Link>
               </li>

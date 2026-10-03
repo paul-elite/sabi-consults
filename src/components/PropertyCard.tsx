@@ -18,7 +18,7 @@ export default function PropertyCard({ property, variant = 'default', priority =
   return (
     <Link
       href={`/properties/${property.id}`}
-      className="group block bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow duration-300 focus-visible:outline-offset-4"
+      className="group block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 focus-visible:outline-offset-4"
       aria-label={`${property.title}, ${property.district}. ${label} ${amount}`}
     >
       {/* Image container */}

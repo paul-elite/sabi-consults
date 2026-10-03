@@ -60,12 +60,12 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
         <label>Website<input tabIndex={-1} autoComplete="off" value={website} onChange={e => setWebsite(e.target.value)} /></label>
       </div>
-      <div>
-        <label htmlFor={`${uid}-name`} className="block text-sm font-medium text-ink mb-1.5">
+      <div className="form-field">
+        <label htmlFor={`${uid}-name`} className="form-label">
           Full Name
         </label>
         <input
@@ -74,13 +74,13 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
           required
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full px-4 py-3 rounded-lg bg-white border border-neutral-300 text-[15px] focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/15 transition"
+          className="form-input"
           placeholder="Your full name"
         />
       </div>
 
-      <div>
-        <label htmlFor={`${uid}-email`} className="block text-sm font-medium text-ink mb-1.5">
+      <div className="form-field">
+        <label htmlFor={`${uid}-email`} className="form-label">
           Email Address
         </label>
         <input
@@ -89,13 +89,13 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
           required
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full px-4 py-3 rounded-lg bg-white border border-neutral-300 text-[15px] focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/15 transition"
+          className="form-input"
           placeholder="you@example.com"
         />
       </div>
 
-      <div>
-        <label htmlFor={`${uid}-phone`} className="block text-sm font-medium text-ink mb-1.5">
+      <div className="form-field">
+        <label htmlFor={`${uid}-phone`} className="form-label">
           Phone Number
         </label>
         <input
@@ -104,13 +104,13 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
           required
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          className="w-full px-4 py-3 rounded-lg bg-white border border-neutral-300 text-[15px] focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/15 transition"
+          className="form-input"
           placeholder="+234 800 000 0000"
         />
       </div>
 
-      <div>
-        <label htmlFor={`${uid}-message`} className="block text-sm font-medium text-ink mb-1.5">
+      <div className="form-field">
+        <label htmlFor={`${uid}-message`} className="form-label">
           Message
         </label>
         <textarea
@@ -119,21 +119,26 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
           required
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          className="w-full px-4 py-3 rounded-lg bg-white border border-neutral-300 text-[15px] focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/15 transition resize-none"
+          className="form-input form-textarea"
           placeholder="Tell us about your requirements..."
         />
       </div>
 
       {status === 'error' && (
-        <p role="alert" className="text-sm text-red-600">{errorText && errorText !== "Something went wrong" ? errorText : "That didn’t send. Check your details and try again, or WhatsApp us."}</p>
+        <div role="alert" className="alert alert-error">{errorText && errorText !== "Something went wrong" ? errorText : "That didn't send. Check your details and try again, or WhatsApp us."}</div>
       )}
 
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="w-full h-12 rounded-lg bg-brand text-on-brand font-medium hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn btn-lg btn-brand w-full"
       >
-        {status === 'loading' ? 'Sending…' : 'Send enquiry'}
+        {status === 'loading' ? (
+          <>
+            <span className="spinner" />
+            Sending...
+          </>
+        ) : 'Send enquiry'}
       </button>
     </form>
   )

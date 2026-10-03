@@ -22,6 +22,7 @@ const LINKS: { href: string; label: string; min: AdminRole }[] = [
   { href: '/admin/settings', label: 'Contact settings', min: 'admin' },
   { href: '/admin/branding', label: 'Branding', min: 'super_admin' },
   { href: '/admin/users', label: 'Staff accounts', min: 'super_admin' },
+  { href: '/admin/profile', label: 'Profile', min: 'staff' },
 ]
 
 export default function AdminNav({ children }: { children: React.ReactNode }) {

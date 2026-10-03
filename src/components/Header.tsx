@@ -11,6 +11,7 @@ const NAV = [
   { href: '/properties', label: 'Properties' },
   { href: '/map', label: 'Map' },
   { href: '/services', label: 'Services' },
+  { href: '/resources', label: 'Resources' },
   { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
@@ -56,7 +57,7 @@ export default function Header() {
           </div>
 
           <div className="hidden lg:flex items-center">
-            <Link href="/contact" className="px-6 py-2.5 bg-white text-brand text-sm font-medium hover:bg-white/90 transition-colors">
+            <Link href="/contact" className="px-6 py-2.5 bg-white text-brand text-sm font-medium rounded-lg hover:bg-white/90 transition-colors">
               Book an inspection
             </Link>
           </div>
@@ -106,10 +107,10 @@ export default function Header() {
             </Link>
           ))}
           <div className="mt-auto pt-8 grid grid-cols-2 gap-3 pb-safe">
-            <a href={`tel:+${digits}`} className="h-12 grid place-items-center border border-on-brand/40 text-on-brand font-medium">
+            <a href={`tel:+${digits}`} className="h-12 grid place-items-center border border-on-brand/40 text-on-brand font-medium rounded-lg">
               Call us
             </a>
-            <Link href="/contact" className="h-12 grid place-items-center bg-white text-brand font-medium">
+            <Link href="/contact" className="h-12 grid place-items-center bg-white text-brand font-medium rounded-lg">
               Book inspection
             </Link>
           </div>

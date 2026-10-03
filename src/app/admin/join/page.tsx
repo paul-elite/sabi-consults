@@ -105,14 +105,14 @@ export default function JoinPage() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] p-6 sm:p-8">
+        <div className="card p-6 sm:p-8">
           <h2 className="text-lg font-medium text-ink mb-1">Create your account</h2>
           <p className="text-sm text-neutral-500 mb-6">Fill in your details to join as a staff member.</p>
 
           <form onSubmit={submit} className="space-y-5">
             {/* Profile Photo */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2">Profile photo</label>
+            <div className="form-field">
+              <label className="form-label">Profile photo</label>
               <div className="flex items-center gap-4">
                 <div className="relative w-20 h-20 rounded-full bg-neutral-100 overflow-hidden flex-shrink-0">
                   {image ? (
@@ -137,126 +137,126 @@ export default function JoinPage() {
                     type="button"
                     onClick={() => fileRef.current?.click()}
                     disabled={uploading}
-                    className="px-4 py-2 text-sm border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors disabled:opacity-50"
+                    className="btn btn-md btn-outline"
                   >
-                    {uploading ? 'Uploading...' : image ? 'Change photo' : 'Upload photo'}
+                    {uploading ? (
+                      <>
+                        <span className="spinner" />
+                        Uploading...
+                      </>
+                    ) : image ? 'Change photo' : 'Upload photo'}
                   </button>
-                  <p className="text-xs text-neutral-400 mt-1">JPEG, PNG or WebP. Max 5MB.</p>
-                  {fields.image && <p className="text-xs text-red-600 mt-1">{fields.image}</p>}
+                  <p className="form-helper">JPEG, PNG or WebP. Max 5MB.</p>
+                  {fields.image && <p className="form-error">{fields.image}</p>}
                 </div>
               </div>
             </div>
 
             {/* Name */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-neutral-700 mb-1.5">
-                Full name
-              </label>
+            <div className="form-field">
+              <label htmlFor="name" className="form-label">Full name</label>
               <input
                 id="name"
                 type="text"
                 value={form.name}
                 onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className={`w-full h-11 px-4 bg-neutral-50 border ${fields.name ? 'border-red-400' : 'border-neutral-200'} rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors`}
+                className={`form-input ${fields.name ? 'form-input-error' : ''}`}
                 placeholder="Your full name"
               />
-              {fields.name && <p className="text-xs text-red-600 mt-1">{fields.name}</p>}
+              {fields.name && <p className="form-error">{fields.name}</p>}
             </div>
 
             {/* Email */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-1.5">
-                Email
-              </label>
+            <div className="form-field">
+              <label htmlFor="email" className="form-label">Email</label>
               <input
                 id="email"
                 type="email"
                 value={form.email}
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                className={`w-full h-11 px-4 bg-neutral-50 border ${fields.email ? 'border-red-400' : 'border-neutral-200'} rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors`}
+                className={`form-input ${fields.email ? 'form-input-error' : ''}`}
                 placeholder="you@example.com"
               />
-              {fields.email && <p className="text-xs text-red-600 mt-1">{fields.email}</p>}
+              {fields.email && <p className="form-error">{fields.email}</p>}
             </div>
 
             {/* Phone */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-neutral-700 mb-1.5">
-                Phone number
-              </label>
+            <div className="form-field">
+              <label htmlFor="phone" className="form-label">Phone number</label>
               <input
                 id="phone"
                 type="tel"
                 value={form.phone}
                 onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                className={`w-full h-11 px-4 bg-neutral-50 border ${fields.phone ? 'border-red-400' : 'border-neutral-200'} rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors`}
+                className={`form-input ${fields.phone ? 'form-input-error' : ''}`}
                 placeholder="+234 000 000 0000"
               />
-              {fields.phone && <p className="text-xs text-red-600 mt-1">{fields.phone}</p>}
+              {fields.phone && <p className="form-error">{fields.phone}</p>}
             </div>
 
             {/* Bio */}
-            <div>
-              <label htmlFor="bio" className="block text-sm font-medium text-neutral-700 mb-1.5">
-                Short bio <span className="font-normal text-neutral-400">(optional)</span>
+            <div className="form-field">
+              <label htmlFor="bio" className="form-label">
+                Short bio <span className="form-label-optional">(optional)</span>
               </label>
               <textarea
                 id="bio"
                 value={form.bio}
                 onChange={e => setForm(f => ({ ...f, bio: e.target.value }))}
                 rows={3}
-                className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors resize-none"
+                className="form-input form-textarea"
                 placeholder="A few words about yourself..."
               />
             </div>
 
-            <div className="border-t border-neutral-100 pt-5">
-              <p className="text-sm text-neutral-600 mb-4">Create a password for your account</p>
+            <div className="divider" />
+
+            <div className="form-section">
+              <p className="text-sm font-medium text-ink mb-4">Create a password for your account</p>
 
               {/* Password */}
               <div className="space-y-4">
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-1.5">
-                    Password
-                  </label>
+                <div className="form-field">
+                  <label htmlFor="password" className="form-label">Password</label>
                   <input
                     id="password"
                     type="password"
                     value={form.password}
                     onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                    className={`w-full h-11 px-4 bg-neutral-50 border ${fields.password ? 'border-red-400' : 'border-neutral-200'} rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors`}
+                    className={`form-input ${fields.password ? 'form-input-error' : ''}`}
                     placeholder="At least 10 characters"
                   />
-                  {fields.password && <p className="text-xs text-red-600 mt-1">{fields.password}</p>}
+                  {fields.password && <p className="form-error">{fields.password}</p>}
                 </div>
 
-                <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-neutral-700 mb-1.5">
-                    Confirm password
-                  </label>
+                <div className="form-field">
+                  <label htmlFor="confirmPassword" className="form-label">Confirm password</label>
                   <input
                     id="confirmPassword"
                     type="password"
                     value={form.confirmPassword}
                     onChange={e => setForm(f => ({ ...f, confirmPassword: e.target.value }))}
-                    className={`w-full h-11 px-4 bg-neutral-50 border ${fields.confirmPassword ? 'border-red-400' : 'border-neutral-200'} rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors`}
+                    className={`form-input ${fields.confirmPassword ? 'form-input-error' : ''}`}
                     placeholder="Type your password again"
                   />
-                  {fields.confirmPassword && <p className="text-xs text-red-600 mt-1">{fields.confirmPassword}</p>}
+                  {fields.confirmPassword && <p className="form-error">{fields.confirmPassword}</p>}
                 </div>
               </div>
             </div>
 
             {error && (
-              <p className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-lg">{error}</p>
+              <div className="alert alert-error">{error}</div>
             )}
 
-            <button
-              type="submit"
-              disabled={busy}
-              className="w-full h-12 bg-ink text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {busy ? 'Creating account...' : 'Create account'}
+            <button type="submit" disabled={busy} className="btn btn-lg btn-primary w-full">
+              {busy ? (
+                <>
+                  <span className="spinner" />
+                  Creating account...
+                </>
+              ) : (
+                'Create account'
+              )}
             </button>
           </form>
         </div>
