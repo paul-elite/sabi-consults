@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { RequireRole } from '@/components/admin/AdminNav'
 
 interface SiteSettings {
@@ -88,86 +87,68 @@ function AdminSettingsInner() {
 
   return (
     <div className="min-h-screen">
-      <div className="bg-white border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
-          <h1 className="text-lg font-semibold text-ink">Contact settings</h1>
-        </div>
-      </div>
-
       {/* Settings Content */}
-      <main className="max-w-3xl mx-auto px-6 py-8">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-light text-ink">Site Settings</h1>
+          <h1 className="text-2xl font-light text-ink">Contact Settings</h1>
           <p className="text-neutral-500 mt-1">Manage your contact information and social links</p>
         </div>
 
         {message && (
-          <div className={`mb-6 p-4 ${
-            message.type === 'success'
-              ? 'bg-green-50 text-green-700 border border-green-200'
-              : 'bg-red-50 text-red-700 border border-red-200'
-          }`}>
+          <div className={`alert mb-6 ${message.type === 'success' ? 'alert-success' : 'alert-error'}`}>
             {message.text}
           </div>
         )}
 
-        <form onSubmit={handleSave} className="bg-white border border-neutral-200">
-          <div className="p-6 space-y-6">
+        <form onSubmit={handleSave} className="card">
+          <div className="card-body space-y-6">
             {/* WhatsApp Number */}
-            <div>
-              <label className="block text-sm font-medium text-ink mb-2">
-                WhatsApp Number
-              </label>
+            <div className="form-field">
+              <label className="form-label">WhatsApp Number</label>
               <input
                 type="text"
                 value={settings.whatsapp_number}
                 onChange={(e) => setSettings({ ...settings, whatsapp_number: e.target.value })}
                 placeholder="2348000000000"
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors"
+                className="form-input"
               />
-              <p className="text-xs text-neutral-400 mt-1">
+              <p className="form-helper">
                 Enter without + or spaces (e.g., 2348012345678)
               </p>
             </div>
 
             {/* Phone Number */}
-            <div>
-              <label className="block text-sm font-medium text-ink mb-2">
-                Phone Number (Display)
-              </label>
+            <div className="form-field">
+              <label className="form-label">Phone Number (Display)</label>
               <input
                 type="text"
                 value={settings.phone_number}
                 onChange={(e) => setSettings({ ...settings, phone_number: e.target.value })}
                 placeholder="+234 800 000 0000"
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors"
+                className="form-input"
               />
-              <p className="text-xs text-neutral-400 mt-1">
+              <p className="form-helper">
                 This is how the phone number will be displayed on the site
               </p>
             </div>
 
             {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-ink mb-2">
-                Email Address
-              </label>
+            <div className="form-field">
+              <label className="form-label">Email Address</label>
               <input
                 type="email"
                 value={settings.email}
                 onChange={(e) => setSettings({ ...settings, email: e.target.value })}
                 placeholder="hello@sabiconsults.com"
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors"
+                className="form-input"
               />
             </div>
 
             {/* Instagram Handle */}
-            <div>
-              <label className="block text-sm font-medium text-ink mb-2">
-                Instagram Handle
-              </label>
+            <div className="form-field">
+              <label className="form-label">Instagram Handle</label>
               <div className="flex">
-                <span className="px-4 py-3 bg-neutral-100 border border-r-0 border-neutral-200 text-neutral-500">
+                <span className="flex items-center px-4 bg-neutral-100 border border-r-0 border-neutral-200 text-neutral-500 rounded-l-lg">
                   @
                 </span>
                 <input
@@ -175,34 +156,37 @@ function AdminSettingsInner() {
                   value={settings.instagram_handle}
                   onChange={(e) => setSettings({ ...settings, instagram_handle: e.target.value })}
                   placeholder="sabi_consults"
-                  className="flex-1 px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors"
+                  className="form-input rounded-l-none"
                 />
               </div>
             </div>
 
             {/* Address */}
-            <div>
-              <label className="block text-sm font-medium text-ink mb-2">
-                Office Address
-              </label>
+            <div className="form-field">
+              <label className="form-label">Office Address</label>
               <textarea
                 value={settings.address}
                 onChange={(e) => setSettings({ ...settings, address: e.target.value })}
                 placeholder="Abuja, Nigeria"
                 rows={2}
-                className="w-full px-4 py-3 border border-neutral-200 focus:border-brand focus:outline-none transition-colors resize-none"
+                className="form-input form-textarea"
               />
             </div>
           </div>
 
           {/* Actions */}
-          <div className="px-6 py-4 bg-neutral-50 border-t border-neutral-200 flex justify-end">
+          <div className="card-footer flex justify-end">
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-md btn-primary"
             >
-              {saving ? 'Saving...' : 'Save Settings'}
+              {saving ? (
+                <>
+                  <span className="spinner" />
+                  Saving...
+                </>
+              ) : 'Save Settings'}
             </button>
           </div>
         </form>
