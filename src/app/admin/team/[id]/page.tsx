@@ -123,7 +123,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
       <main className="max-w-3xl mx-auto px-6 py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Photo */}
-          <div className="bg-white border border-neutral-200 p-6">
+          <div className="rounded-xl bg-white border border-neutral-200 p-6">
             <h2 className="font-medium text-ink mb-4">Photo</h2>
             <ImageUploader
               images={image}
@@ -133,7 +133,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
           </div>
 
           {/* Basic Info */}
-          <div className="bg-white border border-neutral-200 p-6">
+          <div className="rounded-xl bg-white border border-neutral-200 p-6">
             <h2 className="font-medium text-ink mb-4">Basic Information</h2>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -146,7 +146,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   />
                 </div>
                 <div>
@@ -158,7 +158,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
                     required
                     value={form.role}
                     onChange={(e) => setForm({ ...form, role: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   />
                 </div>
               </div>
@@ -171,14 +171,14 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
                   rows={4}
                   value={form.bio}
                   onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
+                  className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
                 />
               </div>
             </div>
           </div>
 
           {/* Contact Info */}
-          <div className="bg-white border border-neutral-200 p-6">
+          <div className="rounded-xl bg-white border border-neutral-200 p-6">
             <h2 className="font-medium text-ink mb-4">Contact & Social</h2>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -190,7 +190,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   />
                 </div>
                 <div>
@@ -201,7 +201,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
                     type="tel"
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   />
                 </div>
               </div>
@@ -215,7 +215,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
                     type="url"
                     value={form.linkedin}
                     onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   />
                 </div>
                 <div>
@@ -226,7 +226,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
                     type="url"
                     value={form.twitter}
                     onChange={(e) => setForm({ ...form, twitter: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   />
                 </div>
               </div>
@@ -234,7 +234,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
           </div>
 
           {/* Settings */}
-          <div className="bg-white border border-neutral-200 p-6">
+          <div className="rounded-xl bg-white border border-neutral-200 p-6">
             <h2 className="font-medium text-ink mb-4">Settings</h2>
             <div className="flex flex-wrap items-end gap-6">
               <div>
@@ -245,7 +245,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
                   type="number"
                   value={form.displayOrder}
                   onChange={(e) => setForm({ ...form, displayOrder: e.target.value })}
-                  className="w-24 px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                  className="rounded-lg w-24 px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   min="0"
                 />
                 <p className="text-xs text-neutral-500 mt-1">Lower numbers appear first</p>
@@ -271,14 +271,14 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
             <div className="flex items-center gap-4 ml-auto">
               <Link
                 href="/admin/team"
-                className="px-6 py-3 border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
+                className="rounded-lg px-6 py-3 border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-3 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-lg px-6 py-3 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>

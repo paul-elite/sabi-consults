@@ -27,7 +27,7 @@ export default async function TeamSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {teamMembers.map((member) => (
-            <div key={member.id} className="bg-white group">
+            <div key={member.id} className="bg-white group rounded-xl overflow-hidden">
               {/* Image */}
               <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100">
                 {member.image ? (

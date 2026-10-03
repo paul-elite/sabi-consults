@@ -196,7 +196,7 @@ export default async function BlogPage() {
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-ink text-sm font-medium rounded hover:bg-neutral-100 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-ink text-sm font-medium rounded-lg hover:bg-neutral-100 transition-colors"
             >
               Get in Touch
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

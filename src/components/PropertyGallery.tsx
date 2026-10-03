@@ -16,7 +16,7 @@ export default function PropertyGallery({ images, title }: { images: string[]; t
 
   if (images.length === 0) {
     return (
-      <div className="aspect-[4/3] sm:aspect-[21/9] bg-brand-soft grid place-items-center text-brand/40 text-sm">
+      <div className="rounded-xl overflow-hidden aspect-[4/3] sm:aspect-[21/9] bg-brand-soft grid place-items-center text-brand/40 text-sm">
         Photos coming soon
       </div>
     )
@@ -25,7 +25,7 @@ export default function PropertyGallery({ images, title }: { images: string[]; t
   return (
     <>
       {/* Phones and tablets: swipe */}
-      <div className="relative lg:hidden">
+      <div className="relative lg:hidden rounded-xl overflow-hidden">
         <div ref={track} onScroll={onScroll} className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none aspect-[4/3] sm:aspect-[16/9] bg-brand-soft">
           {images.map((src, i) => (
             <button key={src + i} type="button" onClick={() => setViewer(i)} className="relative shrink-0 w-full h-full snap-center" aria-label={`Open photo ${i + 1} of ${images.length}`}>
@@ -44,7 +44,7 @@ export default function PropertyGallery({ images, title }: { images: string[]; t
       <div className="hidden lg:grid max-w-7xl mx-auto px-8 pt-6 grid-cols-4 grid-rows-2 gap-2 h-[480px]">
         {images.slice(0, 3).map((src, i) => (
           <button key={src + i} type="button" onClick={() => setViewer(i)}
-            className={`relative overflow-hidden bg-brand-soft group ${i === 0 ? 'col-span-3 row-span-2 rounded-l-xl' : 'rounded-r-xl'} ${images.length === 1 ? 'col-span-4 rounded-xl' : ''} ${images.length === 2 && i === 1 ? 'row-span-2' : ''}`}
+            className={`relative overflow-hidden bg-brand-soft rounded-xl group ${i === 0 ? 'col-span-3 row-span-2' : ''} ${images.length === 1 ? 'col-span-4' : ''} ${images.length === 2 && i === 1 ? 'row-span-2' : ''}`}
             aria-label={`Open photo ${i + 1} of ${images.length}`}>
             <Image src={src} alt={i === 0 ? title : ''} fill priority={i === 0} className="object-cover text-transparent transition-transform duration-500 group-hover:scale-[1.02]" sizes={i === 0 ? '75vw' : '25vw'} />
             {i === 2 && images.length > 3 && (

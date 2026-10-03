@@ -35,14 +35,14 @@ function Uploader({ label, hint, value, onChange, dark }: { label: string; hint:
       <p className="text-sm font-medium text-ink mb-1">{label}</p>
       <p className="text-xs text-neutral-500 mb-3">{hint}</p>
       <div className="flex items-center gap-3 flex-wrap">
-        <div className="h-16 w-40 border border-neutral-200 grid place-items-center overflow-hidden" style={{ background: dark || '#fff' }}>
+        <div className="rounded-xl h-16 w-40 border border-neutral-200 grid place-items-center overflow-hidden" style={{ background: dark || '#fff' }}>
           {value
             // eslint-disable-next-line @next/next/no-img-element
             ? <img src={value} alt="" className="max-h-12 max-w-36 object-contain" />
             : <span className="text-xs text-neutral-400">None</span>}
         </div>
         <button type="button" onClick={() => input.current?.click()} disabled={busy}
-          className="h-11 px-4 border border-neutral-300 text-sm hover:border-ink disabled:opacity-50">
+          className="rounded-lg h-11 px-4 border border-neutral-300 text-sm hover:border-ink disabled:opacity-50">
           {busy ? 'Uploading…' : value ? 'Replace' : 'Upload'}
         </button>
         {value && <button type="button" onClick={() => onChange('')} className="h-11 px-3 text-sm text-neutral-500 hover:text-red-600">Remove</button>}
@@ -63,9 +63,9 @@ function ColorField({ label, hint, value, onChange, error }: { label: string; hi
       <p className="text-xs text-neutral-500 mb-2">{hint}</p>
       <div className="flex items-center gap-2">
         <input type="color" value={isHex(value) ? value : '#000000'} onChange={e => onChange(e.target.value)}
-          className="h-11 w-14 border border-neutral-300 bg-white p-1 cursor-pointer" aria-label={`${label} picker`} />
+          className="rounded-lg h-11 w-14 border border-neutral-300 bg-white p-1 cursor-pointer" aria-label={`${label} picker`} />
         <input value={text} onChange={e => { setText(e.target.value); if (isHex(e.target.value)) onChange(e.target.value) }}
-          className={`h-11 w-32 px-3 border font-mono text-sm uppercase ${error || !isHex(text) ? 'border-red-400' : 'border-neutral-300'}`}
+          className={`rounded-lg h-11 w-32 px-3 border font-mono text-sm uppercase ${error || !isHex(text) ? 'border-red-400' : 'border-neutral-300'}`}
           aria-label={`${label} hex value`} maxLength={7} />
       </div>
       {(error || !isHex(text)) && <p className="text-xs text-red-600 mt-1">{error || 'Use a colour like #0055CC.'}</p>}
@@ -128,14 +128,14 @@ function BrandingEditor() {
             <div>
               <label htmlFor="b-name" className="text-sm font-medium text-ink">Company name</label>
               <input id="b-name" value={brand.name} onChange={e => set('name', e.target.value)} maxLength={60}
-                className={`mt-2 w-full h-11 px-3 border ${fieldErrors.name ? 'border-red-400' : 'border-neutral-300'}`} />
+                className={`rounded-lg mt-2 w-full h-11 px-3 border ${fieldErrors.name ? 'border-red-400' : 'border-neutral-300'}`} />
               {fieldErrors.name && <p className="text-xs text-red-600 mt-1">{fieldErrors.name}</p>}
             </div>
             <div>
               <label htmlFor="b-tag" className="text-sm font-medium text-ink">Tagline</label>
               <p className="text-xs text-neutral-500">Used in the footer and search results.</p>
               <input id="b-tag" value={brand.tagline} onChange={e => set('tagline', e.target.value)} maxLength={160}
-                className="mt-2 w-full h-11 px-3 border border-neutral-300" />
+                className="rounded-lg mt-2 w-full h-11 px-3 border border-neutral-300" />
             </div>
           </section>
 
@@ -160,7 +160,7 @@ function BrandingEditor() {
                   return (
                     <button key={p.name} type="button" aria-pressed={active}
                       onClick={() => setBrand({ ...brand, colorPrimary: p.primary, colorInk: p.ink, colorSurface: p.surface })}
-                      className={`flex items-center gap-3 p-3 border text-left text-sm min-h-12 ${active ? 'border-ink ring-1 ring-ink' : 'border-neutral-200 hover:border-neutral-400'}`}>
+                      className={`rounded-lg flex items-center gap-3 p-3 border text-left text-sm min-h-12 ${active ? 'border-ink ring-1 ring-ink' : 'border-neutral-200 hover:border-neutral-400'}`}>
                       <span className="flex -space-x-1.5 shrink-0">
                         {[p.primary, p.ink, p.surface].map(c => <span key={c} className="w-5 h-5 rounded-full border border-white" style={{ background: c }} />)}
                       </span>
@@ -176,7 +176,7 @@ function BrandingEditor() {
               <ColorField label="Soft background" hint="Alternate sections" value={brand.colorSurface} onChange={v => set('colorSurface', v)} error={fieldErrors.colorSurface} />
             </div>
             {(textContrast < 7 || btnContrast < 3) && (
-              <div className="p-3 bg-amber-50 text-amber-800 text-sm">
+              <div className="rounded-lg p-3 bg-amber-50 text-amber-800 text-sm">
                 {textContrast < 7 && <p>The text colour is quite light, so body copy may be hard to read. A darker shade is safer.</p>}
                 {btnContrast < 3 && <p>Button text may be hard to read on this primary colour. Try a deeper shade.</p>}
               </div>
@@ -187,7 +187,7 @@ function BrandingEditor() {
         {/* Live preview */}
         <aside className="lg:sticky lg:top-20 space-y-3">
           <p className="text-sm font-medium text-ink">Preview</p>
-          <div style={previewVars} className="border border-neutral-200 bg-white overflow-hidden text-[13px]">
+          <div style={previewVars} className="rounded-xl border border-neutral-200 bg-white overflow-hidden text-[13px]">
             <div className="flex items-center justify-between px-4 h-14" style={{ background: 'var(--p)', color: 'var(--on)' }}>
               {brand.logoUrl
                 // eslint-disable-next-line @next/next/no-img-element
@@ -198,10 +198,10 @@ function BrandingEditor() {
             <div className="p-5" style={{ color: 'var(--ink)' }}>
               <p className="font-heading text-xl leading-tight mb-2">Find land and homes in Abuja</p>
               <p className="opacity-70 mb-4">Plots in Asokoro, Guzape and Kubwa with flexible payment plans.</p>
-              <span className="inline-block px-4 py-2.5 font-medium" style={{ background: 'var(--p)', color: 'var(--on)' }}>View properties</span>
+              <span className="rounded-lg inline-block px-4 py-2.5 font-medium" style={{ background: 'var(--p)', color: 'var(--on)' }}>View properties</span>
             </div>
             <div className="p-5" style={{ background: 'var(--s)', color: 'var(--ink)' }}>
-              <div className="bg-white border border-black/5">
+              <div className="rounded-xl overflow-hidden bg-white border border-black/5">
                 <div className="h-24" style={{ background: 'linear-gradient(135deg, var(--s), #d9d4cc)' }} />
                 <div className="p-3">
                   <p className="font-semibold">Emerald Grove City</p>
@@ -224,11 +224,11 @@ function BrandingEditor() {
         )}
         <div className="flex gap-2">
           <button type="button" onClick={save} disabled={!dirty || saving}
-            className="flex-1 lg:flex-none h-12 px-6 bg-brand text-on-brand font-medium disabled:opacity-40">
+            className="rounded-lg flex-1 lg:flex-none h-12 px-6 bg-brand text-on-brand font-medium disabled:opacity-40">
             {saving ? 'Saving…' : dirty ? 'Save branding' : 'Saved'}
           </button>
           {dirty && (
-            <button type="button" onClick={() => saved && setBrand(saved)} className="h-12 px-4 border border-neutral-300 text-sm">Undo changes</button>
+            <button type="button" onClick={() => saved && setBrand(saved)} className="rounded-lg h-12 px-4 border border-neutral-300 text-sm">Undo changes</button>
           )}
           <button type="button" className="hidden sm:block h-12 px-4 text-sm text-neutral-500 hover:text-ink ml-auto"
             onClick={() => { if (confirm('Reset name, logo and colours to the original defaults? You can still undo before saving.')) setBrand({ ...DEFAULT_BRAND }) }}>

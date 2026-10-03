@@ -45,7 +45,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
   }, [execCommand])
 
   return (
-    <div className="border border-neutral-200 bg-white">
+    <div className="rounded-xl overflow-hidden border border-neutral-200 bg-white">
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-1 p-2 border-b border-neutral-200 bg-neutral-50">
         {/* Text formatting */}
@@ -53,7 +53,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('bold')}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Bold"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -64,7 +64,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('italic')}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Italic"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -74,7 +74,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('underline')}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Underline"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -88,7 +88,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h2')}
-            className="px-2 py-1 text-sm font-medium hover:bg-neutral-200 transition-colors"
+            className="rounded-lg px-2 py-1 text-sm font-medium hover:bg-neutral-200 transition-colors"
             title="Heading 2"
           >
             H2
@@ -96,7 +96,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h3')}
-            className="px-2 py-1 text-sm font-medium hover:bg-neutral-200 transition-colors"
+            className="rounded-lg px-2 py-1 text-sm font-medium hover:bg-neutral-200 transition-colors"
             title="Heading 3"
           >
             H3
@@ -104,7 +104,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'h4')}
-            className="px-2 py-1 text-sm font-medium hover:bg-neutral-200 transition-colors"
+            className="rounded-lg px-2 py-1 text-sm font-medium hover:bg-neutral-200 transition-colors"
             title="Heading 4"
           >
             H4
@@ -112,7 +112,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'p')}
-            className="px-2 py-1 text-sm hover:bg-neutral-200 transition-colors"
+            className="rounded-lg px-2 py-1 text-sm hover:bg-neutral-200 transition-colors"
             title="Paragraph"
           >
             P
@@ -124,7 +124,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('insertUnorderedList')}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Bullet List"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -134,7 +134,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('insertOrderedList')}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Numbered List"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -148,7 +148,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={insertLink}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Insert Link"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -158,7 +158,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={insertImage}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Insert Image"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -168,7 +168,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('formatBlock', 'blockquote')}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Quote"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -182,7 +182,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('justifyLeft')}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Align Left"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -192,7 +192,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           <button
             type="button"
             onClick={() => execCommand('justifyCenter')}
-            className="p-2 hover:bg-neutral-200 transition-colors"
+            className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Align Center"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">

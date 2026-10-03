@@ -91,7 +91,7 @@ export default function AdminBlogPage() {
           </div>
           <Link
             href="/admin/blog/new"
-            className="px-4 py-2 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
+            className="rounded-lg px-4 py-2 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
           >
             New Post
           </Link>
@@ -101,20 +101,20 @@ export default function AdminBlogPage() {
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {blogs.length === 0 ? (
-          <div className="bg-white border border-neutral-200 p-12 text-center">
+          <div className="rounded-xl bg-white border border-neutral-200 p-12 text-center">
             <svg className="w-12 h-12 mx-auto text-neutral-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2" />
             </svg>
             <p className="text-neutral-500 mb-4">No blog posts yet</p>
             <Link
               href="/admin/blog/new"
-              className="inline-flex px-6 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
+              className="rounded-lg inline-flex px-6 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
             >
               Create Your First Post
             </Link>
           </div>
         ) : (
-          <div className="bg-white border border-neutral-200">
+          <div className="rounded-xl overflow-hidden bg-white border border-neutral-200">
             <table className="w-full">
               <thead className="bg-neutral-50 border-b border-neutral-200">
                 <tr>
@@ -135,7 +135,7 @@ export default function AdminBlogPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium ${
+                      <span className={`rounded-full inline-flex px-2 py-1 text-xs font-medium ${
                         blog.status === 'published'
                           ? 'bg-green-100 text-green-700'
                           : 'bg-yellow-100 text-yellow-700'

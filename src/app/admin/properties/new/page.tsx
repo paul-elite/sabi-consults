@@ -286,7 +286,7 @@ export default function NewPropertyPage() {
           {/* Main Form */}
           <div className="lg:col-span-2 space-y-8">
             {/* Basic Info */}
-            <div className="bg-white border border-neutral-200 p-6">
+            <div className="rounded-xl bg-white border border-neutral-200 p-6">
               <h2 className="font-medium text-ink mb-6">Basic Information</h2>
               <div className="space-y-4">
                 <div>
@@ -298,7 +298,7 @@ export default function NewPropertyPage() {
                     required
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                     placeholder="e.g., Sunrise Gardens Estate or 5 Bedroom Detached Duplex"
                   />
                 </div>
@@ -312,7 +312,7 @@ export default function NewPropertyPage() {
                     rows={6}
                     value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
                     placeholder="Detailed description of the property..."
                   />
                 </div>
@@ -324,7 +324,7 @@ export default function NewPropertyPage() {
                   <select
                     value={form.type}
                     onChange={(e) => setForm({ ...form, type: e.target.value as 'land' | 'house' })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   >
                     <option value="house">House</option>
                     <option value="land">Land</option>
@@ -341,7 +341,7 @@ export default function NewPropertyPage() {
                       required
                       value={form.price}
                       onChange={(e) => setForm({ ...form, price: e.target.value })}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                      className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                       placeholder="e.g., 450000000"
                     />
                   </div>
@@ -354,7 +354,7 @@ export default function NewPropertyPage() {
                       type="text"
                       value={form.priceLabel}
                       onChange={(e) => setForm({ ...form, priceLabel: e.target.value })}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                      className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                       placeholder="e.g., Per Plot, Starting From"
                     />
                   </div>
@@ -363,7 +363,7 @@ export default function NewPropertyPage() {
             </div>
 
             {/* Property Details */}
-            <div className="bg-white border border-neutral-200 p-6">
+            <div className="rounded-xl bg-white border border-neutral-200 p-6">
               <h2 className="font-medium text-ink mb-2">Property Details</h2>
               <p className="text-sm text-neutral-500 mb-6">Default details for single unit properties. Use variations below for estates with multiple unit types.</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -377,7 +377,7 @@ export default function NewPropertyPage() {
                         type="number"
                         value={form.bedrooms}
                         onChange={(e) => setForm({ ...form, bedrooms: e.target.value })}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                        className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                         placeholder="0"
                       />
                     </div>
@@ -390,7 +390,7 @@ export default function NewPropertyPage() {
                         type="number"
                         value={form.bathrooms}
                         onChange={(e) => setForm({ ...form, bathrooms: e.target.value })}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                        className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                         placeholder="0"
                       />
                     </div>
@@ -403,7 +403,7 @@ export default function NewPropertyPage() {
                         type="number"
                         value={form.bq}
                         onChange={(e) => setForm({ ...form, bq: e.target.value })}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                        className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                         placeholder="0"
                       />
                     </div>
@@ -418,7 +418,7 @@ export default function NewPropertyPage() {
                     type="number"
                     value={form.landSize}
                     onChange={(e) => setForm({ ...form, landSize: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                     placeholder="0"
                   />
                 </div>
@@ -426,13 +426,13 @@ export default function NewPropertyPage() {
             </div>
 
             {/* Variations */}
-            <div className="bg-white border border-neutral-200 p-6">
+            <div className="rounded-xl bg-white border border-neutral-200 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="font-medium text-ink">Variations (Optional)</h2>
                 <button
                   type="button"
                   onClick={addVariation}
-                  className="px-3 py-1.5 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
+                  className="rounded-lg px-3 py-1.5 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
                 >
                   + Add Variation
                 </button>
@@ -442,14 +442,14 @@ export default function NewPropertyPage() {
               </p>
 
               {variations.length === 0 ? (
-                <div className="text-center py-8 border-2 border-dashed border-neutral-200">
+                <div className="rounded-xl text-center py-8 border-2 border-dashed border-neutral-200">
                   <p className="text-neutral-500 text-sm">No variations added yet.</p>
                   <p className="text-neutral-400 text-xs mt-1">Click &quot;Add Variation&quot; for estates with multiple unit types.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {variations.map((variation, index) => (
-                    <div key={variation.id} className="border border-neutral-200 p-4 relative">
+                    <div key={variation.id} className="rounded-xl border border-neutral-200 p-4 relative">
                       <button
                         type="button"
                         onClick={() => removeVariation(variation.id)}
@@ -473,7 +473,7 @@ export default function NewPropertyPage() {
                             type="text"
                             value={variation.name}
                             onChange={(e) => updateVariation(variation.id, 'name', e.target.value)}
-                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                            className="rounded-lg w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                             placeholder="e.g., 3 Bedroom Terrace or 500 sqm Plot"
                           />
                         </div>
@@ -486,7 +486,7 @@ export default function NewPropertyPage() {
                             type="number"
                             value={variation.price}
                             onChange={(e) => updateVariation(variation.id, 'price', e.target.value)}
-                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                            className="rounded-lg w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                             placeholder="0"
                           />
                         </div>
@@ -499,7 +499,7 @@ export default function NewPropertyPage() {
                             type="number"
                             value={variation.unitsAvailable}
                             onChange={(e) => updateVariation(variation.id, 'unitsAvailable', e.target.value)}
-                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                            className="rounded-lg w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                             placeholder="0"
                           />
                         </div>
@@ -514,7 +514,7 @@ export default function NewPropertyPage() {
                                 type="number"
                                 value={variation.bedrooms}
                                 onChange={(e) => updateVariation(variation.id, 'bedrooms', e.target.value)}
-                                className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                                className="rounded-lg w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                                 placeholder="0"
                               />
                             </div>
@@ -527,7 +527,7 @@ export default function NewPropertyPage() {
                                 type="number"
                                 value={variation.bathrooms}
                                 onChange={(e) => updateVariation(variation.id, 'bathrooms', e.target.value)}
-                                className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                                className="rounded-lg w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                                 placeholder="0"
                               />
                             </div>
@@ -540,7 +540,7 @@ export default function NewPropertyPage() {
                                 type="number"
                                 value={variation.bq}
                                 onChange={(e) => updateVariation(variation.id, 'bq', e.target.value)}
-                                className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                                className="rounded-lg w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                                 placeholder="0"
                               />
                             </div>
@@ -555,7 +555,7 @@ export default function NewPropertyPage() {
                             type="number"
                             value={variation.landSize}
                             onChange={(e) => updateVariation(variation.id, 'landSize', e.target.value)}
-                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                            className="rounded-lg w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                             placeholder="0"
                           />
                         </div>
@@ -567,7 +567,7 @@ export default function NewPropertyPage() {
                           <select
                             value={variation.status}
                             onChange={(e) => updateVariation(variation.id, 'status', e.target.value)}
-                            className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                            className="rounded-lg w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                           >
                             <option value="available">Available</option>
                             <option value="pending">Pending</option>
@@ -582,7 +582,7 @@ export default function NewPropertyPage() {
             </div>
 
             {/* Location */}
-            <div className="bg-white border border-neutral-200 p-6">
+            <div className="rounded-xl bg-white border border-neutral-200 p-6">
               <h2 className="font-medium text-ink mb-6">Location</h2>
               <div className="space-y-4">
                 {/* Google Maps URL Input */}
@@ -595,7 +595,7 @@ export default function NewPropertyPage() {
                       type="text"
                       value={googleMapsUrl}
                       onChange={(e) => handleGoogleMapsUrl(e.target.value)}
-                      className="flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                      className="rounded-lg flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                       placeholder="Paste Google Maps share link here..."
                     />
                     <button
@@ -605,7 +605,7 @@ export default function NewPropertyPage() {
                           handleGoogleMapsUrl(text)
                         })
                       }}
-                      className="px-4 py-3 bg-neutral-100 border border-neutral-200 text-sm text-neutral-600 hover:bg-neutral-200 transition-colors"
+                      className="rounded-lg px-4 py-3 bg-neutral-100 border border-neutral-200 text-sm text-neutral-600 hover:bg-neutral-200 transition-colors"
                       title="Paste from clipboard"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -629,7 +629,7 @@ export default function NewPropertyPage() {
                     <select
                       value={form.district}
                       onChange={(e) => handleDistrictChange(e.target.value)}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                      className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                     >
                       {districts.map((d) => (
                         <option key={d.id} value={d.name}>{d.name}</option>
@@ -646,7 +646,7 @@ export default function NewPropertyPage() {
                       required
                       value={form.address}
                       onChange={(e) => setForm({ ...form, address: e.target.value })}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                      className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                       placeholder="e.g., 24 Yedseram Street, Maitama, Abuja"
                     />
                   </div>
@@ -663,7 +663,7 @@ export default function NewPropertyPage() {
                       required
                       value={form.latitude}
                       onChange={(e) => setForm({ ...form, latitude: e.target.value })}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                      className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                     />
                   </div>
 
@@ -677,13 +677,13 @@ export default function NewPropertyPage() {
                       required
                       value={form.longitude}
                       onChange={(e) => setForm({ ...form, longitude: e.target.value })}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                      className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                     />
                   </div>
                 </div>
 
                 {/* Map Preview */}
-                <div className="h-64 border border-neutral-200">
+                <div className="rounded-xl overflow-hidden h-64 border border-neutral-200">
                   <Suspense fallback={<div className="w-full h-full bg-neutral-100" />}>
                     <AbujaMap selectedProperty={previewProperty} />
                   </Suspense>
@@ -695,7 +695,7 @@ export default function NewPropertyPage() {
             </div>
 
             {/* Images */}
-            <div className="bg-white border border-neutral-200 p-6">
+            <div className="rounded-xl bg-white border border-neutral-200 p-6">
               <h2 className="font-medium text-ink mb-6">Property Images</h2>
               <ImageUploader
                 images={images}
@@ -705,7 +705,7 @@ export default function NewPropertyPage() {
             </div>
 
             {/* Features */}
-            <div className="bg-white border border-neutral-200 p-6">
+            <div className="rounded-xl bg-white border border-neutral-200 p-6">
               <h2 className="font-medium text-ink mb-6">Features</h2>
               <div>
                 <label className="block text-sm font-medium text-neutral-600 mb-1">
@@ -715,7 +715,7 @@ export default function NewPropertyPage() {
                   rows={4}
                   value={form.features}
                   onChange={(e) => setForm({ ...form, features: e.target.value })}
-                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
+                  className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
                   placeholder="Swimming Pool&#10;Generator House&#10;Security Post"
                 />
               </div>
@@ -726,7 +726,7 @@ export default function NewPropertyPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-8 space-y-6">
               {/* Publish Settings */}
-              <div className="bg-white border border-neutral-200 p-6">
+              <div className="rounded-xl bg-white border border-neutral-200 p-6">
                 <h2 className="font-medium text-ink mb-6">Publish Settings</h2>
                 <div className="space-y-4">
                   <div>
@@ -736,7 +736,7 @@ export default function NewPropertyPage() {
                     <select
                       value={form.status}
                       onChange={(e) => setForm({ ...form, status: e.target.value as PropertyForm['status'] })}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                      className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                     >
                       <option value="available">Available</option>
                       <option value="pending">Pending</option>
@@ -757,14 +757,14 @@ export default function NewPropertyPage() {
               </div>
 
               {/* Submit */}
-              <div className="bg-white border border-neutral-200 p-6">
+              <div className="rounded-xl bg-white border border-neutral-200 p-6">
                 {error && (
                   <p className="text-sm text-red-600 mb-4">{error}</p>
                 )}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 bg-brand text-white text-sm font-medium uppercase tracking-wider hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-lg w-full py-3 bg-brand text-white text-sm font-medium uppercase tracking-wider hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Creating...' : 'Create Property'}
                 </button>

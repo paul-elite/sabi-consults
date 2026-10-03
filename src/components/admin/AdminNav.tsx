@@ -72,7 +72,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
             <nav className="hidden lg:flex items-center gap-1 text-sm" aria-label="Admin">
               {links.map(l => (
                 <Link key={l.href} href={l.href} aria-current={pathname?.startsWith(l.href) ? 'page' : undefined}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${pathname?.startsWith(l.href) ? 'bg-blue-50 text-[#0055cc] font-medium' : 'text-neutral-500 hover:text-ink hover:bg-neutral-50'}`}>
+                  className={`px-3 py-1.5 rounded-lg transition-colors ${pathname?.startsWith(l.href) ? 'bg-blue-50 text-[#0055cc] font-medium' : 'text-neutral-500 hover:text-ink hover:bg-neutral-50'}`}>
                   {l.label}
                 </Link>
               ))}
@@ -81,7 +81,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
               <Link href="/" target="_blank" className="text-neutral-500 hover:text-ink">View site ↗</Link>
               <span className="w-px h-4 bg-neutral-200" />
               <span className="text-neutral-600">{user.name} <span className="text-neutral-400">· {roleLabel(user.role)}</span></span>
-              <button onClick={signOut} className="px-3 py-1.5 text-neutral-500 hover:text-ink hover:bg-neutral-100 rounded-md transition-colors">Sign out</button>
+              <button onClick={signOut} className="px-3 py-1.5 text-neutral-500 hover:text-ink hover:bg-neutral-100 rounded-lg transition-colors">Sign out</button>
             </div>
             <button className="ml-auto lg:hidden w-11 h-11 grid place-items-center text-neutral-600" onClick={() => setOpen(o => !o)}
               aria-expanded={open} aria-label={open ? 'Close menu' : 'Open menu'}>
@@ -98,7 +98,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
               <Link href="/" target="_blank" className="block py-3 border-b border-neutral-100 text-neutral-600">View site ↗</Link>
               <div className="pt-4 flex items-center justify-between text-sm">
                 <span className="text-neutral-600">{user.name} · {roleLabel(user.role)}</span>
-                <button onClick={signOut} className="px-4 h-10 bg-neutral-100 text-neutral-700 rounded-md">Sign out</button>
+                <button onClick={signOut} className="px-4 h-10 bg-neutral-100 text-neutral-700 rounded-lg">Sign out</button>
               </div>
             </nav>
           )}
@@ -117,7 +117,7 @@ export function RequireRole({ min, children }: { min: AdminRole; children: React
     <div className="max-w-xl mx-auto px-4 py-20 text-center">
       <h1 className="text-2xl font-light text-ink mb-2">You don’t have access to this page</h1>
       <p className="text-neutral-500 mb-6">Only a {roleLabel(min).toLowerCase()} can open it. Ask a super admin if you need access.</p>
-      <Link href="/admin/dashboard" className="inline-block px-5 py-3 bg-brand text-on-brand">Back to dashboard</Link>
+      <Link href="/admin/dashboard" className="rounded-lg inline-block px-5 py-3 bg-brand text-on-brand">Back to dashboard</Link>
     </div>
   )
 }

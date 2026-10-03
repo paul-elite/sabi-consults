@@ -171,7 +171,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
       {images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {images.map((url, index) => (
-            <div key={url} className="relative group aspect-square bg-neutral-100">
+            <div key={url} className="rounded-xl overflow-hidden relative group aspect-square bg-neutral-100">
               <Image
                 src={url}
                 alt={`Property image ${index + 1}`}
@@ -182,7 +182,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
 
               {/* First image badge */}
               {index === 0 && (
-                <span className="absolute top-2 left-2 px-2 py-0.5 bg-brand text-white text-xs font-medium">
+                <span className="rounded-full absolute top-2 left-2 px-2 py-0.5 bg-brand text-white text-xs font-medium">
                   Main
                 </span>
               )}
@@ -240,7 +240,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
           <input
             type="text"
             placeholder="https://example.com/image.jpg"
-            className="flex-1 px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+            className="rounded-lg flex-1 px-3 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault()
@@ -263,7 +263,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
                 input.value = ''
               }
             }}
-            className="px-4 py-2 bg-neutral-100 border border-neutral-200 text-sm hover:bg-neutral-200 transition-colors"
+            className="rounded-lg px-4 py-2 bg-neutral-100 border border-neutral-200 text-sm hover:bg-neutral-200 transition-colors"
           >
             Add
           </button>

@@ -105,7 +105,7 @@ export default function AdminTeamPage() {
           </div>
           <Link
             href="/admin/team/new"
-            className="px-4 py-2 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
+            className="rounded-lg px-4 py-2 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
           >
             Add Member
           </Link>
@@ -115,14 +115,14 @@ export default function AdminTeamPage() {
       {/* Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {members.length === 0 ? (
-          <div className="bg-white border border-neutral-200 p-12 text-center">
+          <div className="rounded-xl bg-white border border-neutral-200 p-12 text-center">
             <svg className="w-12 h-12 mx-auto text-neutral-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             <p className="text-neutral-500 mb-4">No team members yet</p>
             <Link
               href="/admin/team/new"
-              className="inline-flex px-6 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
+              className="rounded-lg inline-flex px-6 py-3 bg-brand text-white text-sm font-medium hover:bg-brand-dark transition-colors"
             >
               Add Your First Team Member
             </Link>
@@ -132,7 +132,7 @@ export default function AdminTeamPage() {
             {members.map((member) => (
               <div
                 key={member.id}
-                className={`bg-white border border-neutral-200 overflow-hidden ${!member.is_active ? 'opacity-60' : ''}`}
+                className={`rounded-xl bg-white border border-neutral-200 overflow-hidden ${!member.is_active ? 'opacity-60' : ''}`}
               >
                 {/* Image */}
                 <div className="relative aspect-[4/3] bg-neutral-100">
@@ -152,7 +152,7 @@ export default function AdminTeamPage() {
                     </div>
                   )}
                   {!member.is_active && (
-                    <div className="absolute top-2 right-2 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium">
+                    <div className="rounded-full absolute top-2 right-2 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium">
                       Inactive
                     </div>
                   )}
@@ -173,13 +173,13 @@ export default function AdminTeamPage() {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/admin/team/${member.id}`}
-                      className="px-3 py-1.5 text-sm text-brand hover:bg-blue-50 transition-colors"
+                      className="rounded-lg px-3 py-1.5 text-sm text-brand hover:bg-blue-50 transition-colors"
                     >
                       Edit
                     </Link>
                     <button
                       onClick={() => toggleActive(member)}
-                      className="px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 transition-colors"
+                      className="rounded-lg px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 transition-colors"
                     >
                       {member.is_active ? 'Deactivate' : 'Activate'}
                     </button>

@@ -43,11 +43,12 @@
   --space-12: 3rem;     /* 48px - major */
   --space-16: 4rem;     /* 64px */
 
-  /* Border radius scale */
+  /* Radius system: 12px controls, 16px cards/media, 24px feature panels.
+     Pills and avatars stay fully rounded. Joined controls keep square inner edges. */
   --radius-sm: 0.25rem;    /* 4px  - subtle */
-  --radius-md: 0.5rem;     /* 8px  - inputs, buttons */
-  --radius-lg: 0.75rem;    /* 12px - cards, containers */
-  --radius-xl: 1rem;       /* 16px - large cards */
+  --radius-md: 0.5rem;     /* 8px  - compact details */
+  --radius-lg: 0.75rem;    /* 12px - inputs, buttons */
+  --radius-xl: 1rem;       /* 16px - cards, media */
   --radius-2xl: 1.5rem;    /* 24px - feature sections */
   --radius-full: 9999px;   /* pills, avatars */
 
@@ -332,7 +333,6 @@ body { overflow-x: hidden; }
   font-size: 0.875rem;
   line-height: 1;
   letter-spacing: -0.006em;
-  border-radius: var(--radius-md);
   transition: all var(--transition-normal);
   cursor: pointer;
   white-space: nowrap;
@@ -469,7 +469,6 @@ body { overflow-x: hidden; }
   font-size: 0.9375rem;
   background-color: white;
   border: 1px solid #e5e5e5;
-  border-radius: var(--radius-md);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
@@ -549,7 +548,6 @@ body { overflow-x: hidden; }
 /* ---------- Cards ---------- */
 .card {
   background-color: white;
-  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
@@ -668,7 +666,6 @@ body { overflow-x: hidden; }
 /* ---------- Alerts/Notices ---------- */
 .alert {
   padding: 0.875rem 1rem;
-  border-radius: var(--radius-md);
   font-size: 0.875rem;
 }
 
@@ -756,3 +753,15 @@ body { overflow-x: hidden; }
 @keyframes spinner-rotate {
   to { transform: rotate(360deg); }
 }
+
+/* Radius utilities can override joined edges without changing other component styles. */
+@layer components {
+  .btn, .form-input, .alert { border-radius: var(--radius-lg); }
+  .card { border-radius: var(--radius-xl); }
+}
+
+/* Keep map chrome aligned with the rest of the interface. */
+.leaflet-popup-content-wrapper { border-radius: var(--radius-xl); }
+.leaflet-bar { border-radius: var(--radius-lg); overflow: hidden; }
+.leaflet-bar a:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.leaflet-bar a:last-child { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }

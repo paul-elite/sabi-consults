@@ -9,7 +9,7 @@ import ImageUploader from '@/components/ImageUploader'
 // Dynamic import for rich text editor
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
   ssr: false,
-  loading: () => <div className="min-h-[400px] bg-neutral-100 animate-pulse" />,
+  loading: () => <div className="rounded-xl min-h-[400px] bg-neutral-100 animate-pulse" />,
 })
 
 function generateSlug(title: string): string {
@@ -140,7 +140,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
       <main className="max-w-5xl mx-auto px-6 py-8">
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Title & Slug */}
-          <div className="bg-white border border-neutral-200 p-6">
+          <div className="rounded-xl bg-white border border-neutral-200 p-6">
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-600 mb-1">
@@ -151,7 +151,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                   required
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-lg focus:outline-none focus:border-neutral-400"
+                  className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-lg focus:outline-none focus:border-neutral-400"
                   placeholder="Enter blog post title"
                 />
               </div>
@@ -161,7 +161,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                   URL Slug *
                 </label>
                 <div className="flex items-center">
-                  <span className="px-4 py-3 bg-neutral-100 border border-r-0 border-neutral-200 text-sm text-neutral-500">
+                  <span className="rounded-l-lg px-4 py-3 bg-neutral-100 border border-r-0 border-neutral-200 text-sm text-neutral-500">
                     /blog/
                   </span>
                   <input
@@ -169,7 +169,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                     required
                     value={form.slug}
                     onChange={(e) => setForm({ ...form, slug: generateSlug(e.target.value) })}
-                    className="flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-r-lg flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                     placeholder="url-slug"
                   />
                 </div>
@@ -183,7 +183,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                   rows={2}
                   value={form.excerpt}
                   onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
+                  className="rounded-lg w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-none"
                   placeholder="Brief description for previews and SEO"
                 />
               </div>
@@ -191,7 +191,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
           </div>
 
           {/* Cover Image */}
-          <div className="bg-white border border-neutral-200 p-6">
+          <div className="rounded-xl bg-white border border-neutral-200 p-6">
             <h2 className="font-medium text-ink mb-4">Cover Image</h2>
             <ImageUploader
               images={coverImage}
@@ -201,7 +201,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
           </div>
 
           {/* Content */}
-          <div className="bg-white border border-neutral-200 p-6">
+          <div className="rounded-xl bg-white border border-neutral-200 p-6">
             <h2 className="font-medium text-ink mb-4">Content *</h2>
             <RichTextEditor
               value={content}
@@ -211,7 +211,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
           </div>
 
           {/* Settings & Submit */}
-          <div className="bg-white border border-neutral-200 p-6">
+          <div className="rounded-xl bg-white border border-neutral-200 p-6">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
               <div className="flex flex-wrap gap-4">
                 <div>
@@ -222,7 +222,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                     type="text"
                     value={form.author}
                     onChange={(e) => setForm({ ...form, author: e.target.value })}
-                    className="px-4 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg px-4 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   />
                 </div>
 
@@ -233,7 +233,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                   <select
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value as 'draft' | 'published' })}
-                    className="px-4 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
+                    className="rounded-lg px-4 py-2 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
@@ -247,14 +247,14 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                 )}
                 <Link
                   href="/admin/blog"
-                  className="px-6 py-3 border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
+                  className="rounded-lg px-6 py-3 border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
                 >
                   Cancel
                 </Link>
                 <button
                   type="submit"
                   disabled={saving || !content.trim()}
-                  className="px-6 py-3 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-lg px-6 py-3 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>

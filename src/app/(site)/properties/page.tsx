@@ -104,7 +104,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             <span className="text-neutral-500 hidden sm:inline mr-1">Sort:</span>
             {[['', 'Newest'], ['price-asc', 'Price ↑'], ['price-desc', 'Price ↓']].map(([v, label]) => (
               <Link key={v} href={href({ sort: v || undefined })}
-                className={`px-2.5 py-1.5 rounded-md whitespace-nowrap ${(params.sort || '') === v ? 'bg-neutral-100 text-ink font-medium' : 'text-neutral-500 hover:text-ink'}`}>
+                className={`px-2.5 py-1.5 rounded-lg whitespace-nowrap ${(params.sort || '') === v ? 'bg-neutral-100 text-ink font-medium' : 'text-neutral-500 hover:text-ink'}`}>
                 {label}
               </Link>
             ))}
