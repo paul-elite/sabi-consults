@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Tick02Icon, UserIcon } from '@hugeicons/core-free-icons'
+
 import { useState, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -110,9 +113,7 @@ export default function JoinPage() {
       <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4 py-12">
         <div className="w-full max-w-md text-center">
           <div className="w-16 h-16 mx-auto mb-6 bg-emerald-100 rounded-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+            <HugeiconsIcon icon={Tick02Icon} className="w-8 h-8 text-emerald-600" strokeWidth={1.7} aria-hidden="true" />
           </div>
           <h1 className="text-2xl font-medium text-ink mb-2">Account created</h1>
           <p className="text-neutral-600 mb-8">
@@ -153,9 +154,7 @@ export default function JoinPage() {
                     <Image src={image} alt="" fill className="object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-neutral-400">
-                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
+                      <HugeiconsIcon icon={UserIcon} className="w-8 h-8" strokeWidth={1.7} aria-hidden="true" />
                     </div>
                   )}
                 </div>

@@ -1,3 +1,6 @@
+
+import { HugeiconsIcon } from '@hugeicons/react'
+import { MapsIcon } from '@hugeicons/core-free-icons'
 import Link from 'next/link'
 import PropertyCard from '@/components/PropertyCard'
 import { filterProperties } from '@/lib/properties'
@@ -120,7 +123,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 <rect width="100%" height="100%" fill="url(#grid)" />
               </svg>
               <span className="relative inline-flex items-center gap-2 h-11 px-5 rounded-full bg-ink text-white text-sm font-medium group-hover:bg-brand transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+                <HugeiconsIcon icon={MapsIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
                 Show on map
               </span>
             </Link>
@@ -142,7 +145,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
 
       {/* Floating map button on phones */}
       <Link href="/map" className="sm:hidden fixed left-1/2 -translate-x-1/2 bottom-[calc(1.25rem+env(safe-area-inset-bottom))] z-40 inline-flex items-center gap-2 h-12 px-5 rounded-full bg-ink text-white text-sm font-medium shadow-lg">
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+        <HugeiconsIcon icon={MapsIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
         Map
       </Link>
     </div>

@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Image01Icon, Link01Icon, ListSettingIcon, ListViewIcon, QuoteDownIcon, TextAlignCenterIcon, TextAlignLeftIcon, TextBoldIcon, TextItalicIcon, TextUnderlineIcon } from '@hugeicons/core-free-icons'
+
 import { useRef, useCallback } from 'react'
 
 interface RichTextEditorProps {
@@ -56,10 +59,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Bold"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z" />
-            </svg>
+            <HugeiconsIcon icon={TextBoldIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -67,9 +67,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Italic"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10 4h4m-2 0v16m0 0h-4m4 0h4" transform="skewX(-10)" />
-            </svg>
+            <HugeiconsIcon icon={TextItalicIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -77,9 +75,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Underline"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7 4v7a5 5 0 0010 0V4M5 21h14" />
-            </svg>
+            <HugeiconsIcon icon={TextUnderlineIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
         </div>
 
@@ -127,9 +123,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Bullet List"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-            </svg>
+            <HugeiconsIcon icon={ListViewIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -137,9 +131,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Numbered List"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7 6h13M7 12h13m-13 6h13M3 6v.01M3 12v.01M3 18v.01" />
-            </svg>
+            <HugeiconsIcon icon={ListSettingIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
         </div>
 
@@ -151,9 +143,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Insert Link"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
+            <HugeiconsIcon icon={Link01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -161,9 +151,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Insert Image"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
+            <HugeiconsIcon icon={Image01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -171,9 +159,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Quote"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
+            <HugeiconsIcon icon={QuoteDownIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
         </div>
 
@@ -185,9 +171,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Align Left"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h12M3 18h18" />
-            </svg>
+            <HugeiconsIcon icon={TextAlignLeftIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -195,9 +179,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="rounded-lg p-2 hover:bg-neutral-200 transition-colors"
             title="Align Center"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M6 12h12M3 18h18" />
-            </svg>
+            <HugeiconsIcon icon={TextAlignCenterIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
           </button>
         </div>
       </div>

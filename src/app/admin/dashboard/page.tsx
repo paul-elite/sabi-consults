@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Add01Icon, ArrowRight01Icon, Building03Icon, CallIcon, CheckmarkCircle01Icon, Mail01Icon, Message01Icon, StarIcon } from '@hugeicons/core-free-icons'
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -82,9 +85,7 @@ export default function AdminDashboard() {
           <div className="card card-body">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
+                <HugeiconsIcon icon={Building03Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
               </div>
               <div>
                 <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Properties</p>
@@ -95,9 +96,7 @@ export default function AdminDashboard() {
           <div className="card card-body">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <HugeiconsIcon icon={CheckmarkCircle01Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
               </div>
               <div>
                 <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Available</p>
@@ -110,9 +109,7 @@ export default function AdminDashboard() {
           <div className="card card-body">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-brand-soft flex items-center justify-center text-brand">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
+                <HugeiconsIcon icon={StarIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
               </div>
               <div>
                 <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Featured</p>
@@ -125,9 +122,7 @@ export default function AdminDashboard() {
           <div className="card card-body">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
+                <HugeiconsIcon icon={Message01Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
               </div>
               <div>
                 <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">New Inquiries</p>
@@ -177,9 +172,7 @@ export default function AdminDashboard() {
               <h2 className="font-medium text-ink">All Properties</h2>
               {canEdit && (
                 <Link href="/admin/properties/new" className="btn btn-md btn-primary">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
+                  <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
                   Add Property
                 </Link>
               )}
@@ -296,16 +289,12 @@ export default function AdminDashboard() {
                         </div>
                         <p className="text-sm text-neutral-500 mb-2 flex items-center gap-2">
                           <span className="flex items-center gap-1.5">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
+                            <HugeiconsIcon icon={Mail01Icon} className="w-3.5 h-3.5" strokeWidth={1.7} aria-hidden="true" />
                             {inquiry.email}
                           </span>
                           <span className="text-neutral-300">·</span>
                           <span className="flex items-center gap-1.5">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
+                            <HugeiconsIcon icon={CallIcon} className="w-3.5 h-3.5" strokeWidth={1.7} aria-hidden="true" />
                             {inquiry.phone}
                           </span>
                         </p>
@@ -313,9 +302,7 @@ export default function AdminDashboard() {
                         {inquiry.propertyId && (
                           <Link href={`/admin/properties/${inquiry.propertyId}`} className="text-sm text-brand hover:underline mt-3 inline-flex items-center gap-1">
                             View property
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
+                            <HugeiconsIcon icon={ArrowRight01Icon} className="w-3.5 h-3.5" strokeWidth={1.7} aria-hidden="true" />
                           </Link>
                         )}
                       </div>
@@ -328,9 +315,7 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div className="p-12 text-center">
-                <svg className="w-12 h-12 mx-auto text-neutral-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
+                <HugeiconsIcon icon={Message01Icon} className="w-12 h-12 mx-auto text-neutral-300 mb-4" strokeWidth={1.7} aria-hidden="true" />
                 <p className="text-neutral-500">No inquiries yet</p>
                 <p className="text-sm text-neutral-400 mt-1">Inquiries from your website will appear here</p>
               </div>

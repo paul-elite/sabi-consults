@@ -1,3 +1,6 @@
+
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowRight02Icon, News01Icon } from '@hugeicons/core-free-icons'
 import Link from 'next/link'
 import { getBrand } from '@/lib/brand'
 import Image from 'next/image'
@@ -42,9 +45,7 @@ function BlogCard({ blog, featured = false }: { blog: Blog; featured?: boolean }
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand/10 to-brand/5">
-              <svg className="w-12 h-12 text-brand/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2" />
-              </svg>
+              <HugeiconsIcon icon={News01Icon} className="w-12 h-12 text-brand/30" strokeWidth={1.7} aria-hidden="true" />
             </div>
           )}
           {/* Read time badge */}
@@ -105,9 +106,7 @@ export default async function BlogPage() {
           {blogs.length === 0 ? (
             <div className="bg-white rounded-xl p-12 text-center">
               <div className="w-16 h-16 bg-surface rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2" />
-                </svg>
+                <HugeiconsIcon icon={News01Icon} className="w-8 h-8 text-neutral-400" strokeWidth={1.7} aria-hidden="true" />
               </div>
               <h2 className="text-lg font-medium text-ink mb-2">Coming Soon</h2>
               <p className="text-neutral-500 max-w-md mx-auto">
@@ -132,9 +131,7 @@ export default async function BlogPage() {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand/10 to-brand/5">
-                          <svg className="w-16 h-16 text-brand/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2" />
-                          </svg>
+                          <HugeiconsIcon icon={News01Icon} className="w-16 h-16 text-brand/30" strokeWidth={1.7} aria-hidden="true" />
                         </div>
                       )}
                     </div>
@@ -160,9 +157,7 @@ export default async function BlogPage() {
                         className="inline-flex items-center gap-2 text-sm font-medium text-brand hover:gap-3 transition-all"
                       >
                         Read Article
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
+                        <HugeiconsIcon icon={ArrowRight02Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
                       </Link>
                     </div>
                   </div>
@@ -199,9 +194,7 @@ export default async function BlogPage() {
               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-ink text-sm font-medium rounded-lg hover:bg-neutral-100 transition-colors"
             >
               Get in Touch
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
+              <HugeiconsIcon icon={ArrowRight02Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
             </Link>
           </div>
         </div>

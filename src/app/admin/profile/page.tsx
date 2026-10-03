@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { UserIcon } from '@hugeicons/core-free-icons'
+
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { useAdminUser } from '@/components/admin/AdminNav'
@@ -170,9 +173,7 @@ export default function ProfilePage() {
                 <Image src={form.image} alt="" fill className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-neutral-400">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
+                  <HugeiconsIcon icon={UserIcon} className="w-8 h-8" strokeWidth={1.7} aria-hidden="true" />
                 </div>
               )}
             </div>

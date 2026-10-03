@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, Cancel01Icon, ClipboardIcon } from '@hugeicons/core-free-icons'
+
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -271,9 +274,7 @@ export default function NewPropertyPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/admin/dashboard" className="text-neutral-500 hover:text-ink transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
             </Link>
             <span className="text-lg font-semibold text-ink">Add New Property</span>
           </div>
@@ -455,9 +456,7 @@ export default function NewPropertyPage() {
                         onClick={() => removeVariation(variation.id)}
                         className="absolute top-2 right-2 p-1 text-neutral-400 hover:text-red-500 transition-colors"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <HugeiconsIcon icon={Cancel01Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
                       </button>
 
                       <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
@@ -608,9 +607,7 @@ export default function NewPropertyPage() {
                       className="rounded-lg px-4 py-3 bg-neutral-100 border border-neutral-200 text-sm text-neutral-600 hover:bg-neutral-200 transition-colors"
                       title="Paste from clipboard"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
+                      <HugeiconsIcon icon={ClipboardIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
                     </button>
                   </div>
                   {locationError && (

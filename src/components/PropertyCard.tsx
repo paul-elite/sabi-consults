@@ -1,3 +1,6 @@
+
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Home01Icon } from '@hugeicons/core-free-icons'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Property } from '@/lib/types'
@@ -25,9 +28,7 @@ export default function PropertyCard({ property, variant = 'default', priority =
       {/* Image container */}
       <div className={`relative overflow-hidden bg-neutral-100 ${variant === 'featured' ? 'aspect-[4/3]' : 'aspect-[4/3] sm:aspect-[3/2]'}`}>
         {/* Placeholder shown behind the photo (and if it fails to load) */}
-        <svg className="absolute inset-0 m-auto w-10 h-10 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z" />
-        </svg>
+        <HugeiconsIcon icon={Home01Icon} className="absolute inset-0 m-auto w-10 h-10 text-neutral-300" strokeWidth={1.7} aria-hidden="true" />
         {property.images[0] && (
           <Image
             src={property.images[0]}

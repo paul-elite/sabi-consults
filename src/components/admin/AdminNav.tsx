@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Cancel01Icon, Menu01Icon, PaintBoardIcon } from '@hugeicons/core-free-icons'
+
 import { createContext, useContext, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -17,6 +20,7 @@ export const canAccess = (u: AdminUser | null, min: AdminRole) => !!u && RANK[u.
 
 const LINKS: { href: string; label: string; min: AdminRole; icon?: boolean }[] = [
   { href: '/admin/dashboard', label: 'Dashboard', min: 'staff' },
+  { href: '/admin/analytics', label: 'Analytics', min: 'admin' },
   { href: '/admin/blog', label: 'Blog', min: 'staff' },
   { href: '/admin/team', label: 'Team', min: 'staff' },
   { href: '/admin/settings', label: 'Settings', min: 'admin' },
@@ -89,9 +93,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
                   title="Branding"
                   className={`w-9 h-9 rounded-lg grid place-items-center transition-colors ${pathname?.startsWith(BRANDING_LINK.href) ? 'bg-blue-50 text-[#0055cc]' : 'text-neutral-400 hover:text-ink hover:bg-neutral-100'}`}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                  </svg>
+                  <HugeiconsIcon icon={PaintBoardIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
                 </Link>
               )}
               <span className="w-px h-4 bg-neutral-200" />
@@ -100,9 +102,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
             </div>
             <button className="ml-auto lg:hidden w-11 h-11 grid place-items-center text-neutral-600" onClick={() => setOpen(o => !o)}
               aria-expanded={open} aria-label={open ? 'Close menu' : 'Open menu'}>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeWidth={1.75} d={open ? 'M6 18L18 6M6 6l12 12' : 'M4 7h16M4 12h16M4 17h16'} />
-              </svg>
+              <HugeiconsIcon icon={open ? Cancel01Icon : Menu01Icon} className="w-6 h-6" strokeWidth={1.7} aria-hidden="true" />
             </button>
           </div>
           {open && (
@@ -112,9 +112,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
               ))}
               {canAccess(user, BRANDING_LINK.min) && (
                 <Link href={BRANDING_LINK.href} aria-current={pathname?.startsWith(BRANDING_LINK.href) ? 'page' : undefined} className={`flex items-center gap-2 py-3 border-b border-neutral-100 ${pathname?.startsWith(BRANDING_LINK.href) ? 'text-[#0055cc] font-medium' : 'text-neutral-600'}`}>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                  </svg>
+                  <HugeiconsIcon icon={PaintBoardIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
                   Branding
                 </Link>
               )}

@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon } from '@hugeicons/core-free-icons'
+
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -110,9 +113,7 @@ export default function EditTeamMemberPage({ params }: { params: Promise<{ id: s
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/admin/team" className="text-neutral-500 hover:text-ink transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
             </Link>
             <span className="text-lg font-semibold text-ink">Edit Team Member</span>
           </div>

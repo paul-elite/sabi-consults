@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Cancel01Icon } from '@hugeicons/core-free-icons'
+
 import { useRef, useState } from 'react'
 import Image from 'next/image'
 
@@ -65,7 +68,7 @@ export default function PropertyGallery({ images, title }: { images: string[]; t
           <div className="flex items-center justify-between px-4 h-14 pt-[env(safe-area-inset-top)] text-white">
             <span className="text-sm tabular-nums">{viewer + 1} / {images.length}</span>
             <button type="button" onClick={() => setViewer(null)} className="w-11 h-11 grid place-items-center" aria-label="Close">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeWidth={1.75} d="M6 18L18 6M6 6l12 12" /></svg>
+              <HugeiconsIcon icon={Cancel01Icon} className="w-6 h-6" strokeWidth={1.7} aria-hidden="true" />
             </button>
           </div>
           <div className="relative flex-1">

@@ -3,6 +3,7 @@ import { Inter, Outfit } from 'next/font/google'
 import { getBrand, brandCss } from '@/lib/brand'
 import { getSettings } from '@/lib/settings'
 import { BrandProvider } from '@/components/BrandProvider'
+import { AnalyticsProvider } from '@/components/AnalyticsProvider'
 import './globals.css'
 
 // Body: Inter - designed for screens, excellent readability
@@ -50,7 +51,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-screen flex flex-col">
         <BrandProvider brand={brand} settings={settings}>
-          {children}
+          <AnalyticsProvider>
+            {children}
+          </AnalyticsProvider>
         </BrandProvider>
       </body>
     </html>

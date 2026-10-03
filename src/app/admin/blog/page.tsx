@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, Delete02Icon, Edit01Icon, LinkSquare01Icon, News01Icon } from '@hugeicons/core-free-icons'
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -86,9 +89,7 @@ export default function AdminBlogPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/admin/dashboard" className="text-neutral-500 hover:text-ink transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
             </Link>
             <span className="text-lg font-semibold text-ink">Blog Posts</span>
           </div>
@@ -102,9 +103,7 @@ export default function AdminBlogPage() {
       <main className="max-w-7xl mx-auto px-6 py-8">
         {blogs.length === 0 ? (
           <div className="card p-12 text-center">
-            <svg className="w-12 h-12 mx-auto text-neutral-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2" />
-            </svg>
+            <HugeiconsIcon icon={News01Icon} className="w-12 h-12 mx-auto text-neutral-300 mb-4" strokeWidth={1.7} aria-hidden="true" />
             <p className="text-neutral-500 mb-4">No blog posts yet</p>
             <Link href="/admin/blog/new" className="btn btn-md btn-brand">
               Create Your First Post
@@ -150,9 +149,7 @@ export default function AdminBlogPage() {
                             className="p-2 text-neutral-400 hover:text-neutral-600 transition-colors"
                             title="View"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
+                            <HugeiconsIcon icon={LinkSquare01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
                           </Link>
                         )}
                         <Link
@@ -160,9 +157,7 @@ export default function AdminBlogPage() {
                           className="p-2 text-neutral-400 hover:text-brand transition-colors"
                           title="Edit"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
+                          <HugeiconsIcon icon={Edit01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
                         </Link>
                         {canDelete && (
                           <button
@@ -171,9 +166,7 @@ export default function AdminBlogPage() {
                             className="p-2 text-neutral-400 hover:text-red-500 transition-colors disabled:opacity-50"
                             title="Delete"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
+                            <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
                           </button>
                         )}
                       </div>

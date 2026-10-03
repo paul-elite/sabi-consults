@@ -1,5 +1,8 @@
 'use client'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Tick02Icon } from '@hugeicons/core-free-icons'
+
 import { useId, useState } from 'react'
 
 interface ContactFormProps {
@@ -50,9 +53,7 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
   if (status === 'success') {
     return (
       <div className="text-center py-6">
-        <svg className="w-12 h-12 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-        </svg>
+        <HugeiconsIcon icon={Tick02Icon} className="w-12 h-12 text-green-500 mx-auto mb-4" strokeWidth={1.7} aria-hidden="true" />
         <p className="text-ink font-medium mb-2">Thank you for your inquiry</p>
         <p className="text-sm text-neutral-600">We&apos;ll get back to you shortly.</p>
       </div>
