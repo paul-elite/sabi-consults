@@ -48,7 +48,7 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 aria-current={isActive(item.href) ? 'page' : undefined}
-                className={`text-sm font-medium transition-colors ${isActive(item.href) ? 'text-on-brand' : 'text-on-brand/75 hover:text-on-brand'}`}
+                className={`text-sm font-medium transition-colors relative py-1 select-none ${isActive(item.href) ? 'text-on-brand after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-0.5 after:bg-on-brand' : 'text-on-brand/75 hover:text-on-brand'}`}
               >
                 {item.label}
               </Link>

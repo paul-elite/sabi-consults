@@ -208,25 +208,25 @@ export const properties: Property[] = [
   },
 ]
 
-// Testimonials
+// Testimonials - initials only for privacy
 export const testimonials: Testimonial[] = [
   {
     id: '1',
-    name: 'Adaeze Okonkwo',
-    role: 'Property Investor',
-    content: 'Sabi Consults made our property acquisition seamless. Their deep knowledge of the Abuja market and professional approach gave us confidence throughout the process. Highly recommended for anyone seeking trusted real estate guidance.',
+    name: 'A.O.',
+    role: 'Property Investor, Lagos',
+    content: 'Sabi Consults made our property acquisition seamless. Their deep knowledge of the Abuja market and professional approach gave us confidence throughout the process.',
   },
   {
     id: '2',
-    name: 'Mohammed Ibrahim',
-    role: 'Business Owner',
-    content: 'As a diaspora Nigerian, finding trustworthy partners for property investment was crucial. Sabi Consults exceeded our expectations with their transparency, regular updates, and genuine care for our investment goals.',
+    name: 'M.I.',
+    role: 'Diaspora Client, UK',
+    content: 'As a diaspora Nigerian, finding trustworthy partners for property investment was crucial. Their transparency, regular updates, and genuine care for our investment goals exceeded expectations.',
   },
   {
     id: '3',
-    name: 'Jennifer Adekunle',
-    role: 'Homeowner',
-    content: 'The team at Sabi Consults helped us find our dream home in Maitama. Their patience, market expertise, and attention to our specific needs made all the difference. We couldn\'t be happier with our new home.',
+    name: 'J.A.',
+    role: 'Homeowner, Maitama',
+    content: 'The team helped us find our dream home. Their patience, market expertise, and attention to our specific needs made all the difference.',
   },
 ]
 
