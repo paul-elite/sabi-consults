@@ -62,46 +62,48 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
 
   return (
     <UserContext.Provider value={user}>
-      <header className="sticky top-0 z-50 bg-ink text-white pt-[env(safe-area-inset-top)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-6">
-          <Link href="/admin/dashboard" className="font-semibold whitespace-nowrap">
-            {brand.name} <span className="text-xs font-normal text-white/50 ml-1">Admin</span>
-          </Link>
-          <nav className="hidden lg:flex items-center gap-5 text-sm" aria-label="Admin">
-            {links.map(l => (
-              <Link key={l.href} href={l.href} aria-current={pathname?.startsWith(l.href) ? 'page' : undefined}
-                className={pathname?.startsWith(l.href) ? 'text-white' : 'text-white/60 hover:text-white'}>
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="ml-auto hidden lg:flex items-center gap-4 text-sm">
-            <Link href="/" target="_blank" className="text-white/60 hover:text-white">View site</Link>
-            <span className="text-white/40">|</span>
-            <span className="text-white/80">{user.name} <span className="text-white/50">({roleLabel(user.role)})</span></span>
-            <button onClick={signOut} className="text-white/60 hover:text-white">Sign out</button>
-          </div>
-          <button className="ml-auto lg:hidden w-11 h-11 grid place-items-center" onClick={() => setOpen(o => !o)}
-            aria-expanded={open} aria-label={open ? 'Close menu' : 'Open menu'}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeWidth={1.75} d={open ? 'M6 18L18 6M6 6l12 12' : 'M4 7h16M4 12h16M4 17h16'} />
-            </svg>
-          </button>
-        </div>
-        {open && (
-          <nav className="lg:hidden border-t border-white/10 px-4 pb-4 pb-safe" aria-label="Admin mobile">
-            {links.map(l => (
-              <Link key={l.href} href={l.href} className="block py-3 border-b border-white/10 text-white/85">{l.label}</Link>
-            ))}
-            <Link href="/" target="_blank" className="block py-3 border-b border-white/10 text-white/85">View site</Link>
-            <div className="pt-4 flex items-center justify-between text-sm">
-              <span className="text-white/70">{user.name}, {roleLabel(user.role)}</span>
-              <button onClick={signOut} className="px-4 h-10 border border-white/30">Sign out</button>
+      <div className="min-h-screen bg-neutral-50">
+        <header className="sticky top-0 z-50 bg-white border-b border-neutral-200 pt-[env(safe-area-inset-top)]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-6">
+            <Link href="/admin/dashboard" className="font-semibold whitespace-nowrap text-ink">
+              {brand.name} <span className="text-xs font-normal text-neutral-400 ml-1">Admin</span>
+            </Link>
+            <nav className="hidden lg:flex items-center gap-1 text-sm" aria-label="Admin">
+              {links.map(l => (
+                <Link key={l.href} href={l.href} aria-current={pathname?.startsWith(l.href) ? 'page' : undefined}
+                  className={`px-3 py-1.5 rounded-md transition-colors ${pathname?.startsWith(l.href) ? 'bg-neutral-100 text-ink font-medium' : 'text-neutral-500 hover:text-ink hover:bg-neutral-50'}`}>
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="ml-auto hidden lg:flex items-center gap-4 text-sm">
+              <Link href="/" target="_blank" className="text-neutral-500 hover:text-ink">View site ↗</Link>
+              <span className="w-px h-4 bg-neutral-200" />
+              <span className="text-neutral-600">{user.name} <span className="text-neutral-400">· {roleLabel(user.role)}</span></span>
+              <button onClick={signOut} className="px-3 py-1.5 text-neutral-500 hover:text-ink hover:bg-neutral-100 rounded-md transition-colors">Sign out</button>
             </div>
-          </nav>
-        )}
-      </header>
-      {children}
+            <button className="ml-auto lg:hidden w-11 h-11 grid place-items-center text-neutral-600" onClick={() => setOpen(o => !o)}
+              aria-expanded={open} aria-label={open ? 'Close menu' : 'Open menu'}>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeWidth={1.75} d={open ? 'M6 18L18 6M6 6l12 12' : 'M4 7h16M4 12h16M4 17h16'} />
+              </svg>
+            </button>
+          </div>
+          {open && (
+            <nav className="lg:hidden border-t border-neutral-100 px-4 pb-4 pb-safe bg-white" aria-label="Admin mobile">
+              {links.map(l => (
+                <Link key={l.href} href={l.href} className={`block py-3 border-b border-neutral-100 ${pathname?.startsWith(l.href) ? 'text-ink font-medium' : 'text-neutral-600'}`}>{l.label}</Link>
+              ))}
+              <Link href="/" target="_blank" className="block py-3 border-b border-neutral-100 text-neutral-600">View site ↗</Link>
+              <div className="pt-4 flex items-center justify-between text-sm">
+                <span className="text-neutral-600">{user.name} · {roleLabel(user.role)}</span>
+                <button onClick={signOut} className="px-4 h-10 bg-neutral-100 text-neutral-700 rounded-md">Sign out</button>
+              </div>
+            </nav>
+          )}
+        </header>
+        {children}
+      </div>
     </UserContext.Provider>
   )
 }

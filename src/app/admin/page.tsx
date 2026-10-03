@@ -67,23 +67,23 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-ink">
+          <h1 className="text-xl font-semibold text-ink">
             {brand.name}
           </h1>
-          <p className="text-sm text-neutral-500 mt-2">Staff Portal</p>
+          <p className="text-sm text-neutral-400 mt-1">Staff Portal</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white border border-neutral-200 p-8">
-          <h2 className="text-xl font-medium text-ink mb-6">Sign In</h2>
+        <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] p-6 sm:p-8">
+          <h2 className="text-lg font-medium text-ink mb-6">Sign in to continue</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-neutral-600 mb-1">
-                Email Address
+              <label htmlFor="email" className="block text-sm font-medium text-neutral-600 mb-1.5">
+                Email
               </label>
               <input
                 type="email"
@@ -91,13 +91,13 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
-                placeholder="you@sabiconsults.com"
+                className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors"
+                placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-neutral-600 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-neutral-600 mb-1.5">
                 Password
               </label>
               <input
@@ -106,26 +106,26 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400"
-                placeholder="Enter your password"
+                className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors"
+                placeholder="••••••••"
               />
             </div>
 
             {error && (
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-ink text-white text-sm font-medium uppercase tracking-wider hover:bg-ink-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2.5 bg-ink text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-sm text-neutral-500 mt-6">
+        <p className="text-center text-xs text-neutral-400 mt-6">
           Need access? Contact your administrator.
         </p>
       </div>

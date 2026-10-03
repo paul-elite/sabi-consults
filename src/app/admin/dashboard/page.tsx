@@ -69,60 +69,60 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen">
-
+    <>
       {/* Dashboard Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {loadError && <p role="alert" className="mb-6 p-3 bg-red-50 text-red-700 text-sm">{loadError}</p>}
+        {loadError && <p role="alert" className="mb-6 p-3 bg-red-50 text-red-700 text-sm rounded-lg">{loadError}</p>}
+
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white border border-neutral-200 p-6">
-            <p className="text-sm text-neutral-500 mb-1">Total Properties</p>
-            <p className="text-3xl font-light text-ink">{properties.length}</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] p-5">
+            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Properties</p>
+            <p className="text-2xl font-semibold text-ink">{properties.length}</p>
           </div>
-          <div className="bg-white border border-neutral-200 p-6">
-            <p className="text-sm text-neutral-500 mb-1">Available</p>
-            <p className="text-3xl font-light text-ink">
+          <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] p-5">
+            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Available</p>
+            <p className="text-2xl font-semibold text-emerald-600">
               {properties.filter(p => p.status === 'available').length}
             </p>
           </div>
-          <div className="bg-white border border-neutral-200 p-6">
-            <p className="text-sm text-neutral-500 mb-1">Featured</p>
-            <p className="text-3xl font-light text-ink">
+          <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] p-5">
+            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Featured</p>
+            <p className="text-2xl font-semibold text-brand">
               {properties.filter(p => p.featured).length}
             </p>
           </div>
-          <div className="bg-white border border-neutral-200 p-6">
-            <p className="text-sm text-neutral-500 mb-1">New Inquiries</p>
-            <p className="text-3xl font-light text-ink">
+          <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] p-5">
+            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">New Inquiries</p>
+            <p className="text-2xl font-semibold text-amber-600">
               {inquiries.filter(i => i.status === 'new').length}
             </p>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex gap-2 mb-6">
           <button
             onClick={() => setActiveTab('properties')}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
               activeTab === 'properties'
                 ? 'bg-ink text-white'
-                : 'bg-white text-neutral-600 hover:text-ink'
+                : 'bg-white text-neutral-600 hover:bg-neutral-100'
             }`}
           >
             Properties
           </button>
           <button
             onClick={() => setActiveTab('inquiries')}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
               activeTab === 'inquiries'
                 ? 'bg-ink text-white'
-                : 'bg-white text-neutral-600 hover:text-ink'
+                : 'bg-white text-neutral-600 hover:bg-neutral-100'
             }`}
           >
             Inquiries
             {inquiries.filter(i => i.status === 'new').length > 0 && (
-              <span className="ml-2 px-2 py-0.5 bg-red-500 text-white text-xs rounded-full">
+              <span className={`px-1.5 py-0.5 text-xs rounded-full ${activeTab === 'inquiries' ? 'bg-white/20' : 'bg-red-500 text-white'}`}>
                 {inquiries.filter(i => i.status === 'new').length}
               </span>
             )}
@@ -131,50 +131,50 @@ export default function AdminDashboard() {
 
         {/* Properties Tab */}
         {activeTab === 'properties' && (
-          <div className="bg-white border border-neutral-200">
-            <div className="p-4 border-b border-neutral-200 flex items-center justify-between">
+          <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] overflow-hidden">
+            <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
               <h2 className="font-medium text-ink">All Properties</h2>
               <Link
                 href="/admin/properties/new"
-                className="px-4 py-2 bg-ink text-white text-sm font-medium hover:bg-ink-soft transition-colors"
+                className="px-4 py-2 bg-ink text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors"
               >
                 Add Property
               </Link>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-neutral-50 border-b border-neutral-200">
+                <thead className="bg-neutral-50 border-b border-neutral-100">
                   <tr>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">
                       Property
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">
                       District
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">
                       Type
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">
                       Price
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-100">
+                <tbody className="divide-y divide-neutral-50">
                   {properties.map((property) => (
-                    <tr key={property.id} className="hover:bg-neutral-50">
+                    <tr key={property.id} className="hover:bg-neutral-50/50">
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-3">
                           {property.images[0] && (
                             <img
                               src={property.images[0]}
                               alt=""
-                              className="w-12 h-12 object-cover"
+                              className="w-12 h-12 object-cover rounded-lg"
                             />
                           )}
                           <div>
@@ -186,34 +186,34 @@ export default function AdminDashboard() {
                         </div>
                       </td>
                       <td className="px-4 py-4 text-sm text-neutral-600">{property.district}</td>
-                      <td className="px-4 py-4 text-sm text-neutral-600 capitalize">
+                      <td className="px-4 py-4 text-sm text-neutral-600">
                         {property.type === 'land' ? 'Land' : 'House'}
                       </td>
-                      <td className="px-4 py-4 text-sm text-neutral-600">
+                      <td className="px-4 py-4 text-sm font-medium text-neutral-700">
                         ₦{(property.price / 1000000).toFixed(1)}M
                       </td>
                       <td className="px-4 py-4">
-                        <span className={`px-2 py-1 text-xs font-medium uppercase ${
+                        <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${
                           property.status === 'available'
-                            ? 'bg-green-100 text-green-700'
+                            ? 'bg-emerald-50 text-emerald-700'
                             : property.status === 'sold'
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-yellow-100 text-yellow-700'
+                            ? 'bg-red-50 text-red-700'
+                            : 'bg-amber-50 text-amber-700'
                         }`}>
                           {property.status}
                         </span>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                           <Link
                             href={`/admin/properties/${property.id}`}
-                            className="text-sm text-brand hover:underline"
+                            className="text-sm text-neutral-600 hover:text-ink"
                           >
                             Edit
                           </Link>
                           <button
                             onClick={() => handleDeleteProperty(property.id)}
-                            className="text-sm text-red-600 hover:underline"
+                            className="text-sm text-red-600 hover:text-red-700"
                           >
                             Delete
                           </button>
@@ -229,39 +229,39 @@ export default function AdminDashboard() {
 
         {/* Inquiries Tab */}
         {activeTab === 'inquiries' && (
-          <div className="bg-white border border-neutral-200">
-            <div className="p-4 border-b border-neutral-200">
+          <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] overflow-hidden">
+            <div className="p-4 border-b border-neutral-100">
               <h2 className="font-medium text-ink">Contact Inquiries</h2>
             </div>
             {inquiries.length > 0 ? (
-              <div className="divide-y divide-neutral-100">
+              <div className="divide-y divide-neutral-50">
                 {inquiries.map((inquiry) => (
-                  <div key={inquiry.id} className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-3 mb-2">
+                  <div key={inquiry.id} className="p-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
                           <h3 className="font-medium text-ink">{inquiry.name}</h3>
-                          <span className={`px-2 py-0.5 text-xs font-medium uppercase ${
+                          <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
                             inquiry.status === 'new'
-                              ? 'bg-blue-100 text-blue-700'
+                              ? 'bg-blue-50 text-blue-700'
                               : inquiry.status === 'contacted'
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : 'bg-green-100 text-green-700'
+                              ? 'bg-amber-50 text-amber-700'
+                              : 'bg-emerald-50 text-emerald-700'
                           }`}>
                             {inquiry.status}
                           </span>
                         </div>
                         <p className="text-sm text-neutral-500 mb-2">
-                          {inquiry.email} • {inquiry.phone}
+                          {inquiry.email} · {inquiry.phone}
                         </p>
                         <p className="text-sm text-neutral-600">{inquiry.message}</p>
                         {inquiry.propertyId && (
-                          <p className="text-xs text-brand mt-2">
-                            Property ID: {inquiry.propertyId}
-                          </p>
+                          <Link href={`/admin/properties/${inquiry.propertyId}`} className="text-xs text-brand hover:underline mt-2 inline-block">
+                            View property →
+                          </Link>
                         )}
                       </div>
-                      <div className="text-sm text-neutral-400">
+                      <div className="text-xs text-neutral-400 whitespace-nowrap">
                         {new Date(inquiry.createdAt).toLocaleDateString()}
                       </div>
                     </div>
@@ -269,13 +269,13 @@ export default function AdminDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="p-8 text-center text-neutral-500">
+              <div className="p-12 text-center text-neutral-400">
                 No inquiries yet.
               </div>
             )}
           </div>
         )}
       </main>
-    </div>
+    </>
   )
 }
