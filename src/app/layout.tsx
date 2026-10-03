@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Cormorant_Garamond } from 'next/font/google'
+import { Inter, Outfit } from 'next/font/google'
 import { getBrand, brandCss } from '@/lib/brand'
 import { getSettings } from '@/lib/settings'
 import { BrandProvider } from '@/components/BrandProvider'
@@ -12,12 +12,12 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
-// Headings: Cormorant Garamond - elegant high-contrast serif for luxury feel
-const cormorant = Cormorant_Garamond({
+// Headings: Outfit - geometric, confident, premium feel
+// Strong vertical strokes, works beautifully at large sizes
+const outfit = Outfit({
   subsets: ['latin'],
   display: 'swap',
-  weight: ['300', '400', '500', '600'],
-  style: ['normal', 'italic'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-heading',
 })
 
@@ -44,7 +44,7 @@ export async function generateViewport(): Promise<Viewport> {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [brand, settings] = await Promise.all([getBrand(), getSettings()])
   return (
-    <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
+    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <head>
         <style id="brand-vars" dangerouslySetInnerHTML={{ __html: brandCss(brand) }} />
       </head>
