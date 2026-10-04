@@ -82,8 +82,10 @@ export default function AdminDashboard() {
 
         setProperties(Array.isArray(propertiesData) ? propertiesData : [])
         setInquiries(Array.isArray(inquiriesData) ? inquiriesData : [])
+        // Analytics is optional - don't show error if it fails (tables may not be set up yet)
         setAnalytics(analyticsRes.ok ? analyticsData : null)
-        if (!propertiesRes.ok || !inquiriesRes.ok || !analyticsRes.ok) setLoadError('Some data couldn’t be loaded. Check the database connection, then refresh.')
+        // Only show error if core data fails - analytics failing is handled gracefully in the UI
+        if (!propertiesRes.ok || !inquiriesRes.ok) setLoadError('Some data couldn't be loaded. Check the database connection, then refresh.')
       } catch {
         console.error('Failed to fetch data')
       } finally {

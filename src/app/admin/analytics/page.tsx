@@ -1,123 +1,51 @@
 'use client'
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { ViewIcon, UserGroupIcon, Building03Icon, Message01Icon } from '@hugeicons/core-free-icons'
+import { Message01Icon, UserGroupIcon, TrendUp01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
 
 import { useState, useEffect } from 'react'
 import { RequireRole } from '@/components/admin/AdminNav'
 import Link from 'next/link'
+import { DISTRICTS } from '@/lib/districts'
 
 interface AnalyticsStats {
   summary: {
     pageViews: number
     uniqueVisitors: number
-    uniqueSessions: number
     propertyViews: number
     totalInquiries: number
-    totalContactClicks: number
-    avgSessionDuration: number
     conversionRate: string
   }
-  trafficSources: Record<string, number>
-  deviceBreakdown: Record<string, number>
-  topPages: { path: string; views: number }[]
-  topProperties: { id: string; title: string; district: string; views: number }[]
   topDistricts: { name: string; views: number }[]
-  topCountries: { country: string; count: number }[]
-  trend: { date: string; views: number; visitors: number; inquiries: number }[]
+  topProperties: { id: string; title: string; district: string; views: number }[]
+  trend: { date: string; views: number; inquiries: number }[]
   funnel: {
     visitors: number
     propertyViews: number
     contactClicks: number
     inquiries: number
   }
-  contactMethods: {
-    whatsapp: number
-    phone: number
-    email: number
-    form: number
-  }
-  dateRange: { start: string; end: string }
 }
 
-type DateRange = '24h' | '7d' | '30d' | '90d' | 'all'
+type DateRange = '7d' | '30d' | '90d'
 
-function formatNumber(n: number): string {
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M'
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'K'
-  return n.toString()
-}
-
-function formatDuration(seconds: number): string {
-  if (seconds < 60) return `${seconds}s`
-  const mins = Math.floor(seconds / 60)
-  const secs = seconds % 60
-  return `${mins}m ${secs}s`
-}
-
-function StatCard({ label, value, subValue, icon, color = 'neutral' }: {
-  label: string; value: string | number; subValue?: string; icon: React.ReactNode; color?: string
-}) {
-  const colorClasses: Record<string, string> = {
-    neutral: 'bg-neutral-100 text-neutral-600',
-    blue: 'bg-blue-50 text-blue-600',
-    emerald: 'bg-emerald-50 text-emerald-600',
-    amber: 'bg-amber-50 text-amber-600',
-    purple: 'bg-purple-50 text-purple-600',
-    brand: 'bg-brand-soft text-brand',
-  }
-
-  return (
-    <div className="card card-body">
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colorClasses[color]}`}>
-          {icon}
-        </div>
-        <div>
-          <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{label}</p>
-          <p className="text-2xl font-semibold text-ink">{value}</p>
-          {subValue && <p className="text-xs text-neutral-500">{subValue}</p>}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ProgressBar({ value, max, label, color = 'brand' }: {
-  value: number; max: number; label: string; color?: string
-}) {
-  const percent = max > 0 ? (value / max) * 100 : 0
-  return (
-    <div className="flex items-center gap-3">
-      <span className="text-sm text-neutral-600 w-24 truncate">{label}</span>
-      <div className="flex-1 h-2 bg-neutral-100 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full ${color === 'brand' ? 'bg-brand' : `bg-${color}-500`}`}
-          style={{ width: `${Math.min(percent, 100)}%` }}
-        />
-      </div>
-      <span className="text-sm font-medium text-ink w-12 text-right">{formatNumber(value)}</span>
-    </div>
-  )
+export default function AnalyticsPage() {
+  return <RequireRole min="admin"><AnalyticsDashboard /></RequireRole>
 }
 
 function AnalyticsDashboard() {
   const [stats, setStats] = useState<AnalyticsStats | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [range, setRange] = useState<DateRange>('7d')
+  const [range, setRange] = useState<DateRange>('30d')
 
   useEffect(() => {
     async function fetchStats() {
       setLoading(true)
-      setError('')
       try {
         const res = await fetch(`/api/analytics/stats?range=${range}`)
-        if (!res.ok) throw new Error('Failed to fetch analytics')
-        const data = await res.json()
-        setStats(data)
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'Failed to load analytics')
+        if (res.ok) setStats(await res.json())
+      } catch {
+        // Silent fail - show empty state
       } finally {
         setLoading(false)
       }
@@ -125,266 +53,219 @@ function AnalyticsDashboard() {
     fetchStats()
   }, [range])
 
-  const rangeLabels: Record<DateRange, string> = {
-    '24h': 'Last 24 hours',
-    '7d': 'Last 7 days',
-    '30d': 'Last 30 days',
-    '90d': 'Last 90 days',
-    'all': 'All time',
-  }
-
   if (loading) {
     return (
       <div className="min-h-[60vh] grid place-items-center">
-        <div className="animate-pulse text-neutral-400">Loading analytics...</div>
+        <div className="animate-pulse text-neutral-400">Loading...</div>
       </div>
     )
   }
 
-  if (error) {
-    return (
-      <div className="max-w-xl mx-auto px-4 py-20 text-center">
-        <p className="text-red-600 mb-4">{error}</p>
-        <p className="text-sm text-neutral-500 mb-4">
-          Make sure the analytics tables are created in Supabase.
-        </p>
-        <Link href="/admin/dashboard" className="btn btn-md btn-primary">Back to Dashboard</Link>
-      </div>
-    )
-  }
-
-  if (!stats) return null
-
-  const maxSource = Math.max(...Object.values(stats.trafficSources), 1)
-  const maxDevice = Math.max(...Object.values(stats.deviceBreakdown), 1)
-  const maxContact = Math.max(...Object.values(stats.contactMethods), 1)
+  const conversionRate = stats ? parseFloat(stats.summary.conversionRate) || 0 : 0
+  const districtHeat = new Map(stats?.topDistricts.map(d => [d.name, d.views]) || [])
+  const maxViews = Math.max(...(stats?.topDistricts.map(d => d.views) || [1]), 1)
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-light text-ink">Analytics</h1>
-          <p className="text-sm text-neutral-500 mt-1">Track your website performance and visitor behavior</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {(Object.keys(rangeLabels) as DateRange[]).map(r => (
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-2xl font-semibold text-ink">Analytics</h1>
+        <div className="flex gap-1">
+          {(['7d', '30d', '90d'] as DateRange[]).map(r => (
             <button
               key={r}
               onClick={() => setRange(r)}
-              className={`btn btn-sm ${range === r ? 'btn-primary' : 'btn-secondary'}`}
+              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                range === r ? 'bg-ink text-white' : 'text-neutral-500 hover:bg-neutral-100'
+              }`}
             >
-              {r === 'all' ? 'All' : r}
+              {r}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard
-          label="Page Views"
-          value={formatNumber(stats.summary.pageViews)}
-          icon={<HugeiconsIcon icon={ViewIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />}
-          color="blue"
-        />
-        <StatCard
-          label="Unique Visitors"
-          value={formatNumber(stats.summary.uniqueVisitors)}
-          subValue={`${stats.summary.uniqueSessions} sessions`}
-          icon={<HugeiconsIcon icon={UserGroupIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />}
-          color="emerald"
-        />
-        <StatCard
-          label="Property Views"
-          value={formatNumber(stats.summary.propertyViews)}
-          icon={<HugeiconsIcon icon={Building03Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />}
-          color="brand"
-        />
-        <StatCard
-          label="Inquiries"
-          value={stats.summary.totalInquiries}
-          subValue={`${stats.summary.conversionRate}% conversion`}
-          icon={<HugeiconsIcon icon={Message01Icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />}
-          color="amber"
-        />
+      {/* Key Metrics */}
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="card p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+              <HugeiconsIcon icon={Message01Icon} className="w-5 h-5 text-emerald-600" strokeWidth={1.7} />
+            </div>
+            <div>
+              <p className="text-sm text-neutral-500">Leads</p>
+              <p className="text-2xl font-semibold text-ink">{stats?.summary.totalInquiries || 0}</p>
+            </div>
+          </div>
+          <Link href="/admin/dashboard" className="text-sm text-brand hover:underline flex items-center gap-1">
+            View inquiries <HugeiconsIcon icon={ArrowRight01Icon} className="w-3.5 h-3.5" strokeWidth={2} />
+          </Link>
+        </div>
+
+        <div className="card p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+              <HugeiconsIcon icon={UserGroupIcon} className="w-5 h-5 text-blue-600" strokeWidth={1.7} />
+            </div>
+            <div>
+              <p className="text-sm text-neutral-500">Visitors</p>
+              <p className="text-2xl font-semibold text-ink">{stats?.summary.uniqueVisitors || 0}</p>
+            </div>
+          </div>
+          <p className="text-sm text-neutral-400">{stats?.summary.propertyViews || 0} property views</p>
+        </div>
+
+        <div className="card p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+              <HugeiconsIcon icon={TrendUp01Icon} className="w-5 h-5 text-amber-600" strokeWidth={1.7} />
+            </div>
+            <div>
+              <p className="text-sm text-neutral-500">Conversion</p>
+              <p className="text-2xl font-semibold text-ink">{conversionRate.toFixed(1)}%</p>
+            </div>
+          </div>
+          <p className="text-sm text-neutral-400">
+            {conversionRate >= 5 ? 'Above average' : conversionRate >= 2 ? 'Average' : 'Room to grow'}
+          </p>
+        </div>
       </div>
 
-      {/* Main Content Grid */}
+      {/* Map + Sidebar */}
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Left Column - Charts & Trends */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Traffic Trend */}
+        {/* District Heat Map */}
+        <div className="lg:col-span-2 card p-6">
+          <h2 className="font-medium text-ink mb-4">Interest by District</h2>
+          <div className="aspect-[4/3] bg-neutral-50 rounded-xl relative overflow-hidden">
+            <svg viewBox="0 0 400 300" className="w-full h-full">
+              {/* Simple Abuja district map */}
+              {DISTRICTS.map((district) => {
+                const views = districtHeat.get(district.name) || 0
+                const intensity = maxViews > 0 ? views / maxViews : 0
+                const fill = views > 0
+                  ? `rgba(0, 85, 204, ${0.15 + intensity * 0.6})`
+                  : '#f5f5f5'
+
+                return (
+                  <g key={district.name}>
+                    <circle
+                      cx={district.mapX}
+                      cy={district.mapY}
+                      r={18 + intensity * 12}
+                      fill={fill}
+                      stroke={views > 0 ? 'rgba(0, 85, 204, 0.3)' : '#e5e5e5'}
+                      strokeWidth={1}
+                      className="transition-all duration-300"
+                    />
+                    <text
+                      x={district.mapX}
+                      y={district.mapY}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="text-[8px] font-medium fill-neutral-600 pointer-events-none"
+                    >
+                      {district.name.length > 10 ? district.name.slice(0, 8) + '...' : district.name}
+                    </text>
+                    {views > 0 && (
+                      <text
+                        x={district.mapX}
+                        y={district.mapY + 12}
+                        textAnchor="middle"
+                        className="text-[7px] font-semibold fill-brand pointer-events-none"
+                      >
+                        {views}
+                      </text>
+                    )}
+                  </g>
+                )
+              })}
+            </svg>
+          </div>
+          <p className="text-xs text-neutral-400 mt-3 text-center">
+            Bubble size and color intensity indicate visitor interest
+          </p>
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-6">
+          {/* Hot Districts */}
           <div className="card p-5">
-            <h2 className="font-semibold text-ink mb-4">Traffic Trend</h2>
-            {stats.trend.length > 0 ? (
-              <div className="space-y-1">
-                {stats.trend.slice(-14).map((day, i) => {
-                  const maxViews = Math.max(...stats.trend.map(d => d.views), 1)
-                  const percent = (day.views / maxViews) * 100
-                  return (
-                    <div key={day.date} className="flex items-center gap-2 text-sm">
-                      <span className="w-20 text-neutral-500 shrink-0">
-                        {new Date(day.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                      </span>
-                      <div className="flex-1 h-5 bg-neutral-50 rounded overflow-hidden">
-                        <div
-                          className="h-full bg-brand/20 flex items-center px-2"
-                          style={{ width: `${Math.max(percent, 5)}%` }}
-                        >
-                          <span className="text-xs font-medium text-brand">{day.views}</span>
-                        </div>
-                      </div>
-                      {day.inquiries > 0 && (
-                        <span className="badge badge-success shrink-0">{day.inquiries} inquiry</span>
-                      )}
-                    </div>
-                  )
-                })}
+            <h2 className="font-medium text-ink mb-4">Top Districts</h2>
+            {stats?.topDistricts && stats.topDistricts.length > 0 ? (
+              <div className="space-y-3">
+                {stats.topDistricts.slice(0, 5).map((d, i) => (
+                  <div key={d.name} className="flex items-center gap-3">
+                    <span className={`w-6 h-6 rounded-full text-xs font-medium flex items-center justify-center ${
+                      i === 0 ? 'bg-brand-soft text-brand' : 'bg-neutral-100 text-neutral-500'
+                    }`}>
+                      {i + 1}
+                    </span>
+                    <span className="flex-1 text-sm text-neutral-700 truncate">{d.name}</span>
+                    <span className="text-sm font-medium text-ink">{d.views}</span>
+                  </div>
+                ))}
               </div>
             ) : (
-              <p className="text-neutral-500 text-sm">No data for this period</p>
+              <p className="text-sm text-neutral-400 text-center py-4">No data yet</p>
             )}
           </div>
 
           {/* Top Properties */}
           <div className="card p-5">
-            <h2 className="font-semibold text-ink mb-4">Top Properties</h2>
-            {stats.topProperties.length > 0 ? (
+            <h2 className="font-medium text-ink mb-4">Hot Properties</h2>
+            {stats?.topProperties && stats.topProperties.length > 0 ? (
               <div className="space-y-3">
-                {stats.topProperties.slice(0, 5).map((prop, i) => (
-                  <div key={prop.id} className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-medium flex items-center justify-center">
-                      {i + 1}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <Link href={`/admin/properties/${prop.id}`} className="font-medium text-ink hover:text-brand truncate block">
-                        {prop.title}
-                      </Link>
-                      <p className="text-xs text-neutral-500">{prop.district}</p>
-                    </div>
-                    <span className="text-sm font-medium text-ink">{formatNumber(prop.views)} views</span>
-                  </div>
+                {stats.topProperties.slice(0, 4).map((p) => (
+                  <Link
+                    key={p.id}
+                    href={`/admin/properties/${p.id}`}
+                    className="block p-2 -mx-2 rounded-lg hover:bg-neutral-50 transition-colors"
+                  >
+                    <p className="text-sm font-medium text-ink truncate">{p.title}</p>
+                    <p className="text-xs text-neutral-400">{p.district} · {p.views} views</p>
+                  </Link>
                 ))}
               </div>
             ) : (
-              <p className="text-neutral-500 text-sm">No property views yet</p>
+              <p className="text-sm text-neutral-400 text-center py-4">No data yet</p>
             )}
           </div>
 
-          {/* Conversion Funnel */}
+          {/* Simple Funnel */}
           <div className="card p-5">
-            <h2 className="font-semibold text-ink mb-4">Conversion Funnel</h2>
-            <div className="space-y-3">
-              {[
-                { label: 'Visitors', value: stats.funnel.visitors, color: 'bg-blue-500' },
-                { label: 'Viewed Properties', value: stats.funnel.propertyViews, color: 'bg-purple-500' },
-                { label: 'Clicked Contact', value: stats.funnel.contactClicks, color: 'bg-amber-500' },
-                { label: 'Sent Inquiry', value: stats.funnel.inquiries, color: 'bg-emerald-500' },
-              ].map((stage, i) => {
-                const maxVal = stats.funnel.visitors || 1
-                const percent = (stage.value / maxVal) * 100
-                return (
-                  <div key={stage.label}>
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="text-neutral-600">{stage.label}</span>
-                      <span className="font-medium text-ink">{formatNumber(stage.value)}</span>
-                    </div>
-                    <div className="h-3 bg-neutral-100 rounded-full overflow-hidden">
-                      <div className={`h-full ${stage.color} rounded-full`} style={{ width: `${percent}%` }} />
-                    </div>
-                    {i > 0 && stats.funnel.visitors > 0 && (
-                      <p className="text-xs text-neutral-400 mt-0.5">
-                        {((stage.value / stats.funnel.visitors) * 100).toFixed(1)}% of visitors
-                      </p>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column - Breakdowns */}
-        <div className="space-y-6">
-          {/* Traffic Sources */}
-          <div className="card p-5">
-            <h2 className="font-semibold text-ink mb-4">Traffic Sources</h2>
-            <div className="space-y-2">
-              {Object.entries(stats.trafficSources)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 6)
-                .map(([source, count]) => (
-                  <ProgressBar key={source} label={source} value={count} max={maxSource} />
-                ))}
-              {Object.keys(stats.trafficSources).length === 0 && (
-                <p className="text-neutral-500 text-sm">No data yet</p>
-              )}
-            </div>
-          </div>
-
-          {/* Device Breakdown */}
-          <div className="card p-5">
-            <h2 className="font-semibold text-ink mb-4">Devices</h2>
-            <div className="space-y-2">
-              {Object.entries(stats.deviceBreakdown)
-                .sort((a, b) => b[1] - a[1])
-                .map(([device, count]) => (
-                  <ProgressBar key={device} label={device} value={count} max={maxDevice} />
-                ))}
-              {Object.keys(stats.deviceBreakdown).length === 0 && (
-                <p className="text-neutral-500 text-sm">No data yet</p>
-              )}
-            </div>
-          </div>
-
-          {/* Contact Methods */}
-          <div className="card p-5">
-            <h2 className="font-semibold text-ink mb-4">Contact Methods</h2>
-            <div className="space-y-2">
-              <ProgressBar label="WhatsApp" value={stats.contactMethods.whatsapp} max={maxContact} />
-              <ProgressBar label="Phone" value={stats.contactMethods.phone} max={maxContact} />
-              <ProgressBar label="Email" value={stats.contactMethods.email} max={maxContact} />
-              <ProgressBar label="Form" value={stats.contactMethods.form} max={maxContact} />
-            </div>
-          </div>
-
-          {/* Top Districts */}
-          <div className="card p-5">
-            <h2 className="font-semibold text-ink mb-4">Popular Districts</h2>
-            <div className="space-y-2">
-              {stats.topDistricts.slice(0, 5).map(d => (
-                <div key={d.name} className="flex items-center justify-between text-sm">
-                  <span className="text-neutral-600">{d.name}</span>
-                  <span className="font-medium text-ink">{formatNumber(d.views)}</span>
-                </div>
-              ))}
-              {stats.topDistricts.length === 0 && (
-                <p className="text-neutral-500 text-sm">No data yet</p>
-              )}
-            </div>
-          </div>
-
-          {/* Top Countries */}
-          {stats.topCountries.length > 0 && (
-            <div className="card p-5">
-              <h2 className="font-semibold text-ink mb-4">Visitor Locations</h2>
+            <h2 className="font-medium text-ink mb-4">Funnel</h2>
+            {stats?.funnel ? (
               <div className="space-y-2">
-                {stats.topCountries.slice(0, 5).map(c => (
-                  <div key={c.country} className="flex items-center justify-between text-sm">
-                    <span className="text-neutral-600">{c.country}</span>
-                    <span className="font-medium text-ink">{formatNumber(c.count)}</span>
-                  </div>
-                ))}
+                {[
+                  { label: 'Visitors', value: stats.funnel.visitors },
+                  { label: 'Viewed', value: stats.funnel.propertyViews },
+                  { label: 'Contacted', value: stats.funnel.contactClicks },
+                  { label: 'Inquired', value: stats.funnel.inquiries },
+                ].map((stage, i) => {
+                  const width = stats.funnel.visitors > 0
+                    ? Math.max(10, (stage.value / stats.funnel.visitors) * 100)
+                    : 100
+                  return (
+                    <div key={stage.label} className="flex items-center gap-3">
+                      <span className="text-xs text-neutral-500 w-16">{stage.label}</span>
+                      <div className="flex-1 h-5 bg-neutral-100 rounded overflow-hidden">
+                        <div
+                          className="h-full bg-brand/20 flex items-center justify-end px-2"
+                          style={{ width: `${width}%` }}
+                        >
+                          <span className="text-[10px] font-medium text-brand">{stage.value}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
-            </div>
-          )}
+            ) : (
+              <p className="text-sm text-neutral-400 text-center py-4">No data yet</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
   )
-}
-
-export default function AnalyticsPage() {
-  return <RequireRole min="admin"><AnalyticsDashboard /></RequireRole>
 }
