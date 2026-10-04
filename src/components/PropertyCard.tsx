@@ -20,6 +20,11 @@ export default function PropertyCard({ property, variant = 'default', priority =
   const name = propertyCardName(property)
   const options = property.variations?.length || 0
   const isLand = property.type === 'land'
+  const featured = variant === 'featured'
+  // Featured cards keep one fixed layout: name, district + one key fact, then options + price.
+  // Land leads with plot size; houses lead with rooms, so every card has the same rows and height.
+  const roomFacts = facts.filter(f => f !== landSize).filter(f => !/bath/.test(f))
+  const keyFact = featured ? (isLand ? landSize : roomFacts.join(' · ') || landSize) : landSize
   const typeBadgeClass = variant === 'featured'
     ? 'bg-white text-ink shadow-sm'
     : isLand ? 'bg-emerald-500 text-white' : 'bg-brand text-white'
@@ -27,7 +32,7 @@ export default function PropertyCard({ property, variant = 'default', priority =
   return (
     <Link
       href={`/properties/${property.id}`}
-      className="group block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 focus-visible:outline-offset-4"
+      className={`group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 focus-visible:outline-offset-4 ${featured ? 'h-full flex flex-col' : 'block'}`}
       aria-label={`${name}, ${property.district}. ${label} ${amount}`}
     >
       {/* Image container */}
@@ -59,19 +64,19 @@ export default function PropertyCard({ property, variant = 'default', priority =
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        <p className="mb-2 text-xs font-medium text-neutral-500 uppercase tracking-wider line-clamp-2">{name}</p>
-        <div className="flex items-baseline justify-between gap-3">
-          <h3 className="min-w-0 text-base font-semibold text-ink leading-snug group-hover:text-brand transition-colors line-clamp-2">
+      <div className={`p-4 ${featured ? 'flex-1 flex flex-col' : ''}`}>
+        <p className={`mb-2 text-xs font-medium text-neutral-500 uppercase tracking-wider ${featured ? 'truncate' : 'line-clamp-2'}`} title={featured ? name : undefined}>{name}</p>
+        <div className={`flex items-baseline justify-between gap-3 ${featured ? 'mb-4' : ''}`}>
+          <h3 className={`min-w-0 text-base font-semibold text-ink leading-snug group-hover:text-brand transition-colors ${featured ? 'truncate' : 'line-clamp-2'}`}>
             {property.district}
           </h3>
-          {landSize && (
+          {keyFact && (
             <span className="shrink-0 text-base font-medium text-ink leading-snug">
-              {landSize}
+              {keyFact}
             </span>
           )}
         </div>
-        {detailFacts.length > 0 && (
+        {!featured && detailFacts.length > 0 && (
           <p className="mt-2 text-sm text-neutral-500 flex flex-wrap items-center gap-x-2.5 gap-y-1">
             {detailFacts.map((f, i) => (
               <span key={f} className="inline-flex items-center gap-2.5">
@@ -82,7 +87,7 @@ export default function PropertyCard({ property, variant = 'default', priority =
           </p>
         )}
         {/* Options and price share a baseline and type size. */}
-        <div className="mt-4 pt-3 border-t border-neutral-100 flex items-baseline justify-between gap-3 text-sm">
+        <div className={`${featured ? 'mt-auto pt-3 border-t border-neutral-100' : 'mt-4 pt-3 border-t border-neutral-100'} flex items-baseline justify-between gap-3 text-sm`}>
           {options > 1 && (
             <span className="shrink-0 text-neutral-500">{options} options</span>
           )}
