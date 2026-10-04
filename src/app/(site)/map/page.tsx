@@ -34,37 +34,11 @@ export default async function MapPage() {
   const landCount = availableProperties.filter(p => p.type === 'land').length
 
   return (
-    <div className="min-h-screen pt-16 lg:pt-20">
-      {/* Header */}
-      <div className="bg-white border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-semibold text-ink">
-                Property Map
-              </h1>
-              <p className="text-neutral-600 mt-1">
-                {error ? 'Unable to load properties' : `Explore ${availableProperties.length} properties across Abuja`}
-              </p>
-            </div>
-
-            {/* Legend */}
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-brand"></div>
-                <span className="text-sm text-neutral-600">Houses ({houseCount})</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-[#059669]"></div>
-                <span className="text-sm text-neutral-600">Land ({landCount})</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    // Full-screen map under the floating header: no title band, so no gap above the map
+    <div className="relative h-[100dvh] min-h-[480px] bg-neutral-100">
+      <h1 className="sr-only">Property Map</h1>
       {/* Full Page Map */}
-      <div className="h-[calc(100vh-180px)] relative">
+      <div className="absolute inset-0">
         {error ? (
           <div className="w-full h-full bg-neutral-100 flex items-center justify-center">
             <div className="text-center">
@@ -91,26 +65,25 @@ export default async function MapPage() {
           </Suspense>
         )}
 
-        {/* Floating Controls */}
-        <div className="absolute bottom-6 left-6 z-[1000] flex flex-col gap-2">
-          <Link
-            href="/properties"
-            className="rounded-lg px-4 py-2 bg-white shadow-lg text-sm font-medium text-ink hover:bg-neutral-50 transition-colors flex items-center gap-2"
-          >
-            <HugeiconsIcon icon={Menu01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
-            List View
-          </Link>
-        </div>
-
-        {/* Property Count Badge */}
+        {/* Legend and count, below the floating header */}
         {!error && (
-          <div className="rounded-lg absolute top-4 right-4 z-[1000] bg-white shadow-lg px-4 py-2">
-            <p className="text-sm font-medium text-ink">
-              {availableProperties.length} Properties
-            </p>
-            <p className="text-xs text-neutral-500">Click markers for details</p>
+          <div className="absolute top-[calc(env(safe-area-inset-top)+5.25rem)] lg:top-[calc(env(safe-area-inset-top)+6rem)] left-4 sm:left-6 z-[1000] rounded-2xl bg-white/95 backdrop-blur shadow-lg px-4 py-3">
+            <p className="text-sm font-semibold text-ink">{availableProperties.length} properties in Abuja</p>
+            <div className="mt-1.5 flex items-center gap-4 text-xs text-neutral-600">
+              <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#0047E0]" aria-hidden="true" />Houses ({houseCount})</span>
+              <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#00A35F]" aria-hidden="true" />Land ({landCount})</span>
+            </div>
           </div>
         )}
+
+        {/* Back to the list, clear of the phone's home bar */}
+        <Link
+          href="/properties"
+          className="absolute left-1/2 -translate-x-1/2 sm:left-6 sm:translate-x-0 bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] z-[1000] h-12 px-5 rounded-full bg-ink text-white shadow-lg text-sm font-medium inline-flex items-center gap-2 hover:bg-black transition-colors"
+        >
+          <HugeiconsIcon icon={Menu01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+          List view
+        </Link>
       </div>
     </div>
   )

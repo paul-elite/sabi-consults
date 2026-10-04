@@ -94,23 +94,25 @@ export default function AbujaMap({
     // Dynamic import for Leaflet (client-side only)
     import('leaflet').then((L) => {
       if (cancelled || !mapRef.current) return
-      // Blue marker for houses
-      const houseIcon = L.divIcon({
-        html: '<img src="/icons/house-marker.svg" width="32" height="40" alt="" />',
-        className: 'custom-marker-house',
-        iconSize: [32, 40],
-        iconAnchor: [16, 40],
-        popupAnchor: [0, -40],
+      // Sticker-style pins matching the site's icon set: gradient body, white rim, soft shadow
+      const PIN = 'M13.6177 21.367C13.1841 21.773 12.6044 22 12.0011 22C11.3978 22 10.8182 21.773 10.3845 21.367C6.41302 17.626 1.09076 13.4469 3.68627 7.37966C5.08963 4.09916 8.45834 2 12.0011 2C15.5439 2 18.9126 4.09916 20.316 7.37966C22.9082 13.4393 17.599 17.6389 13.6177 21.367Z'
+      const HOUSE = 'M8.6 11.4 12 8.6l3.4 2.8V15a.8.8 0 0 1-.8.8H9.4a.8.8 0 0 1-.8-.8z'
+      const LAND = 'M8.4 9.6h7.2v6H8.4zM12 9.6v6M8.4 12.6h7.2'
+      const pin = (id: string, from: string, to: string, glyph: string, fillGlyph: boolean) => L.divIcon({
+        html: `<svg viewBox="-3 -3 30 30" width="44" height="44" style="overflow:visible;filter:drop-shadow(0 1px 1px rgb(16 24 40/.2)) drop-shadow(0 5px 7px rgb(16 24 40/.18))">
+          <defs><linearGradient id="${id}g" x1=".25" y1="0" x2=".75" y2="1"><stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient>
+          <linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+          <path d="${PIN}" fill="#fff" stroke="#fff" stroke-width="3.4" stroke-linejoin="round"/>
+          <path d="${PIN}" fill="url(#${id}g)"/><path d="${PIN}" fill="url(#${id}h)"/>
+          <path d="${glyph}" fill="${fillGlyph ? '#fff' : 'none'}" stroke="#fff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>`,
+        className: 'sticker-pin',
+        iconSize: [44, 44],
+        iconAnchor: [22, 40],
+        popupAnchor: [0, -38],
       })
-
-      // Green marker for land
-      const landIcon = L.divIcon({
-        html: '<img src="/icons/land-marker.svg" width="32" height="40" alt="" />',
-        className: 'custom-marker-land',
-        iconSize: [32, 40],
-        iconAnchor: [16, 40],
-        popupAnchor: [0, -40],
-      })
+      const houseIcon = pin('pinH', '#5AA9FF', '#0047E0', HOUSE, true)
+      const landIcon = pin('pinL', '#4BE8A6', '#00A35F', LAND, false)
 
       // Initialize map
       const map = L.map(mapRef.current!, {
@@ -124,11 +126,14 @@ export default function AbujaMap({
         doubleClickZoom: interactive,
       })
 
-      // Use a no-key tile source so maps do not fail with provider API-key overlays.
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
+      // CARTO Voyager: cleaner, more colourful than default OSM tiles (no API key needed).
+      // Saturation is lifted further in CSS (.leaflet-tile-pane in globals.css).
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20,
       }).addTo(map)
+      if (window.matchMedia('(max-width: 639px)').matches && interactive) map.zoomControl.setPosition('bottomright')
 
       mapInstanceRef.current = map
       setIsLoaded(true)

@@ -787,6 +787,13 @@ body { overflow-x: hidden; }
   .card { border-radius: var(--radius-xl); }
 }
 
+/* Fresher, more saturated map tiles and sticker pins (AbujaMap.tsx) */
+.leaflet-tile-pane { filter: saturate(1.55) contrast(1.04) brightness(1.03); }
+.sticker-pin { background: none; border: 0; transition: transform 160ms ease; transform-origin: 50% 90%; }
+.sticker-pin:hover { z-index: 1000 !important; }
+.sticker-pin svg { transition: transform 160ms ease; transform-origin: 50% 90%; }
+.sticker-pin:hover svg { transform: scale(1.12); }
+
 /* Keep map chrome aligned with the rest of the interface. */
 .leaflet-popup-content-wrapper { border-radius: var(--radius-xl); }
 .leaflet-bar { border-radius: var(--radius-lg); overflow: hidden; }

@@ -156,18 +156,18 @@ export default function Header() {
           </ul>
 
           <div className="ml-auto xl:ml-2 flex items-center gap-1.5">
-            <Link href="/contact" className="hidden sm:inline-flex btn btn-md btn-brand rounded-2xl">Book an inspection</Link>
+            <span className="hidden sm:inline-flex"><Link href="/contact" className="btn btn-md btn-brand rounded-2xl">Book an inspection</Link></span>
             <button
               ref={trigger}
               type="button"
               onClick={openMenu}
-              className="h-11 pl-3 pr-3.5 inline-flex items-center gap-2 rounded-2xl text-sm font-medium text-ink transition-colors hover:bg-brand-soft"
+              className="w-11 h-11 grid place-items-center rounded-full text-ink transition-colors hover:bg-brand-soft"
               aria-haspopup="dialog"
+              aria-label="Open menu"
               aria-expanded={open}
               aria-controls="site-menu"
             >
               <HugeiconsIcon icon={Menu01Icon} className="w-6 h-6" strokeWidth={1.7} aria-hidden="true" />
-              <span>Menu</span>
             </button>
           </div>
         </div>
@@ -184,14 +184,15 @@ export default function Header() {
       >
         <div className="min-h-full flex flex-col px-5 sm:px-7 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-[calc(env(safe-area-inset-bottom)+1.5rem)]">
           <div className="h-14 flex items-center justify-between sticky top-0 bg-white z-10">
-            <h2 id={titleId} className="text-sm font-medium uppercase tracking-wider text-neutral-500">Menu</h2>
+            <h2 id={titleId} className="sr-only">Menu</h2>
+            <span aria-hidden="true" />
             <button
               type="button"
               onClick={() => closeMenu()}
-              className="h-11 pl-3 pr-3.5 inline-flex items-center gap-2 rounded-2xl text-sm font-medium text-ink hover:bg-brand-soft transition-colors"
+              aria-label="Close menu"
+              className="w-11 h-11 grid place-items-center rounded-full border border-neutral-200 text-ink hover:bg-neutral-100 transition-colors"
             >
               <HugeiconsIcon icon={Cancel01Icon} className="w-5 h-5" strokeWidth={1.8} aria-hidden="true" />
-              Close
             </button>
           </div>
 
@@ -208,18 +209,17 @@ export default function Header() {
                           href={item.href}
                           onClick={() => closeMenu()}
                           aria-current={active ? 'page' : undefined}
-                          className={`group flex items-center gap-3 min-h-14 px-2 py-2 rounded-2xl transition-colors ${active ? 'bg-brand-soft' : 'hover:bg-neutral-50'}`}
+                          className="group flex items-center gap-3 min-h-12 px-2 py-1.5 rounded-2xl transition-colors hover:bg-neutral-50"
                         >
-                          <StickerIcon name={item.icon} size={40} />
+                          <StickerIcon name={item.icon} size={36} className={active ? '' : 'grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition'} />
                           <span className="min-w-0 flex-1">
-                            <span className={`flex items-center gap-2 text-lg font-semibold leading-tight ${active ? 'text-brand' : 'text-ink group-hover:text-brand'}`}>
+                            <span className={`flex items-center gap-2 text-lg font-medium leading-tight ${active ? 'text-ink' : 'text-neutral-500 group-hover:text-ink'}`}>
                               {item.label}
                               {item.isNew && <span className="rounded-full bg-brand text-on-brand text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5">New</span>}
                               {active && <span className="sr-only">(current page)</span>}
                             </span>
-                            <span className="block text-sm text-neutral-500">{item.hint}</span>
                           </span>
-                          <HugeiconsIcon icon={ArrowRight01Icon} className={`w-4 h-4 shrink-0 transition-transform motion-reduce:transition-none group-hover:translate-x-0.5 ${active ? 'text-brand' : 'text-neutral-300'}`} strokeWidth={1.8} aria-hidden="true" />
+                          <HugeiconsIcon icon={ArrowRight01Icon} className={`w-4 h-4 shrink-0 transition-transform motion-reduce:transition-none group-hover:translate-x-0.5 ${active ? 'text-ink' : 'text-neutral-300'}`} strokeWidth={1.8} aria-hidden="true" />
                         </Link>
                       </li>
                     )
