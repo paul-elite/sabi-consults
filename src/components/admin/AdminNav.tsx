@@ -2,7 +2,7 @@
 
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
 import {
-  Analytics01Icon, ArrowDown01Icon, Cancel01Icon, ContactBookIcon, DashboardSquare01Icon, LinkSquare01Icon,
+  Analytics01Icon, ArrowDown01Icon, Cancel01Icon, ContactBookIcon, DashboardSquare01Icon, Globe02Icon, LinkSquare01Icon,
   Logout03Icon, Menu01Icon, News01Icon, PaintBoardIcon, Settings02Icon, UserCircleIcon, UserGroupIcon, UserLock01Icon,
 } from '@hugeicons/core-free-icons'
 
@@ -28,6 +28,7 @@ const MAIN: NavLink[] = [
   { href: '/admin/dashboard', label: 'Dashboard', min: 'staff', icon: DashboardSquare01Icon, also: ['/admin/properties'] },
   { href: '/admin/leads', label: 'Leads', min: 'admin', icon: ContactBookIcon },
   { href: '/admin/analytics', label: 'Analytics', min: 'admin', icon: Analytics01Icon },
+  { href: '/admin/visitors', label: 'Visitors', min: 'admin', icon: Globe02Icon },
   { href: '/admin/blog', label: 'Blog', min: 'staff', icon: News01Icon },
   { href: '/admin/team', label: 'Team', min: 'staff', icon: UserGroupIcon },
 ]

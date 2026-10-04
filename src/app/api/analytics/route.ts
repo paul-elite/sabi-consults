@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { clientIp, rateLimit, readJson } from '@/lib/rate-limit'
+import { decodeHeader } from '@/lib/visit'
 import { serviceClient as db } from '@/lib/auth'
 
 // Event types for type safety
@@ -46,23 +47,18 @@ interface AnalyticsEvent {
   duration_seconds?: number
 }
 
-const VALID_EVENT_TYPES = new Set<AnalyticsEventType>([
-  'page_view',
-  'property_view',
-  'property_search',
-  'inquiry',
-  'gallery_view',
-  'map_interaction',
-  'whatsapp_click',
-  'phone_click',
-  'email_click',
-  'share_click',
-  'download_click',
-  'outbound_click',
-  'scroll_depth',
-  'filter_use',
-  'cta_click',
-])
+// The browser tracker sends many event names (see src/lib/analytics.ts). Accept any
+// well-formed snake_case name rather than a hand-kept list that silently drops new ones.
+const EVENT_NAME = /^[a-z][a-z_]{1,48}$/
+
+// Location from the hosting platform's headers; Vercel URL-encodes city names
+function geo(request: NextRequest) {
+  const h = request.headers
+  return {
+    country: h.get('x-vercel-ip-country') || h.get('cf-ipcountry') || null,
+    city: decodeHeader(h.get('x-vercel-ip-city') || h.get('cf-ipcity')),
+  }
+}
 
 // Generous per-visitor ceiling: real browsing never gets near it, scripted floods do
 function allowAnalytics(request: NextRequest, count = 1) {
@@ -84,7 +80,7 @@ function metadata(value: unknown) {
 }
 
 function normalizeEvent(event: AnalyticsEvent) {
-  if (!VALID_EVENT_TYPES.has(event.event_type)) return null
+  if (typeof event.event_type !== 'string' || !EVENT_NAME.test(event.event_type)) return null
 
   return {
     event_type: event.event_type,
@@ -135,10 +131,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get geo info from headers (if behind Cloudflare/Vercel)
-    const country = request.headers.get('cf-ipcountry') ||
-                   request.headers.get('x-vercel-ip-country') || null
-    const city = request.headers.get('cf-ipcity') ||
-                request.headers.get('x-vercel-ip-city') || null
+    const { country, city } = geo(request)
 
     // Insert the event
     const { error } = await client.from('analytics_events').insert({
@@ -180,7 +173,8 @@ export async function PUT(request: NextRequest) {
     }
 
     // Limit batch size
-    const batch = events.slice(0, 50).map(normalizeEvent).filter(Boolean)
+    const { country, city } = geo(request)
+    const batch = events.slice(0, 50).map(normalizeEvent).filter(Boolean).map(e => ({ ...e, country, city }))
 
     if (batch.length === 0) {
       return NextResponse.json({ success: true, count: 0 })
