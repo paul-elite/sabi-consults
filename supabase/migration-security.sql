@@ -22,15 +22,15 @@ BEGIN
 END $$;
 
 -- Pin search_path so a function can't be tricked into resolving a same-named
--- object from another schema.
+-- object from another schema. update_updated_at_column is left alone: it is
+-- already set to an empty search_path, which is stricter.
 DO $$
 DECLARE f TEXT;
 BEGIN
   FOREACH f IN ARRAY ARRAY[
     'public.update_property_analytics()',
     'public.calculate_lead_score(uuid)',
-    'public.link_visitor_to_lead(uuid, text)',
-    'public.update_updated_at_column()'
+    'public.link_visitor_to_lead(uuid, text)'
   ] LOOP
     IF to_regprocedure(f) IS NOT NULL THEN
       EXECUTE format('ALTER FUNCTION %s SET search_path = public, pg_temp', f);
