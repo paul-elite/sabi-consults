@@ -21,6 +21,7 @@ export const canAccess = (u: AdminUser | null, min: AdminRole) => !!u && RANK[u.
 const LINKS: { href: string; label: string; min: AdminRole; icon?: boolean }[] = [
   { href: '/admin/dashboard', label: 'Dashboard', min: 'staff' },
   { href: '/admin/analytics', label: 'Analytics', min: 'admin' },
+  { href: '/admin/leads', label: 'Leads', min: 'admin' },
   { href: '/admin/blog', label: 'Blog', min: 'staff' },
   { href: '/admin/team', label: 'Team', min: 'staff' },
   { href: '/admin/settings', label: 'Settings', min: 'admin' },

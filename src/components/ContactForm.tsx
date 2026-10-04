@@ -3,14 +3,18 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Tick02Icon } from '@hugeicons/core-free-icons'
 
-import { useId, useState } from 'react'
+import { useId, useState, useEffect } from 'react'
+import { trackInquiryStarted, trackInquirySubmitted } from '@/lib/analytics'
 
 interface ContactFormProps {
   propertyId?: string
   propertyTitle?: string
+  propertyDistrict?: string
+  propertyType?: string
+  propertyPrice?: number
 }
 
-export default function ContactForm({ propertyId, propertyTitle }: ContactFormProps) {
+export default function ContactForm({ propertyId, propertyTitle, propertyDistrict, propertyType, propertyPrice }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,6 +25,24 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
   const [errorText, setErrorText] = useState('')
   const uid = useId()
   const [website, setWebsite] = useState('') // spam trap, hidden from people
+  const [hasTrackedStart, setHasTrackedStart] = useState(false)
+
+  // Build property context for tracking
+  const propertyContext = propertyId ? {
+    id: propertyId,
+    title: propertyTitle,
+    district: propertyDistrict,
+    type: propertyType,
+    price: propertyPrice,
+  } : undefined
+
+  // Track when user starts filling the form
+  const handleFocus = () => {
+    if (!hasTrackedStart) {
+      trackInquiryStarted(propertyContext)
+      setHasTrackedStart(true)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,6 +63,9 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
         const data = await response.json().catch(() => ({}))
         throw new Error(data.error || 'Something went wrong')
       }
+
+      // Track successful submission
+      trackInquirySubmitted(propertyContext)
 
       setStatus('success')
       setFormData({ name: '', email: '', phone: '', message: '' })
@@ -75,6 +100,7 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
           required
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onFocus={handleFocus}
           className="form-input"
           placeholder="Your full name"
         />
