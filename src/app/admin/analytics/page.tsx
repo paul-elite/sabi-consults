@@ -1,7 +1,7 @@
 'use client'
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Message01Icon, UserGroupIcon, TrendUp01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
+import { Message01Icon, UserGroupIcon, ArrowUp01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
 
 import { useState, useEffect } from 'react'
 import { RequireRole } from '@/components/admin/AdminNav'
@@ -118,7 +118,7 @@ function AnalyticsDashboard() {
         <div className="card p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-              <HugeiconsIcon icon={TrendUp01Icon} className="w-5 h-5 text-amber-600" strokeWidth={1.7} />
+              <HugeiconsIcon icon={ArrowUp01Icon} className="w-5 h-5 text-amber-600" strokeWidth={1.7} />
             </div>
             <div>
               <p className="text-sm text-neutral-500">Conversion</p>
