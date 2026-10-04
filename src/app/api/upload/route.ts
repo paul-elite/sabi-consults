@@ -1,20 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession, sameOrigin } from '@/lib/auth'
+import { randomUUID } from 'crypto'
+import { requireRole } from '@/lib/auth'
+import { isStorageImageUrl } from '@/lib/storage-url'
+import { rateLimit } from '@/lib/rate-limit'
+
+// The browser-supplied type is only a claim; check the file's leading bytes match it
+function matchesSignature(type: string, b: Uint8Array): boolean {
+  const starts = (...sig: number[]) => sig.every((v, i) => b[i] === v)
+  const ascii = (offset: number, text: string) => [...text].every((c, i) => b[offset + i] === c.charCodeAt(0))
+  switch (type) {
+    case 'image/jpeg': return starts(0xff, 0xd8, 0xff)
+    case 'image/png': return starts(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)
+    case 'image/gif': return ascii(0, 'GIF87a') || ascii(0, 'GIF89a')
+    case 'image/webp': return ascii(0, 'RIFF') && ascii(8, 'WEBP')
+    case 'image/x-icon':
+    case 'image/vnd.microsoft.icon': return starts(0x00, 0x00, 0x01, 0x00)
+    case 'image/svg+xml': {
+      const head = new TextDecoder().decode(b.slice(0, 1024)).replace(/^\uFEFF/, '').trimStart()
+      return /^(<\?xml[^>]*>\s*)?(<!--[\s\S]*?-->\s*)*(<!doctype svg[^>]*>\s*)?<svg[\s>]/i.test(head)
+    }
+    default: return false
+  }
+}
+
+// SVG is text that can carry script. Refuse anything beyond plain drawing markup.
+const SVG_DANGER = /<script|<foreignobject|<iframe|<embed|<object|<animate|<set\b|<handler|<!entity|<!doctype(?! svg)|javascript:|data:|\son[a-z]+\s*=|(xlink:)?href\s*=\s*(?!["']?\s*#)|&#|@import|url\(\s*(?!["']?#)/i
 
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const currentUser = await getSession()
+    const currentUser = await requireRole('staff')
+    if (currentUser instanceof NextResponse) return currentUser
 
-    if (!currentUser || !(await sameOrigin())) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!rateLimit(`upload:${currentUser.id}`, 60, 60 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Upload limit reached. Try again in an hour.' }, { status: 429 })
+    }
+    if (Number(request.headers.get('content-length') || 0) > 6 * 1024 * 1024) {
+      return NextResponse.json({ error: 'File too large. Maximum size is 5MB.' }, { status: 413 })
     }
 
     const formData = await request.formData()
-    const file = formData.get('file') as File
+    const file = formData.get('file')
 
-    if (!file) {
+    if (!(file instanceof File)) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
@@ -37,21 +66,27 @@ export async function POST(request: NextRequest) {
     const EXT: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'image/x-icon': 'ico', 'image/vnd.microsoft.icon': 'ico' }
     const ext = EXT[file.type]
     const timestamp = Date.now()
-    const randomStr = Math.random().toString(36).substring(2, 8)
+    const randomStr = randomUUID()
     const requested = String(formData.get('folder') || 'properties')
     const folder = ['properties', 'brand', 'team', 'blog'].includes(requested) ? requested : 'properties'
+
+    if (file.type === 'image/svg+xml' && (folder !== 'brand' || currentUser.role !== 'super_admin')) {
+      return NextResponse.json({ error: 'SVG uploads are restricted to super admin brand assets.' }, { status: 403 })
+    }
+
     const filename = `${folder}/${timestamp}-${randomStr}.${ext}`
 
     // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer()
     const buffer = new Uint8Array(arrayBuffer)
 
-    // SVGs are text and can hide scripts: refuse any that contain them
-    if (file.type === 'image/svg+xml') {
-      const text = new TextDecoder().decode(buffer).toLowerCase()
-      if (/<script|javascript:|\son[a-z]+\s*=|<foreignobject|<iframe|<embed/.test(text)) {
-        return NextResponse.json({ error: 'This SVG contains scripts. Export it again as a plain SVG or PNG.' }, { status: 400 })
-      }
+    if (!matchesSignature(file.type, buffer)) {
+      return NextResponse.json({ error: 'That file isn’t a valid image of the type it claims to be.' }, { status: 400 })
+    }
+
+    // SVGs are text and can hide scripts or pull in outside files: refuse any that do
+    if (file.type === 'image/svg+xml' && SVG_DANGER.test(new TextDecoder().decode(buffer))) {
+      return NextResponse.json({ error: 'This SVG contains scripts, links or embedded files. Export it again as a plain SVG or PNG.' }, { status: 400 })
     }
 
     // Upload to Supabase Storage
@@ -83,11 +118,8 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // Check authentication
-    const currentUser = await getSession()
-
-    if (!currentUser || !(await sameOrigin())) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const currentUser = await requireRole('staff')
+    if (currentUser instanceof NextResponse) return currentUser
 
     const { searchParams } = new URL(request.url)
     const url = searchParams.get('url')
@@ -96,13 +128,19 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'No URL provided' }, { status: 400 })
     }
 
-    // Extract path from URL
-    const match = url.match(/\/images\/(.+)$/)
-    if (!match) {
+    // Only files in this project's bucket, in a known folder, with no path tricks
+    if (!isStorageImageUrl(url)) {
       return NextResponse.json({ error: 'Invalid image URL' }, { status: 400 })
     }
-
-    const path = match[1]
+    const path = decodeURIComponent(new URL(url).pathname.replace('/storage/v1/object/public/images/', ''))
+    const match = path.match(/^(properties|brand|team|blog)\/[\w.-]+$/)
+    if (!match || path.includes('..')) {
+      return NextResponse.json({ error: 'Invalid image URL' }, { status: 400 })
+    }
+    // Brand assets (logo, favicon) can only be removed by a super admin
+    if (match[1] === 'brand' && currentUser.role !== 'super_admin') {
+      return NextResponse.json({ error: 'Only a super admin can remove brand images' }, { status: 403 })
+    }
     const supabase = await createAdminClient()
 
     const { error } = await supabase.storage

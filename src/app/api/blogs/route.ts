@@ -2,7 +2,7 @@ import { cleanHtml, cleanText } from '@/lib/sanitize'
 import { getBrand } from '@/lib/brand'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession, sameOrigin } from '@/lib/auth'
+import { getSession, requireRole, sameOrigin } from '@/lib/auth'
 
 // GET all blogs (admin - includes drafts)
 export async function GET() {
@@ -37,11 +37,8 @@ export async function GET() {
 // POST create new blog
 export async function POST(request: NextRequest) {
   try {
-    const currentUser = await getSession()
-
-    if (!currentUser || !(await sameOrigin())) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await requireRole('staff')
+    if (auth instanceof NextResponse) return auth
 
     const body = await request.json()
     const { title, slug, excerpt, content, coverImage, author, status } = body

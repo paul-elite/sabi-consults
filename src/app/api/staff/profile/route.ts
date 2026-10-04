@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession, serviceClient as db, sameOrigin } from '@/lib/auth'
+import { cleanText } from '@/lib/sanitize'
+import { readJson } from '@/lib/rate-limit'
+import { isStorageImageUrl } from '@/lib/storage-url'
 
 // GET /api/staff/profile – get current user's profile
 export async function GET() {
@@ -58,20 +61,27 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
   }
 
-  const body = await request.json()
-  const { name, phone, bio, image } = body
+  const body = await readJson(request, 16 * 1024)
+  if (body instanceof NextResponse) return body
+  const name = cleanText(body.name, 120)
+  const phone = cleanText(body.phone, 40)
+  const bio = cleanText(body.bio, 2000)
+  const image = typeof body.image === 'string' && body.image ? body.image : null
+  if (image && !isStorageImageUrl(image)) {
+    return NextResponse.json({ error: 'Upload the photo again; that image address isn’t allowed' }, { status: 400 })
+  }
 
-  if (!name?.trim() || name.trim().length < 2) {
+  if (name.length < 2) {
     return NextResponse.json({ error: 'Name must be at least 2 characters' }, { status: 400 })
   }
 
   const { data, error } = await client
     .from('admin_users')
     .update({
-      name: name.trim(),
-      phone: phone?.trim() || null,
-      bio: bio?.trim() || null,
-      image: image || null,
+      name,
+      phone: phone || null,
+      bio: bio || null,
+      image,
     })
     .eq('id', user.id)
     .select('name, email, phone, bio, image')

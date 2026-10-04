@@ -1,15 +1,17 @@
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { ArrowRight01Icon, FlashIcon, QuoteDownIcon, Shield01Icon, UserGroupIcon, WhatsappIcon } from '@hugeicons/core-free-icons'
+import { ArrowRight01Icon, QuoteDownIcon, WhatsappIcon } from '@hugeicons/core-free-icons'
 import Link from 'next/link'
 import { getBrand } from '@/lib/brand'
 import { getSettings } from '@/lib/settings'
 import Image from 'next/image'
-import PropertySearch from '@/components/PropertySearch'
 import PropertyCard from '@/components/PropertyCard'
 import InstagramFeed from '@/components/InstagramFeed'
 import { getFeaturedProperties, filterProperties } from '@/lib/properties'
 import { testimonials, districts } from '@/data/properties'
+import Eyebrow from '@/components/Eyebrow'
+import StickerIcon from '@/components/StickerIcon'
+import HeroShowcase from '@/components/HeroShowcase'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -26,58 +28,20 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero Section - Search First */}
-      <section className="relative min-h-[78svh] lg:min-h-[86vh] flex items-center justify-center pt-16 lg:pt-20 pb-10">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920"
-            alt="Luxury home in Abuja"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/50" />
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-[34px] sm:text-5xl lg:text-6xl font-semibold text-white mb-4 sm:mb-6 leading-tight">
-            Find Your Perfect Property
-            <span className="block font-medium">in Abuja</span>
-          </h1>
-          <p className="text-base sm:text-xl text-white/85 mb-8 sm:mb-12 max-w-2xl mx-auto">
-            {brand.name} offers expert guidance for premium real estate in Nigeria&apos;s capital city
-          </p>
-
-          {/* Search Module */}
-          <div className="max-w-3xl mx-auto">
-            <PropertySearch variant="hero" />
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10" aria-hidden="true">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center pt-2">
-            <div className="w-1 h-2 bg-white/60 rounded-full animate-bounce" />
-          </div>
-        </div>
-      </section>
+      <HeroShowcase brandName={brand.name} properties={featuredProperties} />
 
       {/* Featured Properties */}
       <section className="py-14 md:py-24 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between gap-4 mb-8 md:mb-10">
+          <div className="flex items-center justify-between gap-4 mb-8 md:mb-10">
             <div>
-              <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">
-                Curated Selection
-              </p>
               <h2 className="text-2xl md:text-3xl font-semibold text-ink">
                 Featured Properties
               </h2>
             </div>
             <Link
               href="/properties"
-              className="shrink-0 text-sm font-medium text-ink hover:text-brand transition-colors flex items-center gap-1.5 min-h-11"
+              className="shrink-0 text-sm font-medium text-ink hover:text-brand transition-colors inline-flex items-center gap-1.5 min-h-11 pt-1"
             >
               View all
               <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
@@ -99,9 +63,7 @@ export default async function HomePage() {
       <section className="py-14 md:py-24 bg-brand-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 md:mb-12">
-            <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
-              Explore
-            </p>
+            <Eyebrow icon="map" center className="mx-auto mb-3">Explore</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-semibold text-ink">
               Where we have properties
             </h2>
@@ -132,11 +94,9 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
-                Why Choose Us
-              </p>
-              <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-6">
-                Deep Local Expertise.<br />Trusted Guidance.
+              <Eyebrow icon="home" className="mb-3">Why Choose Us</Eyebrow>
+              <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-6 tracking-[2px]">
+                Deep Local Expertise.<br /><span className="text-brand">Trusted Guidance.</span>
               </h2>
               <p className="text-neutral-600 leading-relaxed mb-8">
                 &quot;Sabi&quot; means to know deeply in Nigerian Pidgin. At {brand.name}, we embody this
@@ -147,9 +107,7 @@ export default async function HomePage() {
 
               <div className="space-y-6">
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
-                    <HugeiconsIcon icon={Shield01Icon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
-                  </div>
+                  <StickerIcon name="verified" size={48} />
                   <div>
                     <h3 className="font-semibold text-ink mb-1">Verified Properties</h3>
                     <p className="text-sm text-neutral-600">Every listing is personally vetted by our team</p>
@@ -157,9 +115,7 @@ export default async function HomePage() {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
-                    <HugeiconsIcon icon={UserGroupIcon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
-                  </div>
+                  <StickerIcon name="clients" size={48} />
                   <div>
                     <h3 className="font-semibold text-ink mb-1">Diaspora Friendly</h3>
                     <p className="text-sm text-neutral-600">Trusted partner for overseas Nigerians</p>
@@ -167,9 +123,7 @@ export default async function HomePage() {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
-                    <HugeiconsIcon icon={FlashIcon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
-                  </div>
+                  <StickerIcon name="flash" size={48} />
                   <div>
                     <h3 className="font-semibold text-ink mb-1">End-to-End Support</h3>
                     <p className="text-sm text-neutral-600">From search to closing, we guide every step</p>
@@ -197,9 +151,7 @@ export default async function HomePage() {
       <section className="py-14 md:py-24 bg-brand-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
-              Client Stories
-            </p>
+            <Eyebrow icon="clients" center className="mx-auto mb-3">Client Stories</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-semibold text-ink">
               Trusted by Clients
             </h2>
@@ -244,7 +196,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/properties?type=land"
-              className="rounded-lg px-8 py-4 border-2 border-white text-white text-sm font-medium uppercase tracking-wider hover:bg-white hover:text-brand transition-colors"
+              className="rounded-lg px-8 py-4 bg-white/12 text-white text-sm font-medium uppercase tracking-wider hover:bg-white/20 transition-colors"
             >
               Browse Land
             </Link>

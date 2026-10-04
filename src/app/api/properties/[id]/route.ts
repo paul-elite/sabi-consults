@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { getSession, sameOrigin } from '@/lib/auth'
+import { getSession, requireRole } from '@/lib/auth'
 
 // GET single property
 export async function GET(
@@ -33,14 +33,8 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const currentUser = await getSession()
-
-  if (!currentUser || !(await sameOrigin())) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
+  const auth = await requireRole('admin')
+  if (auth instanceof NextResponse) return auth
 
   const { id } = await params
 
@@ -98,14 +92,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const currentUser = await getSession()
-
-  if (!currentUser || !(await sameOrigin())) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
+  const auth = await requireRole('admin')
+  if (auth instanceof NextResponse) return auth
 
   const { id } = await params
   const supabase = await createAdminClient()

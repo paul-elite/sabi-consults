@@ -1,7 +1,7 @@
 'use client'
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Home01Icon, MapsIcon, GridIcon } from '@hugeicons/core-free-icons'
+import { Home01Icon, MapsIcon, Grid2X2Icon } from '@hugeicons/core-free-icons'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -55,13 +55,15 @@ export default function PropertySearch({ variant = 'hero', className = '' }: Pro
       {/* Type Toggle */}
       <div className="flex p-1.5 gap-1.5 bg-neutral-100 m-3 sm:m-4 mb-0 sm:mb-0 rounded-xl">
         {([
-          { value: 'all', label: 'All', icon: GridIcon },
+          { value: 'all', label: 'All', icon: Grid2X2Icon },
           { value: 'house', label: 'Houses', icon: Home01Icon },
           { value: 'land', label: 'Land', icon: MapsIcon },
         ] as const).map(item => (
           <button key={item.value} type="button" aria-pressed={type === item.value} onClick={() => setType(item.value)}
             className={`flex-1 h-11 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${type === item.value ? 'bg-brand text-white' : 'text-neutral-600 hover:text-brand'}`}>
-            <HugeiconsIcon icon={item.icon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
+            {type === item.value && (
+              <HugeiconsIcon icon={item.icon} className="w-5 h-5" strokeWidth={2} aria-hidden="true" />
+            )}
             {item.label}
           </button>
         ))}

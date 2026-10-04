@@ -2,7 +2,7 @@ import { cleanHtml, cleanText } from '@/lib/sanitize'
 import { getBrand } from '@/lib/brand'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession, sameOrigin } from '@/lib/auth'
+import { requireRole } from '@/lib/auth'
 
 // GET single blog by ID
 export async function GET(
@@ -39,11 +39,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const currentUser = await getSession()
-
-    if (!currentUser || !(await sameOrigin())) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await requireRole('staff')
+    if (auth instanceof NextResponse) return auth
 
     const { id } = await params
     const body = await request.json()
@@ -104,11 +101,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const currentUser = await getSession()
-
-    if (!currentUser || !(await sameOrigin())) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await requireRole('staff')
+    if (auth instanceof NextResponse) return auth
 
     const { id } = await params
     const supabase = await createAdminClient()

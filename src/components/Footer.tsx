@@ -11,19 +11,11 @@ export default async function Footer() {
   const tel = `tel:+${settings.whatsapp_number.replace(/\D/g, '')}`
   return (
     <footer className="bg-brand text-on-brand">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12 md:py-16 pb-safe">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:gap-x-12">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-12 md:pt-16 pb-16 md:pb-20 pb-safe">
+        <div className="grid grid-cols-2 md:grid-cols-[1.25fr_1fr_1fr_1.25fr] gap-x-6 gap-y-10 sm:gap-x-12 lg:gap-x-16">
           {/* Brand Column */}
           <div className="min-w-0">
-            <Link href="/" className="inline-block">
-              {brand.logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={brand.logoUrl} alt={brand.name} className="h-10 w-auto" />
-              ) : (
-                <span className="font-heading text-2xl">{brand.name}</span>
-              )}
-            </Link>
-            <p className="mt-4 text-on-brand/80 text-sm leading-relaxed">
+            <p className="text-on-brand/80 text-sm leading-relaxed">
               {brand.tagline}
             </p>
             {/* Social Links */}
@@ -71,6 +63,11 @@ export default async function Footer() {
               <li>
                 <Link href="/resources" className="inline-block py-0.5 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
                   Resources
+                </Link>
+              </li>
+              <li>
+                <Link href="/realtypedia" className="inline-block py-0.5 text-on-brand/70 hover:text-on-brand text-sm transition-colors">
+                  Realtypedia
                 </Link>
               </li>
               <li>
@@ -147,6 +144,17 @@ export default async function Footer() {
             </div>
           </div>
         </div>
+
+        <Link href="/" className="mt-10 md:mt-12 block w-full" aria-label={`${brand.name} home`}>
+          {brand.logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={brand.logoUrl} alt={brand.name} className="mx-auto w-full max-w-[520px] h-auto max-h-28 object-contain" />
+          ) : (
+            <span className="block text-center font-heading text-5xl md:text-7xl font-semibold text-on-brand">
+              {brand.name}
+            </span>
+          )}
+        </Link>
       </div>
     </footer>
   )

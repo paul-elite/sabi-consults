@@ -15,9 +15,14 @@ interface PropertyCardProps {
 export default function PropertyCard({ property, variant = 'default', priority = false }: PropertyCardProps) {
   const { amount, label } = priceHeadline(property)
   const facts = propertyFacts(property)
+  const landSize = property.landSize && property.landSize > 0 ? `${property.landSize.toLocaleString()} sqm` : null
+  const detailFacts = facts.filter(f => f !== landSize)
   const name = propertyCardName(property)
   const options = property.variations?.length || 0
   const isLand = property.type === 'land'
+  const typeBadgeClass = variant === 'featured'
+    ? 'bg-white text-ink shadow-sm'
+    : isLand ? 'bg-emerald-500 text-white' : 'bg-brand text-white'
 
   return (
     <Link
@@ -41,14 +46,14 @@ export default function PropertyCard({ property, variant = 'default', priority =
         )}
         {/* Badges */}
         <div className="absolute top-3 left-3 flex gap-1.5">
-          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${isLand ? 'bg-emerald-500 text-white' : 'bg-brand text-white'}`}>
+          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${typeBadgeClass}`}>
             {isLand ? 'Land' : 'House'}
           </span>
           {property.status === 'pending' && (
-            <span className="px-2.5 py-1 rounded-full bg-amber-400 text-amber-950 text-xs font-medium">Selling fast</span>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${variant === 'featured' ? 'bg-black text-white shadow-sm' : 'bg-amber-400 text-amber-950'}`}>Selling fast</span>
           )}
           {property.status === 'sold' && (
-            <span className="px-2.5 py-1 rounded-full bg-brand-dark text-white text-xs font-medium">Sold</span>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${variant === 'featured' ? 'bg-black text-white shadow-sm' : 'bg-brand-dark text-white'}`}>Sold</span>
           )}
         </div>
       </div>
@@ -56,12 +61,19 @@ export default function PropertyCard({ property, variant = 'default', priority =
       {/* Content */}
       <div className="p-4">
         <p className="mb-2 text-xs font-medium text-neutral-500 uppercase tracking-wider line-clamp-2">{name}</p>
-        <h3 className="text-base font-semibold text-ink leading-snug group-hover:text-brand transition-colors line-clamp-2">
-          {property.district}
-        </h3>
-        {facts.length > 0 && (
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className="min-w-0 text-base font-semibold text-ink leading-snug group-hover:text-brand transition-colors line-clamp-2">
+            {property.district}
+          </h3>
+          {landSize && (
+            <span className="shrink-0 text-base font-medium text-ink leading-snug">
+              {landSize}
+            </span>
+          )}
+        </div>
+        {detailFacts.length > 0 && (
           <p className="mt-2 text-sm text-neutral-500 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            {facts.map((f, i) => (
+            {detailFacts.map((f, i) => (
               <span key={f} className="inline-flex items-center gap-2.5">
                 {i > 0 && <span className="w-0.5 h-0.5 rounded-full bg-neutral-300" aria-hidden="true" />}
                 {f}
@@ -76,7 +88,7 @@ export default function PropertyCard({ property, variant = 'default', priority =
           )}
           <p className="ml-auto text-right text-sm text-ink">
             {label && <span className="text-neutral-500">{label} </span>}
-            <span className="font-medium">{amount}</span>
+            <span className="font-semibold text-ink">{amount}</span>
           </p>
         </div>
       </div>

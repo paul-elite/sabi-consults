@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { clientIp, rateLimit, readJson } from '@/lib/rate-limit'
 import { serviceClient as db } from '@/lib/auth'
 
 // Event types for type safety
@@ -45,6 +46,73 @@ interface AnalyticsEvent {
   duration_seconds?: number
 }
 
+const VALID_EVENT_TYPES = new Set<AnalyticsEventType>([
+  'page_view',
+  'property_view',
+  'property_search',
+  'inquiry',
+  'gallery_view',
+  'map_interaction',
+  'whatsapp_click',
+  'phone_click',
+  'email_click',
+  'share_click',
+  'download_click',
+  'outbound_click',
+  'scroll_depth',
+  'filter_use',
+  'cta_click',
+])
+
+// Generous per-visitor ceiling: real browsing never gets near it, scripted floods do
+function allowAnalytics(request: NextRequest, count = 1) {
+  return rateLimit(`analytics:${clientIp(request)}`, 180, 60 * 1000, count)
+}
+
+function text(value: unknown, max = 500) {
+  return typeof value === 'string' ? value.slice(0, max) : undefined
+}
+
+function number(value: unknown) {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined
+}
+
+function metadata(value: unknown) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
+  const serialized = JSON.stringify(value)
+  return serialized.length <= 4000 ? value as Record<string, unknown> : {}
+}
+
+function normalizeEvent(event: AnalyticsEvent) {
+  if (!VALID_EVENT_TYPES.has(event.event_type)) return null
+
+  return {
+    event_type: event.event_type,
+    event_category: text(event.event_category, 80) || categorizeEvent(event.event_type),
+    session_id: text(event.session_id, 120),
+    visitor_id: text(event.visitor_id, 120),
+    page_path: text(event.page_path, 500),
+    page_title: text(event.page_title, 300),
+    referrer: text(event.referrer, 1000),
+    utm_source: text(event.utm_source, 120),
+    utm_medium: text(event.utm_medium, 120),
+    utm_campaign: text(event.utm_campaign, 180),
+    property_id: text(event.property_id, 80) || null,
+    property_title: text(event.property_title, 300),
+    property_district: text(event.property_district, 120),
+    property_type: text(event.property_type, 120),
+    property_price: number(event.property_price),
+    event_label: text(event.event_label, 300),
+    event_value: number(event.event_value),
+    metadata: metadata(event.metadata),
+    device_type: text(event.device_type, 80),
+    browser: text(event.browser, 120),
+    os: text(event.os, 120),
+    screen_resolution: text(event.screen_resolution, 80),
+    duration_seconds: number(event.duration_seconds),
+  }
+}
+
 // POST /api/analytics - Track an event
 export async function POST(request: NextRequest) {
   try {
@@ -54,10 +122,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true })
     }
 
-    const event: AnalyticsEvent = await request.json()
+    if (!allowAnalytics(request)) {
+      return NextResponse.json({ success: true })
+    }
 
-    // Validate required field
-    if (!event.event_type) {
+    const event = await readJson<AnalyticsEvent>(request, 8 * 1024)
+    if (event instanceof NextResponse) return event
+    const normalized = normalizeEvent(event)
+
+    if (!normalized) {
       return NextResponse.json({ error: 'event_type is required' }, { status: 400 })
     }
 
@@ -69,31 +142,9 @@ export async function POST(request: NextRequest) {
 
     // Insert the event
     const { error } = await client.from('analytics_events').insert({
-      event_type: event.event_type,
-      event_category: event.event_category || categorizeEvent(event.event_type),
-      session_id: event.session_id,
-      visitor_id: event.visitor_id,
-      page_path: event.page_path,
-      page_title: event.page_title,
-      referrer: event.referrer,
-      utm_source: event.utm_source,
-      utm_medium: event.utm_medium,
-      utm_campaign: event.utm_campaign,
-      property_id: event.property_id || null,
-      property_title: event.property_title,
-      property_district: event.property_district,
-      property_type: event.property_type,
-      property_price: event.property_price,
-      event_label: event.event_label,
-      event_value: event.event_value,
-      metadata: event.metadata || {},
-      device_type: event.device_type,
-      browser: event.browser,
-      os: event.os,
-      screen_resolution: event.screen_resolution,
+      ...normalized,
       country,
       city,
-      duration_seconds: event.duration_seconds,
     })
 
     if (error) {
@@ -116,30 +167,24 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ success: true })
     }
 
-    const { events }: { events: AnalyticsEvent[] } = await request.json()
+    const body = await readJson<{ events?: AnalyticsEvent[] }>(request, 128 * 1024)
+    if (body instanceof NextResponse) return body
+    const events = body.events
 
     if (!Array.isArray(events) || events.length === 0) {
       return NextResponse.json({ error: 'events array is required' }, { status: 400 })
     }
 
+    if (!allowAnalytics(request, Math.min(events.length, 50))) {
+      return NextResponse.json({ success: true, count: 0 })
+    }
+
     // Limit batch size
-    const batch = events.slice(0, 50).map(event => ({
-      event_type: event.event_type,
-      event_category: event.event_category || categorizeEvent(event.event_type),
-      session_id: event.session_id,
-      visitor_id: event.visitor_id,
-      page_path: event.page_path,
-      page_title: event.page_title,
-      referrer: event.referrer,
-      property_id: event.property_id || null,
-      property_title: event.property_title,
-      property_district: event.property_district,
-      event_label: event.event_label,
-      event_value: event.event_value,
-      metadata: event.metadata || {},
-      device_type: event.device_type,
-      duration_seconds: event.duration_seconds,
-    }))
+    const batch = events.slice(0, 50).map(normalizeEvent).filter(Boolean)
+
+    if (batch.length === 0) {
+      return NextResponse.json({ success: true, count: 0 })
+    }
 
     const { error } = await client.from('analytics_events').insert(batch)
 

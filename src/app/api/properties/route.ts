@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { getSession, sameOrigin } from '@/lib/auth'
+import { getSession, requireRole } from '@/lib/auth'
 
 // GET all properties
 export async function GET(request: NextRequest) {
@@ -53,14 +53,8 @@ export async function GET(request: NextRequest) {
 // POST create new property (admin only)
 export async function POST(request: NextRequest) {
   // Check for admin session
-  const currentUser = await getSession()
-
-  if (!currentUser || !(await sameOrigin())) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
+  const auth = await requireRole('admin')
+  if (auth instanceof NextResponse) return auth
 
   try {
     const body = await request.json()

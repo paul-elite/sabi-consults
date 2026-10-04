@@ -2,6 +2,8 @@
 //
 // Sessions are a signed cookie (HMAC-SHA256), so they can't be forged by
 // setting a cookie value in the browser. Passwords are hashed with scrypt.
+// Each session carries a fingerprint of the account's password hash, so
+// changing or resetting a password signs out every other session at once.
 //
 // Roles, from most to least powerful:
 //   super_admin  – everything, including branding and staff accounts
@@ -12,7 +14,7 @@
 // so a fresh deployment can sign in before any accounts are created.
 import { cookies, headers } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { createHmac, randomBytes, scryptSync, timingSafeEqual } from 'crypto'
+import { createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from 'crypto'
 import { createClient as createSupabase } from '@supabase/supabase-js'
 
 export type Role = 'super_admin' | 'admin' | 'staff'
@@ -26,17 +28,30 @@ export interface SessionUser {
   role: Role
 }
 
-const COOKIE = 'sabi_session'
-const MAX_AGE = 60 * 60 * 24 * 7 // 7 days
+const PROD = process.env.NODE_ENV === 'production'
+// __Host- cookies must be Secure, path=/ and host-only, so a subdomain can't plant or overwrite them
+const COOKIE = PROD ? '__Host-sabi_session' : 'sabi_session'
+const MAX_AGE = 60 * 60 * 24 // 24 hours
+export const MAX_PASSWORD = 256 // scrypt cost grows with input; cap it
 
-function secret(): string {
-  const s = process.env.SESSION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!s) throw new Error('Set SESSION_SECRET (or SUPABASE_SERVICE_ROLE_KEY) to enable admin sign-in')
-  return s
+let warned = false
+function secret(): Buffer {
+  const own = process.env.SESSION_SECRET
+  if (own && own.length >= 32) return Buffer.from(own)
+  const fallback = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!fallback) throw new Error('Set SESSION_SECRET (32+ characters) to enable admin sign-in')
+  if (!warned) { warned = true; console.warn('SESSION_SECRET is not set (or under 32 characters); deriving the session key from the service role key.') }
+  // Domain-separated so the raw service key is never used directly as the HMAC key
+  return createHash('sha256').update('sabi-session-v1:' + fallback).digest()
 }
 
 function sign(payload: string): string {
   return createHmac('sha256', secret()).update(payload).digest('base64url')
+}
+
+/** Short fingerprint of a credential; changes whenever the password does. */
+function credentialTag(credential: string): string {
+  return createHmac('sha256', secret()).update('cred:' + credential).digest('base64url').slice(0, 22)
 }
 
 export function serviceClient() {
@@ -53,8 +68,12 @@ export function hashPassword(password: string): string {
   return `scrypt$${salt.toString('base64')}$${hash.toString('base64')}`
 }
 
+// Verified against when an email has no account, so a miss takes as long as a wrong password
+const DUMMY_HASH = hashPassword(randomBytes(16).toString('hex'))
+
 export function verifyPassword(password: string, stored: string | null | undefined): boolean {
-  if (!stored || !stored.startsWith('scrypt$')) return false
+  if (password.length > MAX_PASSWORD) return false
+  if (!stored || !stored.startsWith('scrypt$')) { verifyPassword(password, DUMMY_HASH); return false }
   const [, saltB64, hashB64] = stored.split('$')
   const expected = Buffer.from(hashB64, 'base64')
   const actual = scryptSync(password, Buffer.from(saltB64, 'base64'), expected.length)
@@ -67,14 +86,15 @@ function safeEqual(a: string, b: string): boolean {
 }
 
 /* ---------- sign in / out ---------- */
-export async function authenticate(email: string, password: string): Promise<SessionUser | null> {
+export async function authenticate(email: string, password: string): Promise<{ user: SessionUser; credential: string } | null> {
   const normalized = email.trim().toLowerCase()
+  if (password.length > MAX_PASSWORD || normalized.length > 254) return null
 
   // 1. Break-glass super admin from environment variables
   const envEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase()
   const envPassword = process.env.ADMIN_PASSWORD
   if (envEmail && envPassword && normalized === envEmail && safeEqual(password, envPassword)) {
-    return { id: 'env', email: envEmail, name: 'Owner', role: 'super_admin' }
+    return { user: { id: 'env', email: envEmail, name: 'Owner', role: 'super_admin' }, credential: envPassword }
   }
 
   // 2. Staff accounts stored in the database
@@ -85,20 +105,22 @@ export async function authenticate(email: string, password: string): Promise<Ses
     .select('id, email, name, role, password_hash, active')
     .eq('email', normalized)
     .maybeSingle()
-  if (!data || data.active === false || !verifyPassword(password, data.password_hash)) return null
+  const ok = verifyPassword(password, data?.password_hash)
+  if (!data || data.active === false || !ok) return null
   await db.from('admin_users').update({ last_login_at: new Date().toISOString() }).eq('id', data.id)
-  return { id: data.id, email: data.email, name: data.name, role: data.role as Role }
+  return { user: { id: data.id, email: data.email, name: data.name, role: data.role as Role }, credential: data.password_hash }
 }
 
-export async function startSession(user: SessionUser) {
+/** `credential` is the account's stored password hash (or the env password for the owner account). */
+export async function startSession(user: SessionUser, credential: string) {
   const payload = Buffer.from(
-    JSON.stringify({ id: user.id, email: user.email, name: user.name, role: user.role, exp: Date.now() + MAX_AGE * 1000 })
+    JSON.stringify({ id: user.id, email: user.email, name: user.name, role: user.role, v: credentialTag(credential), exp: Date.now() + MAX_AGE * 1000 })
   ).toString('base64url')
   const store = await cookies()
   store.set(COOKIE, `${payload}.${sign(payload)}`, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: PROD,
+    sameSite: 'strict',
     maxAge: MAX_AGE,
     path: '/',
   })
@@ -106,7 +128,8 @@ export async function startSession(user: SessionUser) {
 
 export async function endSession() {
   const store = await cookies()
-  store.delete(COOKIE)
+  // Expire with the same attributes it was set with; browsers ignore a __Host- cookie change without Secure
+  store.set(COOKIE, '', { httpOnly: true, secure: PROD, sameSite: 'strict', maxAge: 0, path: '/' })
 }
 
 /* ---------- reading the session ---------- */
@@ -118,18 +141,24 @@ export async function getSession(): Promise<SessionUser | null> {
     const [payload, sig] = raw.split('.')
     if (!payload || !sig || !safeEqual(sig, sign(payload))) return null
     const data = JSON.parse(Buffer.from(payload, 'base64url').toString())
-    if (!data.exp || data.exp < Date.now()) return null
-    if (data.id === 'env') return { id: 'env', email: data.email, name: data.name, role: 'super_admin' }
+    if (!data.exp || data.exp < Date.now() || typeof data.v !== 'string') return null
+    if (data.id === 'env') {
+      // Owner session ends if the env credentials are removed or rotated
+      const envEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase()
+      const envPassword = process.env.ADMIN_PASSWORD
+      if (!envEmail || !envPassword || data.email !== envEmail || !safeEqual(data.v, credentialTag(envPassword))) return null
+      return { id: 'env', email: envEmail, name: data.name, role: 'super_admin' }
+    }
 
     // Re-check the account so deactivation and role changes apply immediately
     const db = serviceClient()
     if (!db) return null
     const { data: row } = await db
       .from('admin_users')
-      .select('id, email, name, role, active')
+      .select('id, email, name, role, active, password_hash')
       .eq('id', data.id)
       .maybeSingle()
-    if (!row || row.active === false) return null
+    if (!row || row.active === false || !row.password_hash || !safeEqual(data.v, credentialTag(row.password_hash))) return null
     return { id: row.id, email: row.email, name: row.name, role: row.role as Role }
   } catch {
     return null
@@ -159,7 +188,11 @@ export async function requireRole(min: Role = 'staff'): Promise<SessionUser | Ne
 export async function sameOrigin(): Promise<boolean> {
   const h = await headers()
   const origin = h.get('origin')
-  if (!origin) return true // same-origin GETs and server-to-server calls
+  if (!origin) {
+    // Browsers that omit Origin still send Fetch Metadata; refuse anything another site started
+    const site = h.get('sec-fetch-site')
+    return !site || site === 'same-origin' || site === 'none'
+  }
   const host = h.get('x-forwarded-host') || h.get('host')
   try { return new URL(origin).host === host } catch { return false }
 }

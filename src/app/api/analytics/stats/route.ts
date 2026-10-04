@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSession, serviceClient as db } from '@/lib/auth'
+import { requireRole, serviceClient as db } from '@/lib/auth'
 
 // GET /api/analytics/stats - Get analytics dashboard data
 export async function GET(request: NextRequest) {
   // Require admin authentication
-  const session = await getSession()
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await requireRole('admin')
+  if (auth instanceof NextResponse) return auth
 
   const client = db()
   if (!client) {

@@ -4,6 +4,7 @@ import { Linkedin01Icon, Mail01Icon, NewTwitterIcon, UserIcon } from '@hugeicons
 import Image from 'next/image'
 import Link from 'next/link'
 import { getActiveTeamMembers } from '@/lib/team'
+import Eyebrow from './Eyebrow'
 
 export default async function TeamSection() {
   const teamMembers = await getActiveTeamMembers()
@@ -16,9 +17,7 @@ export default async function TeamSection() {
     <section className="py-24 bg-brand-soft">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
-            Our Team
-          </p>
+          <Eyebrow icon="clients" center className="mb-3">Our Team</Eyebrow>
           <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-4">
             Meet the Experts
           </h2>

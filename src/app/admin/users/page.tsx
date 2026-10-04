@@ -30,7 +30,12 @@ function UsersManager() {
   const [created, setCreated] = useState<{ email: string; password: string } | null>(null)
   const [linkCopied, setLinkCopied] = useState(false)
 
-  const joinLink = typeof window !== 'undefined' ? `${window.location.origin}/admin/join` : ''
+  // The sign-up link carries a private invite token; without STAFF_REGISTRATION_TOKEN self sign-up is closed
+  const [inviteToken, setInviteToken] = useState<string | null>(null)
+  useEffect(() => {
+    fetch('/api/users/invite', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => setInviteToken(d?.token ?? null)).catch(() => {})
+  }, [])
+  const joinLink = inviteToken && typeof window !== 'undefined' ? `${window.location.origin}/admin/join?invite=${encodeURIComponent(inviteToken)}` : ''
 
   const copyJoinLink = () => {
     navigator.clipboard?.writeText(joinLink)
@@ -106,7 +111,11 @@ function UsersManager() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-ink mb-1">Staff registration link</p>
-            <p className="text-xs text-neutral-500">Share this link with staff to let them create their own accounts with biodata and photo.</p>
+            <p className="text-xs text-neutral-500">
+              {joinLink
+                ? 'Share this private link only with new staff. Their accounts stay inactive until you turn them on below.'
+                : 'Self sign-up is off. Set STAFF_REGISTRATION_TOKEN (16+ characters) on the server to turn it on.'}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <input
@@ -118,6 +127,7 @@ function UsersManager() {
             />
             <button
               onClick={copyJoinLink}
+              disabled={!joinLink}
               className={`btn btn-md ${linkCopied ? 'bg-emerald-100 text-emerald-700' : 'btn-secondary'}`}
             >
               {linkCopied ? 'Copied!' : 'Copy'}

@@ -1,19 +1,16 @@
 import { cleanText } from '@/lib/sanitize'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession, sameOrigin } from '@/lib/auth'
+import { requireRole } from '@/lib/auth'
+import { clientIp, isLimited, rateLimit, readJson } from '@/lib/rate-limit'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-// Rate limiting: 5 requests per hour per IP
-const recent = new Map<string, number[]>()
 
 // GET all viewing requests (admin only)
 export async function GET(request: NextRequest) {
-  const currentUser = await getSession()
-  if (!currentUser || !(await sameOrigin())) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await requireRole('admin')
+  if (auth instanceof NextResponse) return auth
 
   const supabase = await createAdminClient()
   const searchParams = request.nextUrl.searchParams
@@ -46,16 +43,15 @@ export async function GET(request: NextRequest) {
 // POST create new viewing request (public)
 export async function POST(request: NextRequest) {
   try {
-    const raw = await request.json()
+    const raw = await readJson(request, 16 * 1024)
+    if (raw instanceof NextResponse) return raw
 
     // Honeypot
     if (raw.website) return NextResponse.json({ success: true }, { status: 201 })
 
     // Rate limiting
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown'
-    const now = Date.now()
-    const hits = (recent.get(ip) || []).filter(t => now - t < 60 * 60 * 1000)
-    if (hits.length >= 5) {
+    const limitKey = `viewing:${clientIp(request)}`
+    if (isLimited(limitKey, 5, 60 * 60 * 1000)) {
       return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
     }
 
@@ -70,15 +66,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Valid phone number is required', field: 'phone' }, { status: 400 })
     }
 
-    const propertyId = raw.propertyId
-    if (!propertyId || !UUID.test(propertyId)) {
+    const propertyId = typeof raw.propertyId === 'string' ? raw.propertyId : ''
+    if (!UUID.test(propertyId)) {
       return NextResponse.json({ error: 'Property is required' }, { status: 400 })
     }
 
     const email = raw.email ? cleanText(raw.email, 200).toLowerCase() : null
 
-    hits.push(now)
-    recent.set(ip, hits)
+    rateLimit(limitKey, 5, 60 * 60 * 1000)
 
     const supabase = await createAdminClient()
 

@@ -5,15 +5,18 @@ import Link from 'next/link'
 import { getBrand } from '@/lib/brand'
 import { getSettings } from '@/lib/settings'
 import { Metadata } from 'next'
+import Eyebrow from '@/components/Eyebrow'
+import StickerIcon, { type StickerName } from '@/components/StickerIcon'
 
 export const metadata: Metadata = {
   title: 'Services',
   description: 'Comprehensive real estate services in Abuja - property sales, acquisition, consulting, and investment advisory.',
 }
 
-const services = [
+const services: { id: string; icon: StickerName; title: string; subtitle: string; description: string; features: string[] }[] = [
   {
     id: 'sales',
+    icon: 'home',
     title: 'Property Sales',
     subtitle: 'Sell with confidence',
     description: 'When you sell through us, you gain access to our network of qualified buyers, professional marketing, and expert negotiation. We position your property to achieve optimal value while handling every detail of the sales process.',
@@ -28,6 +31,7 @@ const services = [
   },
   {
     id: 'acquisition',
+    icon: 'key',
     title: 'Property Acquisition',
     subtitle: 'Find your perfect property',
     description: 'Whether you\'re seeking a family home, investment property, or commercial space, our acquisition service ensures you find the right property at the right price. We leverage our market knowledge to identify opportunities that match your criteria.',
@@ -42,6 +46,7 @@ const services = [
   },
   {
     id: 'consulting',
+    icon: 'analytics',
     title: 'Real Estate Consulting',
     subtitle: 'Expert guidance when you need it',
     description: 'Our consulting services provide the strategic insight you need to make informed real estate decisions. From market analysis to project feasibility, we deliver the expertise that drives successful outcomes.',
@@ -56,6 +61,7 @@ const services = [
   },
   {
     id: 'investment',
+    icon: 'wallet',
     title: 'Investment Advisory',
     subtitle: 'Build wealth through property',
     description: 'For investors seeking to build or expand their real estate portfolio in Abuja, our advisory service provides the strategic guidance needed to identify high-potential opportunities and optimize returns.',
@@ -78,9 +84,7 @@ export default async function ServicesPage() {
       <section className="py-24 bg-brand-soft">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-sm font-medium text-brand uppercase tracking-wider mb-4">
-              Our Services
-            </p>
+            <Eyebrow icon="documents" className="mb-5">Our Services</Eyebrow>
             <h1 className="text-4xl md:text-5xl font-semibold text-ink mb-6">
               Comprehensive Real Estate Solutions
             </h1>
@@ -106,9 +110,7 @@ export default async function ServicesPage() {
               >
                 {/* Content */}
                 <div className={index % 2 === 1 ? 'lg:col-start-2' : ''}>
-                  <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
-                    {service.subtitle}
-                  </p>
+                  <Eyebrow icon={service.icon} className="mb-3">{service.subtitle}</Eyebrow>
                   <h2 className="text-3xl font-semibold text-ink mb-4">
                     {service.title}
                   </h2>
@@ -135,13 +137,11 @@ export default async function ServicesPage() {
                 {/* Visual */}
                 <div className={`rounded-xl bg-brand-soft p-12 ${index % 2 === 1 ? 'lg:col-start-1' : ''}`}>
                   <div className="flex items-center justify-center h-64">
-                    <div className="text-center">
-                      <div className="text-7xl font-light text-brand mb-4">
-                        {String(index + 1).padStart(2, '0')}
-                      </div>
-                      <div className="text-sm uppercase tracking-wider text-neutral-500">
-                        {service.title}
-                      </div>
+                    <div className="flex flex-col items-center text-center">
+                      <StickerIcon name={service.icon} size={132} className="mb-6" />
+                      <Eyebrow tone="muted" center>
+                        {String(index + 1).padStart(2, '0')} · {service.title}
+                      </Eyebrow>
                     </div>
                   </div>
                 </div>
@@ -165,9 +165,8 @@ export default async function ServicesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-white/40 flex items-center justify-center">
-                <span className="text-xl font-light text-white">01</span>
-              </div>
+              <StickerIcon name="call" size={64} className="mx-auto mb-4" />
+              <Eyebrow tone="light" size="xs" center className="mb-2">Step 01</Eyebrow>
               <h3 className="font-semibold text-white mb-2">Consultation</h3>
               <p className="text-sm text-white/80">
                 We begin by understanding your goals, timeline, and requirements.
@@ -175,9 +174,8 @@ export default async function ServicesPage() {
             </div>
 
             <div className="text-center">
-              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-white/40 flex items-center justify-center">
-                <span className="text-xl font-light text-white">02</span>
-              </div>
+              <StickerIcon name="map" size={64} className="mx-auto mb-4" />
+              <Eyebrow tone="light" size="xs" center className="mb-2">Step 02</Eyebrow>
               <h3 className="font-semibold text-white mb-2">Strategy</h3>
               <p className="text-sm text-white/80">
                 We develop a tailored approach based on your specific situation.
@@ -185,9 +183,8 @@ export default async function ServicesPage() {
             </div>
 
             <div className="text-center">
-              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-white/40 flex items-center justify-center">
-                <span className="text-xl font-light text-white">03</span>
-              </div>
+              <StickerIcon name="documents" size={64} className="mx-auto mb-4" />
+              <Eyebrow tone="light" size="xs" center className="mb-2">Step 03</Eyebrow>
               <h3 className="font-semibold text-white mb-2">Execution</h3>
               <p className="text-sm text-white/80">
                 We implement the strategy with precision and regular updates.
@@ -195,9 +192,8 @@ export default async function ServicesPage() {
             </div>
 
             <div className="text-center">
-              <div className="rounded-xl w-16 h-16 mx-auto mb-6 border border-white/40 flex items-center justify-center">
-                <span className="text-xl font-light text-white">04</span>
-              </div>
+              <StickerIcon name="key" size={64} className="mx-auto mb-4" />
+              <Eyebrow tone="light" size="xs" center className="mb-2">Step 04</Eyebrow>
               <h3 className="font-semibold text-white mb-2">Completion</h3>
               <p className="text-sm text-white/80">
                 We ensure a smooth closing and continued support as needed.

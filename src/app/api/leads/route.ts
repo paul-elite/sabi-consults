@@ -1,19 +1,16 @@
 import { cleanText } from '@/lib/sanitize'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession, sameOrigin } from '@/lib/auth'
+import { requireRole } from '@/lib/auth'
+import { clientIp, isLimited, rateLimit, readJson } from '@/lib/rate-limit'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-// Simple per-IP throttle: 10 leads per hour
-const recent = new Map<string, number[]>()
 
 // GET all leads (admin only)
 export async function GET(request: NextRequest) {
-  const currentUser = await getSession()
-  if (!currentUser || !(await sameOrigin())) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await requireRole('admin')
+  if (auth instanceof NextResponse) return auth
 
   const supabase = await createAdminClient()
   const searchParams = request.nextUrl.searchParams
@@ -48,16 +45,15 @@ export async function GET(request: NextRequest) {
 // POST create new lead (public - from lead capture forms)
 export async function POST(request: NextRequest) {
   try {
-    const raw = await request.json()
+    const raw = await readJson(request, 16 * 1024)
+    if (raw instanceof NextResponse) return raw
 
     // Honeypot field
     if (raw.website) return NextResponse.json({ success: true }, { status: 201 })
 
     // Rate limiting
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown'
-    const now = Date.now()
-    const hits = (recent.get(ip) || []).filter(t => now - t < 60 * 60 * 1000)
-    if (hits.length >= 10) {
+    const limitKey = `lead:${clientIp(request)}`
+    if (isLimited(limitKey, 10, 60 * 60 * 1000)) {
       return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
     }
 
@@ -94,7 +90,7 @@ export async function POST(request: NextRequest) {
       whatsapp: whatsapp || phone,
       visitor_id: cleanText(raw.visitorId, 100) || null,
       session_id: cleanText(raw.sessionId, 100) || null,
-      source: parseSource(raw.referrer),
+      source: parseSource(typeof raw.referrer === 'string' ? raw.referrer : null),
       utm_source: cleanText(raw.utmSource, 100) || null,
       utm_medium: cleanText(raw.utmMedium, 100) || null,
       utm_campaign: cleanText(raw.utmCampaign, 200) || null,
@@ -105,11 +101,10 @@ export async function POST(request: NextRequest) {
       browser: cleanText(raw.browser, 50) || null,
       country,
       city,
-      most_viewed_property_id: raw.propertyId && UUID.test(raw.propertyId) ? raw.propertyId : null,
+      most_viewed_property_id: typeof raw.propertyId === 'string' && UUID.test(raw.propertyId) ? raw.propertyId : null,
     }
 
-    hits.push(now)
-    recent.set(ip, hits)
+    rateLimit(limitKey, 10, 60 * 60 * 1000)
 
     const supabase = await createAdminClient()
 

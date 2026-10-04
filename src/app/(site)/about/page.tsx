@@ -1,11 +1,11 @@
 
-import { HugeiconsIcon } from '@hugeicons/react'
-import { FlaskConicalIcon, Shield01Icon, UserGroupIcon } from '@hugeicons/core-free-icons'
 import Image from 'next/image'
 import { getBrand } from '@/lib/brand'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import TeamSection from '@/components/TeamSection'
+import Eyebrow from '@/components/Eyebrow'
+import StickerIcon from '@/components/StickerIcon'
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -22,9 +22,7 @@ export default async function AboutPage() {
       <section className="relative py-24 bg-brand">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-sm font-medium text-brand uppercase tracking-wider mb-4">
-              About Us
-            </p>
+            <Eyebrow icon="location" tone="light" className="mb-5">About Us</Eyebrow>
             <h1 className="text-4xl md:text-5xl font-semibold text-white mb-6">
               We Know Abuja.<br />We Know Real Estate.
             </h1>
@@ -96,9 +94,7 @@ export default async function AboutPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="rounded-xl bg-white p-10">
-              <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center mb-6">
-                <HugeiconsIcon icon={Shield01Icon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
-              </div>
+              <StickerIcon name="verified" size={56} className="mb-6" />
               <h3 className="text-xl font-semibold text-ink mb-3">Trust First</h3>
               <p className="text-neutral-600">
                 Every recommendation we make is grounded in your best interest. We build
@@ -107,9 +103,7 @@ export default async function AboutPage() {
             </div>
 
             <div className="rounded-xl bg-white p-10">
-              <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center mb-6">
-                <HugeiconsIcon icon={FlaskConicalIcon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
-              </div>
+              <StickerIcon name="guides" size={56} className="mb-6" />
               <h3 className="text-xl font-semibold text-ink mb-3">Deep Expertise</h3>
               <p className="text-neutral-600">
                 We know Abuja&apos;s real estate market intimately—the districts, the developers,
@@ -118,9 +112,7 @@ export default async function AboutPage() {
             </div>
 
             <div className="rounded-xl bg-white p-10">
-              <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center mb-6">
-                <HugeiconsIcon icon={UserGroupIcon} className="w-6 h-6 text-brand" strokeWidth={1.7} aria-hidden="true" />
-              </div>
+              <StickerIcon name="clients" size={56} className="mb-6" />
               <h3 className="text-xl font-semibold text-ink mb-3">Client Partnership</h3>
               <p className="text-neutral-600">
                 We work alongside you as partners, not just service providers. Your success

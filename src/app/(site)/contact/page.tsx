@@ -1,9 +1,11 @@
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { CallIcon, InstagramIcon, Location01Icon, Mail01Icon, WhatsappIcon } from '@hugeicons/core-free-icons'
+import { WhatsappIcon } from '@hugeicons/core-free-icons'
 import { Metadata } from 'next'
 import { getSettings } from '@/lib/settings'
 import ContactForm from '@/components/ContactForm'
+import Eyebrow from '@/components/Eyebrow'
+import StickerIcon from '@/components/StickerIcon'
 
 export const metadata: Metadata = {
   title: 'Contact Us',
@@ -19,9 +21,7 @@ export default async function ContactPage() {
       <section className="py-24 bg-brand-soft">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-sm font-medium text-brand uppercase tracking-wider mb-4">
-              Contact Us
-            </p>
+            <Eyebrow icon="call" className="mb-5">Contact Us</Eyebrow>
             <h1 className="text-4xl md:text-5xl font-semibold text-ink mb-6">
               Let&apos;s Start a Conversation
             </h1>
@@ -46,9 +46,7 @@ export default async function ContactPage() {
               <div className="space-y-8">
                 {/* Office Address */}
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
-                    <HugeiconsIcon icon={Location01Icon} className="w-5 h-5 text-brand" strokeWidth={1.7} aria-hidden="true" />
-                  </div>
+                  <StickerIcon name="location" size={48} />
                   <div>
                     <h3 className="font-semibold text-ink mb-1">Office Location</h3>
                     <p className="text-neutral-600">
@@ -59,9 +57,7 @@ export default async function ContactPage() {
 
                 {/* Email */}
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
-                    <HugeiconsIcon icon={Mail01Icon} className="w-5 h-5 text-brand" strokeWidth={1.7} aria-hidden="true" />
-                  </div>
+                  <StickerIcon name="mail" size={48} />
                   <div>
                     <h3 className="font-semibold text-ink mb-1">Email Us</h3>
                     <a href={`mailto:${settings.email}`} className="text-neutral-600 hover:text-brand transition-colors">
@@ -72,9 +68,7 @@ export default async function ContactPage() {
 
                 {/* Phone */}
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
-                    <HugeiconsIcon icon={CallIcon} className="w-5 h-5 text-brand" strokeWidth={1.7} aria-hidden="true" />
-                  </div>
+                  <StickerIcon name="call" size={48} />
                   <div>
                     <h3 className="font-semibold text-ink mb-1">Call Us</h3>
                     <a href={`tel:+${digits}`} className="text-neutral-600 hover:text-brand transition-colors">
@@ -85,9 +79,7 @@ export default async function ContactPage() {
 
                 {/* WhatsApp */}
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-[#25D366] flex items-center justify-center flex-shrink-0">
-                    <HugeiconsIcon icon={WhatsappIcon} className="w-5 h-5 text-white" strokeWidth={1.7} aria-hidden="true" />
-                  </div>
+                  <StickerIcon name="whatsapp" size={48} />
                   <div>
                     <h3 className="font-semibold text-ink mb-1">WhatsApp</h3>
                     <a
@@ -103,9 +95,7 @@ export default async function ContactPage() {
 
                 {/* Instagram */}
                 <div className="flex gap-4">
-                  <div className="rounded-lg w-12 h-12 bg-brand-soft flex items-center justify-center flex-shrink-0">
-                    <HugeiconsIcon icon={InstagramIcon} className="w-5 h-5 text-brand" strokeWidth={1.7} aria-hidden="true" />
-                  </div>
+                  <StickerIcon name="instagram" size={48} />
                   <div>
                     <h3 className="font-semibold text-ink mb-1">Instagram</h3>
                     <a

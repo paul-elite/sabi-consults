@@ -1,8 +1,9 @@
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { BookOpen01Icon, Building03Icon, Download01Icon, File01Icon, MapsIcon, WhatsappIcon } from '@hugeicons/core-free-icons'
+import { ArrowRight02Icon, BookOpen01Icon, Building03Icon, Download01Icon, File01Icon, MapsIcon, WhatsappIcon } from '@hugeicons/core-free-icons'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import StickerIcon from '@/components/StickerIcon'
 
 export const metadata: Metadata = {
   title: 'Resources & Forms',
@@ -227,6 +228,21 @@ export default function ResourcesPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Realtypedia */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14">
+        <Link href="/realtypedia" className="group flex flex-col sm:flex-row sm:items-center gap-5 rounded-xl bg-brand-soft border border-brand/10 p-6 hover:border-brand/30 transition-colors">
+          <StickerIcon name="guides" size={72} />
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-ink text-lg mb-1">Not sure what a document means?</p>
+            <p className="text-neutral-600">Realtypedia explains C of O, Minister’s Consent, AGIS searches and 40 other Abuja property terms in plain words.</p>
+          </div>
+          <span className="inline-flex items-center gap-1.5 text-sm font-medium text-brand shrink-0">
+            Open Realtypedia
+            <HugeiconsIcon icon={ArrowRight02Icon} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.7} aria-hidden="true" />
+          </span>
+        </Link>
       </section>
 
       {/* Document Categories */}

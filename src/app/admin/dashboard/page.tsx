@@ -1,7 +1,7 @@
 'use client'
 
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Add01Icon, ArrowRight01Icon, Building03Icon, CallIcon, CheckmarkCircle01Icon, Mail01Icon, Message01Icon, StarIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
+import { Add01Icon, Analytics01Icon, ArrowRight01Icon, Building03Icon, CallIcon, CheckmarkCircle01Icon, Mail01Icon, Message01Icon, StarIcon } from '@hugeicons/core-free-icons'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -47,6 +47,13 @@ function maxValue(values: number[]) {
   return Math.max(1, ...values)
 }
 
+type TabId = 'properties' | 'inquiries' | 'analytics'
+const TABS: { id: TabId; label: string; icon: IconSvgElement }[] = [
+  { id: 'properties', label: 'Properties', icon: Building03Icon },
+  { id: 'inquiries', label: 'Inquiries', icon: Message01Icon },
+  { id: 'analytics', label: 'Traffic', icon: Analytics01Icon },
+]
+
 export default function AdminDashboard() {
   const user = useAdminUser()
   const canEdit = canAccess(user, 'admin') // admin or super_admin can add/delete
@@ -56,7 +63,18 @@ export default function AdminDashboard() {
   const [analytics, setAnalytics] = useState<AnalyticsStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
-  const [activeTab, setActiveTab] = useState<'properties' | 'inquiries' | 'analytics'>('properties')
+  const [activeTab, setActiveTab] = useState<TabId>('properties')
+  const newInquiries = inquiries.filter(i => i.status === 'new').length
+
+  // Keep the open tab in the URL hash so a refresh or shared link lands on the same section
+  useEffect(() => {
+    const fromHash = window.location.hash.slice(1)
+    if (TABS.some(t => t.id === fromHash)) setActiveTab(fromHash as TabId)
+  }, [])
+  const selectTab = (id: TabId) => {
+    setActiveTab(id)
+    history.replaceState(null, '', `#${id}`)
+  }
 
   useEffect(() => {
     async function checkAuthAndFetch() {
@@ -171,7 +189,7 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">New Inquiries</p>
                 <p className="text-2xl font-semibold text-amber-600">
-                  {inquiries.filter(i => i.status === 'new').length}
+                  {newInquiries}
                 </p>
               </div>
             </div>
@@ -179,50 +197,40 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => setActiveTab('properties')}
-            aria-pressed={activeTab === 'properties'}
-            className={`btn btn-md ${
-              activeTab === 'properties'
-                ? 'bg-[#0055cc] text-white hover:bg-[#0044a3]'
-                : 'btn-secondary'
-            }`}
-          >
-            Properties
-          </button>
-          <button
-            onClick={() => setActiveTab('inquiries')}
-            aria-pressed={activeTab === 'inquiries'}
-            className={`btn btn-md ${
-              activeTab === 'inquiries'
-                ? 'bg-[#0055cc] text-white hover:bg-[#0044a3]'
-                : 'btn-secondary'
-            }`}
-          >
-            Inquiries
-            {inquiries.filter(i => i.status === 'new').length > 0 && (
-              <span className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${activeTab === 'inquiries' ? 'bg-white/20' : 'badge-danger'}`}>
-                {inquiries.filter(i => i.status === 'new').length}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('analytics')}
-            aria-pressed={activeTab === 'analytics'}
-            className={`btn btn-md ${
-              activeTab === 'analytics'
-                ? 'bg-[#0055cc] text-white hover:bg-[#0044a3]'
-                : 'btn-secondary'
-            }`}
-          >
-            Analytics
-          </button>
+        <div role="tablist" aria-label="Dashboard sections" className="flex gap-1 mb-6 border-b border-neutral-200 overflow-x-auto scrollbar-none">
+          {TABS.map(t => {
+            const selected = activeTab === t.id
+            const count = t.id === 'properties' ? properties.length : t.id === 'inquiries' ? newInquiries : null
+            return (
+              <button
+                key={t.id}
+                type="button"
+                role="tab"
+                id={`tab-${t.id}`}
+                aria-selected={selected}
+                aria-controls={`panel-${t.id}`}
+                onClick={() => selectTab(t.id)}
+                className={`relative -mb-px h-11 px-4 flex items-center gap-2 text-sm whitespace-nowrap border-b-2 transition-colors ${
+                  selected ? 'border-[#0055cc] text-[#0055cc] font-medium' : 'border-transparent text-neutral-500 hover:text-ink'
+                }`}
+              >
+                <HugeiconsIcon icon={t.icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+                {t.label}
+                {count !== null && count > 0 && (
+                  <span className={`min-w-5 h-5 px-1.5 rounded-full text-[11px] font-medium grid place-items-center tabular-nums ${
+                    t.id === 'inquiries' ? 'bg-red-50 text-red-600' : selected ? 'bg-blue-50 text-[#0055cc]' : 'bg-neutral-100 text-neutral-500'
+                  }`}>
+                    {count}
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
 
         {/* Properties Tab */}
         {activeTab === 'properties' && (
-          <div className="card overflow-hidden">
+          <div role="tabpanel" id="panel-properties" aria-labelledby="tab-properties" className="card overflow-hidden">
             <div className="card-header flex items-center justify-between">
               <h2 className="font-medium text-ink">All Properties</h2>
               {canEdit && (
@@ -320,7 +328,7 @@ export default function AdminDashboard() {
 
         {/* Inquiries Tab */}
         {activeTab === 'inquiries' && (
-          <div className="card overflow-hidden">
+          <div role="tabpanel" id="panel-inquiries" aria-labelledby="tab-inquiries" className="card overflow-hidden">
             <div className="card-header">
               <h2 className="font-medium text-ink">Contact Inquiries</h2>
             </div>
@@ -379,7 +387,7 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === 'analytics' && (
-          <div className="space-y-6">
+          <div role="tabpanel" id="panel-analytics" aria-labelledby="tab-analytics" className="space-y-6">
             {analytics ? (
               <>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

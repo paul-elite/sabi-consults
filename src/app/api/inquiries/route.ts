@@ -1,18 +1,13 @@
 import { cleanText } from '@/lib/sanitize'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { getSession, sameOrigin } from '@/lib/auth'
+import { requireRole } from '@/lib/auth'
+import { clientIp, isLimited, rateLimit, readJson } from '@/lib/rate-limit'
 
 // GET all inquiries (admin only)
 export async function GET() {
-  const currentUser = await getSession()
-
-  if (!currentUser || !(await sameOrigin())) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
+  const auth = await requireRole('staff')
+  if (auth instanceof NextResponse) return auth
 
   const supabase = await createAdminClient()
 
@@ -44,22 +39,19 @@ export async function GET() {
   return NextResponse.json(inquiries)
 }
 
-// Simple per-IP throttle for the public form: 5 messages per 10 minutes
-const recent = new Map<string, number[]>()
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 // POST create new inquiry (public)
 export async function POST(request: NextRequest) {
   try {
-    const raw = await request.json()
+    const raw = await readJson(request, 16 * 1024)
+    if (raw instanceof NextResponse) return raw
 
     // Hidden "website" field: real visitors never fill it in, bots usually do
     if (raw.website) return NextResponse.json({ success: true }, { status: 201 })
 
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown'
-    const now = Date.now()
-    const hits = (recent.get(ip) || []).filter(t => now - t < 10 * 60 * 1000)
-    if (hits.length >= 5) {
+    const limitKey = `inquiry:${clientIp(request)}`
+    if (isLimited(limitKey, 5, 10 * 60 * 1000)) {
       return NextResponse.json({ error: 'You’ve sent several messages already. Please call or WhatsApp us instead.' }, { status: 429 })
     }
 
@@ -81,8 +73,7 @@ export async function POST(request: NextRequest) {
     if (body.phone.replace(/\D/g, '').length < 7) {
       return NextResponse.json({ error: 'Enter a phone number we can reach you on' }, { status: 400 })
     }
-    hits.push(now)
-    recent.set(ip, hits)
+    rateLimit(limitKey, 5, 10 * 60 * 1000)
 
     // Use admin client for inserts
     const supabase = await createAdminClient()

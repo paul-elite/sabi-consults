@@ -1,9 +1,12 @@
 'use client'
 
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Cancel01Icon, Menu01Icon, PaintBoardIcon, LinkSquare01Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
+import {
+  Analytics01Icon, ArrowDown01Icon, Cancel01Icon, ContactBookIcon, DashboardSquare01Icon, LinkSquare01Icon,
+  Logout03Icon, Menu01Icon, News01Icon, PaintBoardIcon, Settings02Icon, UserCircleIcon, UserGroupIcon, UserLock01Icon,
+} from '@hugeicons/core-free-icons'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useBrand } from '../BrandProvider'
@@ -18,19 +21,66 @@ const UserContext = createContext<AdminUser | null>(null)
 export const useAdminUser = () => useContext(UserContext)
 export const canAccess = (u: AdminUser | null, min: AdminRole) => !!u && RANK[u.role] >= RANK[min]
 
-const LINKS: { href: string; label: string; min: AdminRole; icon?: boolean }[] = [
-  { href: '/admin/dashboard', label: 'Dashboard', min: 'staff' },
-  { href: '/admin/analytics', label: 'Analytics', min: 'admin' },
-  { href: '/admin/leads', label: 'Leads', min: 'admin' },
-  { href: '/admin/blog', label: 'Blog', min: 'staff' },
-  { href: '/admin/team', label: 'Team', min: 'staff' },
-  { href: '/admin/settings', label: 'Settings', min: 'admin' },
-  { href: '/admin/users', label: 'Staff accounts', min: 'super_admin' },
-  { href: '/admin/profile', label: 'Profile', min: 'staff' },
-]
+type NavLink = { href: string; label: string; min: AdminRole; icon: IconSvgElement; also?: string[] }
 
-// Branding is shown as a settings gear icon, not in the main nav
-const BRANDING_LINK = { href: '/admin/branding', label: 'Branding', min: 'super_admin' as AdminRole }
+// Day-to-day work sits in the bar; configuration lives under the settings menu, personal items under the account menu.
+const MAIN: NavLink[] = [
+  { href: '/admin/dashboard', label: 'Dashboard', min: 'staff', icon: DashboardSquare01Icon, also: ['/admin/properties'] },
+  { href: '/admin/leads', label: 'Leads', min: 'admin', icon: ContactBookIcon },
+  { href: '/admin/analytics', label: 'Analytics', min: 'admin', icon: Analytics01Icon },
+  { href: '/admin/blog', label: 'Blog', min: 'staff', icon: News01Icon },
+  { href: '/admin/team', label: 'Team', min: 'staff', icon: UserGroupIcon },
+]
+const SETTINGS: NavLink[] = [
+  { href: '/admin/settings', label: 'Site settings', min: 'admin', icon: Settings02Icon },
+  { href: '/admin/branding', label: 'Branding', min: 'super_admin', icon: PaintBoardIcon },
+  { href: '/admin/users', label: 'Staff accounts', min: 'super_admin', icon: UserLock01Icon },
+]
+const PROFILE: NavLink = { href: '/admin/profile', label: 'Your profile', min: 'staff', icon: UserCircleIcon }
+
+const isActive = (pathname: string | null, l: NavLink) =>
+  !!pathname && [l.href, ...(l.also ?? [])].some(h => pathname === h || pathname.startsWith(h + '/'))
+
+/** Small popover menu that closes on outside click, Escape, or navigation. */
+function Menu({ label, trigger, active, children }: { label: string; trigger: React.ReactNode; active: boolean; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
+  useEffect(() => setOpen(false), [pathname])
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false) }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [open])
+  return (
+    <div ref={ref} className="relative">
+      <button type="button" onClick={() => setOpen(o => !o)} aria-expanded={open} aria-haspopup="menu" aria-label={label}
+        className={`h-9 px-2.5 rounded-lg flex items-center gap-1.5 text-sm transition-colors ${active || open ? 'bg-blue-50 text-[#0055cc]' : 'text-neutral-500 hover:text-ink hover:bg-neutral-100'}`}>
+        {trigger}
+        <HugeiconsIcon icon={ArrowDown01Icon} className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} strokeWidth={1.8} aria-hidden="true" />
+      </button>
+      {open && (
+        <div role="menu" className="absolute right-0 top-full mt-2 w-60 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg shadow-neutral-900/5">
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function MenuLink({ link, pathname }: { link: NavLink; pathname: string | null }) {
+  const active = isActive(pathname, link)
+  return (
+    <Link href={link.href} role="menuitem" aria-current={active ? 'page' : undefined}
+      className={`flex items-center gap-2.5 px-3 h-10 rounded-lg text-sm transition-colors ${active ? 'bg-blue-50 text-[#0055cc] font-medium' : 'text-neutral-600 hover:bg-neutral-50 hover:text-ink'}`}>
+      <HugeiconsIcon icon={link.icon} className="w-4 h-4 shrink-0" strokeWidth={1.7} aria-hidden="true" />
+      {link.label}
+    </Link>
+  )
+}
 
 export default function AdminNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -62,44 +112,68 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
     return <div className="min-h-screen grid place-items-center text-neutral-400 animate-pulse">Loading…</div>
   }
 
-  const links = LINKS.filter(l => canAccess(user, l.min))
+  const main = MAIN.filter(l => canAccess(user, l.min))
+  const settings = SETTINGS.filter(l => canAccess(user, l.min))
+  const settingsActive = settings.some(l => isActive(pathname, l))
+  const initials = user.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase()
   const signOut = async () => {
     await fetch('/api/auth', { method: 'DELETE' })
     router.replace('/admin')
   }
 
+  const mobileGroup = (title: string, links: NavLink[]) => links.length > 0 && (
+    <div className="py-2">
+      <p className="px-3 pt-2 pb-1 text-[11px] font-medium uppercase tracking-wider text-neutral-400">{title}</p>
+      {links.map(l => <MenuLink key={l.href} link={l} pathname={pathname} />)}
+    </div>
+  )
+
   return (
     <UserContext.Provider value={user}>
       <div className="min-h-screen bg-neutral-50">
-        <header className="sticky top-0 z-50 bg-white border-b border-neutral-200 pt-[env(safe-area-inset-top)]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-6">
-            <Link href="/admin/dashboard" className="font-semibold whitespace-nowrap text-ink">
-              {brand.name} <span className="text-xs font-normal text-neutral-400 ml-1">Admin</span>
+        <header className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-neutral-200 pt-[env(safe-area-inset-top)]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-4">
+            <Link href="/admin/dashboard" className="font-semibold whitespace-nowrap text-ink flex items-center gap-2">
+              {brand.name}
+              <span className="text-[11px] font-medium uppercase tracking-wider text-neutral-400 border border-neutral-200 rounded px-1.5 py-0.5">Admin</span>
             </Link>
-            <nav className="hidden lg:flex items-center gap-1 text-sm" aria-label="Admin">
-              {links.map(l => (
-                <Link key={l.href} href={l.href} aria-current={pathname?.startsWith(l.href) ? 'page' : undefined}
-                  className={`px-3 py-1.5 rounded-lg transition-colors ${pathname?.startsWith(l.href) ? 'bg-blue-50 text-[#0055cc] font-medium' : 'text-neutral-500 hover:text-ink hover:bg-neutral-50'}`}>
-                  {l.label}
-                </Link>
-              ))}
+            <span className="hidden lg:block w-px h-5 bg-neutral-200" aria-hidden="true" />
+            <nav className="hidden lg:flex items-center gap-0.5 text-sm" aria-label="Admin">
+              {main.map(l => {
+                const active = isActive(pathname, l)
+                return (
+                  <Link key={l.href} href={l.href} aria-current={active ? 'page' : undefined}
+                    className={`h-9 px-3 rounded-lg flex items-center gap-2 transition-colors ${active ? 'bg-blue-50 text-[#0055cc] font-medium' : 'text-neutral-500 hover:text-ink hover:bg-neutral-100'}`}>
+                    <HugeiconsIcon icon={l.icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+                    {l.label}
+                  </Link>
+                )
+              })}
             </nav>
-            <div className="ml-auto hidden lg:flex items-center gap-4 text-sm">
-              <Link href="/" target="_blank" className="text-neutral-500 hover:text-ink">View site <HugeiconsIcon icon={LinkSquare01Icon} className="inline w-4 h-4" aria-hidden="true" /></Link>
-              {canAccess(user, BRANDING_LINK.min) && (
-                <Link
-                  href={BRANDING_LINK.href}
-                  aria-current={pathname?.startsWith(BRANDING_LINK.href) ? 'page' : undefined}
-                  aria-label="Branding settings"
-                  title="Branding"
-                  className={`w-9 h-9 rounded-lg grid place-items-center transition-colors ${pathname?.startsWith(BRANDING_LINK.href) ? 'bg-blue-50 text-[#0055cc]' : 'text-neutral-400 hover:text-ink hover:bg-neutral-100'}`}
-                >
-                  <HugeiconsIcon icon={PaintBoardIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
-                </Link>
+            <div className="ml-auto hidden lg:flex items-center gap-1 text-sm">
+              <Link href="/" target="_blank" className="h-9 px-3 rounded-lg flex items-center gap-1.5 text-neutral-500 hover:text-ink hover:bg-neutral-100 transition-colors">
+                View site <HugeiconsIcon icon={LinkSquare01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+              </Link>
+              {settings.length > 0 && (
+                <Menu label="Settings" active={settingsActive}
+                  trigger={<HugeiconsIcon icon={Settings02Icon} className="w-[18px] h-[18px]" strokeWidth={1.7} aria-hidden="true" />}>
+                  <p className="px-3 pt-1.5 pb-1 text-[11px] font-medium uppercase tracking-wider text-neutral-400">Settings</p>
+                  {settings.map(l => <MenuLink key={l.href} link={l} pathname={pathname} />)}
+                </Menu>
               )}
-              <span className="w-px h-4 bg-neutral-200" />
-              <span className="text-neutral-600">{user.name} <span className="text-neutral-400">· {roleLabel(user.role)}</span></span>
-              <button onClick={signOut} className="px-3 py-1.5 text-neutral-500 hover:text-ink hover:bg-neutral-100 rounded-lg transition-colors">Sign out</button>
+              <Menu label="Account" active={isActive(pathname, PROFILE)}
+                trigger={<span className="w-7 h-7 rounded-full bg-[#0055cc] text-white text-[11px] font-semibold grid place-items-center">{initials}</span>}>
+                <div className="px-3 py-2 border-b border-neutral-100 mb-1">
+                  <p className="text-sm font-medium text-ink truncate">{user.name}</p>
+                  <p className="text-xs text-neutral-400 truncate">{user.email} · {roleLabel(user.role)}</p>
+                </div>
+                <MenuLink link={PROFILE} pathname={pathname} />
+                <button type="button" role="menuitem" onClick={signOut}
+                  className="w-full flex items-center gap-2.5 px-3 h-10 rounded-lg text-sm text-neutral-600 hover:bg-red-50 hover:text-red-600 transition-colors">
+                  <HugeiconsIcon icon={Logout03Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+                  Sign out
+                </button>
+              </Menu>
             </div>
             <button className="ml-auto lg:hidden w-11 h-11 grid place-items-center text-neutral-600" onClick={() => setOpen(o => !o)}
               aria-expanded={open} aria-label={open ? 'Close menu' : 'Open menu'}>
@@ -107,20 +181,20 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
             </button>
           </div>
           {open && (
-            <nav className="lg:hidden border-t border-neutral-100 px-4 pb-4 pb-safe bg-white" aria-label="Admin mobile">
-              {links.map(l => (
-                <Link key={l.href} href={l.href} aria-current={pathname?.startsWith(l.href) ? 'page' : undefined} className={`block py-3 border-b border-neutral-100 ${pathname?.startsWith(l.href) ? 'text-[#0055cc] font-medium' : 'text-neutral-600'}`}>{l.label}</Link>
-              ))}
-              {canAccess(user, BRANDING_LINK.min) && (
-                <Link href={BRANDING_LINK.href} aria-current={pathname?.startsWith(BRANDING_LINK.href) ? 'page' : undefined} className={`flex items-center gap-2 py-3 border-b border-neutral-100 ${pathname?.startsWith(BRANDING_LINK.href) ? 'text-[#0055cc] font-medium' : 'text-neutral-600'}`}>
-                  <HugeiconsIcon icon={PaintBoardIcon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
-                  Branding
+            <nav className="lg:hidden border-t border-neutral-100 px-2 pb-4 pb-safe bg-white divide-y divide-neutral-100 max-h-[calc(100dvh-3.5rem)] overflow-y-auto" aria-label="Admin mobile">
+              {mobileGroup('Workspace', main)}
+              {mobileGroup('Settings', settings)}
+              <div className="py-2">
+                <p className="px-3 pt-2 pb-1 text-[11px] font-medium uppercase tracking-wider text-neutral-400">Account</p>
+                <MenuLink link={PROFILE} pathname={pathname} />
+                <Link href="/" target="_blank" className="flex items-center gap-2.5 px-3 h-10 rounded-lg text-sm text-neutral-600 hover:bg-neutral-50">
+                  <HugeiconsIcon icon={LinkSquare01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+                  View site
                 </Link>
-              )}
-              <Link href="/" target="_blank" className="block py-3 border-b border-neutral-100 text-neutral-600">View site <HugeiconsIcon icon={LinkSquare01Icon} className="inline w-4 h-4" aria-hidden="true" /></Link>
-              <div className="pt-4 flex items-center justify-between text-sm">
-                <span className="text-neutral-600">{user.name} · {roleLabel(user.role)}</span>
-                <button onClick={signOut} className="px-4 h-10 bg-neutral-100 text-neutral-700 rounded-lg">Sign out</button>
+                <div className="mt-3 px-3 flex items-center justify-between gap-3 text-sm">
+                  <span className="text-neutral-600 truncate">{user.name} · {roleLabel(user.role)}</span>
+                  <button onClick={signOut} className="shrink-0 px-4 h-10 bg-neutral-100 text-neutral-700 rounded-lg">Sign out</button>
+                </div>
               </div>
             </nav>
           )}

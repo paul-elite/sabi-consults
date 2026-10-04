@@ -1,11 +1,12 @@
 'use client'
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Copy01Icon, InstagramIcon, PlayIcon } from '@hugeicons/core-free-icons'
+import { Copy01Icon, Facebook02Icon, InstagramIcon, PlayIcon } from '@hugeicons/core-free-icons'
 
 import { useSiteSettings } from './BrandProvider'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Eyebrow from './Eyebrow'
 
 interface InstagramPost {
   id: string
@@ -13,6 +14,51 @@ interface InstagramPost {
   permalink: string
   caption?: string
   mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM'
+}
+
+function SocialCards({ instagramHandle }: { instagramHandle: string }) {
+  const cards = [
+    {
+      label: 'Instagram',
+      title: `@${instagramHandle}`,
+      copy: 'Fresh listings, inspection clips, and Abuja market updates.',
+      href: `https://instagram.com/${instagramHandle}`,
+      icon: InstagramIcon,
+      className: 'from-[#833ab4] via-[#fd1d1d] to-[#fcb045]',
+    },
+    {
+      label: 'Facebook',
+      title: 'Sabi Consults',
+      copy: 'Property highlights, client updates, and community posts.',
+      href: 'https://facebook.com/sabiconsults',
+      icon: Facebook02Icon,
+      className: 'from-[#1877f2] to-[#0b4fb3]',
+    },
+  ]
+
+  return (
+    <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+      {cards.map((card) => (
+        <a
+          key={card.label}
+          href={card.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group rounded-2xl bg-white border border-blue-100 p-5 md:p-6 text-left shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all"
+        >
+          <div className={`mb-5 h-12 w-12 rounded-2xl bg-gradient-to-br ${card.className} text-white grid place-items-center`}>
+            <HugeiconsIcon icon={card.icon} className="w-6 h-6" strokeWidth={1.9} aria-hidden="true" />
+          </div>
+          <p className="text-xs uppercase tracking-[0.16em] text-brand font-semibold">{card.label}</p>
+          <h3 className="mt-2 text-2xl font-semibold text-ink">{card.title}</h3>
+          <p className="mt-3 text-sm text-neutral-600">{card.copy}</p>
+          <span className="mt-5 inline-flex text-sm font-medium text-brand group-hover:text-brand-dark transition-colors">
+            Open {card.label}
+          </span>
+        </a>
+      ))}
+    </div>
+  )
 }
 
 export default function InstagramFeed() {
@@ -48,29 +94,16 @@ export default function InstagramFeed() {
     return (
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
-              Follow Us
-            </p>
+          <div className="text-center mb-8 md:mb-10">
+            <Eyebrow icon="clients" center className="mx-auto mb-3">Follow Us</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-4">
-              @{instagramHandle}
+              Follow Sabi Consults
             </h2>
-            <p className="text-neutral-600">
-              Follow us on Instagram for the latest property updates and market insights
+            <p className="text-neutral-600 mx-auto">
+              Get the latest property updates and market insights.
             </p>
           </div>
-
-          <div className="text-center mt-6">
-            <a
-              href={`https://instagram.com/${instagramHandle}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 h-12 px-6 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              <HugeiconsIcon icon={InstagramIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
-              Follow @{instagramHandle}
-            </a>
-          </div>
+          <SocialCards instagramHandle={instagramHandle} />
         </div>
       </section>
     )
@@ -81,14 +114,13 @@ export default function InstagramFeed() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
-              Follow Us
-            </p>
+            <Eyebrow icon="clients" center className="mx-auto mb-3">Follow Us</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-semibold text-ink">
-              @{instagramHandle}
+              Follow Sabi Consults
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+          <SocialCards instagramHandle={instagramHandle} />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mt-8">
             {[...Array(6)].map((_, index) => (
               <div key={index} className="rounded-xl overflow-hidden aspect-square bg-neutral-100 animate-pulse" />
             ))}
@@ -101,19 +133,19 @@ export default function InstagramFeed() {
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <p className="text-sm font-medium text-brand uppercase tracking-wider mb-2">
-            Follow Us
-          </p>
+        <div className="text-center mb-10">
+          <Eyebrow icon="clients" center className="mx-auto mb-3">Follow Us</Eyebrow>
           <h2 className="text-3xl md:text-4xl font-semibold text-ink mb-4">
-            @{instagramHandle}
+            Follow Sabi Consults
           </h2>
-          <p className="text-neutral-600">
-            Latest updates from our Instagram
+          <p className="text-neutral-600 mx-auto">
+            Property updates, inspection clips, and market insights.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+        <SocialCards instagramHandle={instagramHandle} />
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mt-8">
           {posts.map((post) => (
             <a
               key={post.id}
@@ -145,17 +177,6 @@ export default function InstagramFeed() {
           ))}
         </div>
 
-        <div className="text-center mt-8">
-          <a
-            href={`https://instagram.com/${instagramHandle}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-lg inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            <HugeiconsIcon icon={InstagramIcon} className="w-5 h-5" strokeWidth={1.7} aria-hidden="true" />
-            Follow @{instagramHandle}
-          </a>
-        </div>
       </div>
     </section>
   )

@@ -90,6 +90,7 @@ export default function JoinPage() {
           password: form.password,
           confirmPassword: form.confirmPassword,
           image,
+          invite: new URLSearchParams(window.location.search).get('invite') || '',
         }),
       })
       const data = await res.json()
@@ -115,9 +116,9 @@ export default function JoinPage() {
           <div className="w-16 h-16 mx-auto mb-6 bg-emerald-100 rounded-full flex items-center justify-center">
             <HugeiconsIcon icon={Tick02Icon} className="w-8 h-8 text-emerald-600" strokeWidth={1.7} aria-hidden="true" />
           </div>
-          <h1 className="text-2xl font-medium text-ink mb-2">Account created</h1>
+          <h1 className="text-2xl font-medium text-ink mb-2">Request sent</h1>
           <p className="text-neutral-600 mb-8">
-            Your staff account has been set up. You can now sign in with your email and password.
+            An admin will review your account. You can sign in with your email and password once it has been approved.
           </p>
           <Link
             href="/admin"

@@ -1,17 +1,15 @@
 import { cleanText } from '@/lib/sanitize'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getSession, sameOrigin } from '@/lib/auth'
+import { requireRole } from '@/lib/auth'
 
 // GET single lead with full details (admin only)
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const currentUser = await getSession()
-  if (!currentUser || !(await sameOrigin())) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await requireRole('admin')
+  if (auth instanceof NextResponse) return auth
 
   const { id } = await params
   const supabase = await createAdminClient()
@@ -79,10 +77,8 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const currentUser = await getSession()
-  if (!currentUser || !(await sameOrigin())) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await requireRole('admin')
+  if (auth instanceof NextResponse) return auth
 
   const { id } = await params
   const raw = await request.json()
@@ -134,10 +130,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const currentUser = await getSession()
-  if (!currentUser || !(await sameOrigin())) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await requireRole('admin')
+  if (auth instanceof NextResponse) return auth
 
   const { id } = await params
   const supabase = await createAdminClient()

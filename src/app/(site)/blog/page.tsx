@@ -6,6 +6,7 @@ import { getBrand } from '@/lib/brand'
 import Image from 'next/image'
 import { getAllBlogs } from '@/lib/blogs'
 import { Blog } from '@/lib/types'
+import Eyebrow from '@/components/Eyebrow'
 
 export const dynamic = 'force-dynamic'
 
@@ -137,7 +138,7 @@ export default async function BlogPage() {
                     </div>
                     <div className="py-2">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs font-medium text-brand uppercase tracking-wider">Featured</span>
+                        <Eyebrow icon="featured" size="xs">Featured</Eyebrow>
                         <span className="text-xs text-neutral-400">
                           {featuredBlog.publishedAt ? formatDate(featuredBlog.publishedAt) : 'Draft'}
                         </span>
