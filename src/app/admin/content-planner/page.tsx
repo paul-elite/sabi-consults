@@ -20,6 +20,8 @@ interface PlannerItem {
   time: string
   theme: string
   note: string
+  imageUrl?: string
+  imageName?: string
 }
 
 const STORAGE_KEY = 'sabi-content-planner-v1'
@@ -43,6 +45,8 @@ const seedItems: PlannerItem[] = [
     time: '09:00',
     theme: 'Buyer Education',
     note: 'Carousel: title search, allocation papers, survey plan, access road, payment proof.',
+    imageUrl: '',
+    imageName: '',
   },
   {
     id: 'property-spotlight',
@@ -52,6 +56,8 @@ const seedItems: PlannerItem[] = [
     time: '12:00',
     theme: 'Property Feature',
     note: 'Use verified property images, location benefits, and inspection CTA.',
+    imageUrl: '',
+    imageName: '',
   },
   {
     id: 'blog-investment',
@@ -61,6 +67,8 @@ const seedItems: PlannerItem[] = [
     time: '15:00',
     theme: 'Investment Advisory',
     note: 'Short article for first-time investors. Include district comparison table.',
+    imageUrl: '',
+    imageName: '',
   },
 ]
 
@@ -109,6 +117,10 @@ export default function ContentPlannerPage() {
   const [time, setTime] = useState('09:00')
   const [theme, setTheme] = useState('Buyer Education')
   const [note, setNote] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [imageName, setImageName] = useState('')
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
 
   useEffect(() => {
     try {
@@ -123,6 +135,8 @@ export default function ContentPlannerPage() {
           time: item.time || '09:00',
           theme: item.theme || 'General',
           note: item.note || '',
+          imageUrl: item.imageUrl || '',
+          imageName: item.imageName || '',
         })))
       }
     } catch {
@@ -177,10 +191,41 @@ export default function ContentPlannerPage() {
         time,
         theme: theme.trim() || 'General',
         note: note.trim(),
+        imageUrl: imageUrl.trim(),
+        imageName: imageName.trim(),
       },
     ])
     setTitle('')
     setNote('')
+    setImageUrl('')
+    setImageName('')
+    setUploadError('')
+  }
+
+  const uploadImage = async (file: File | null) => {
+    if (!file) return
+    setUploadError('')
+    setIsUploading(true)
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('folder', 'blog')
+
+      const response = await fetch('/api/upload', { method: 'POST', body: formData })
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Image upload failed.')
+      }
+
+      setImageUrl(result.url)
+      setImageName(file.name)
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Image upload failed.')
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   const removeItem = (id: string) => {
@@ -278,6 +323,17 @@ export default function ContentPlannerPage() {
                       <h3 className="mt-3 font-medium text-ink">{item.title}</h3>
                       <p className="mt-1 text-sm text-neutral-500">{item.theme}</p>
                       {item.note && <p className="mt-3 text-sm leading-relaxed text-neutral-600">{item.note}</p>}
+                      {item.imageUrl && (
+                        <div className="mt-4 overflow-hidden rounded-xl border border-neutral-100 bg-neutral-50">
+                          <img src={item.imageUrl} alt="" className="h-36 w-full object-cover" />
+                          <div className="flex items-center justify-between gap-3 p-3">
+                            <p className="min-w-0 truncate text-xs text-neutral-500">{item.imageName || 'Attached image'}</p>
+                            <a href={item.imageUrl} download className="shrink-0 text-sm font-medium text-brand hover:text-brand-dark">
+                              Download
+                            </a>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <button type="button" onClick={() => removeItem(item.id)} className="text-neutral-300 hover:text-red-500 transition-colors" aria-label={`Remove ${item.title}`}>
                       <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
@@ -330,6 +386,44 @@ export default function ContentPlannerPage() {
                 onChange={event => setNote(event.target.value)}
                 placeholder="Angle, CTA, assets needed, or caption notes"
               />
+            </div>
+            <div className="form-field">
+              <label htmlFor="planner-image-link" className="form-label">Image link</label>
+              <input
+                id="planner-image-link"
+                type="url"
+                className="form-input"
+                value={imageUrl}
+                onChange={event => {
+                  setImageUrl(event.target.value)
+                  setImageName(event.target.value ? 'Linked image' : '')
+                }}
+                placeholder="https://..."
+              />
+            </div>
+            <div className="form-field">
+              <label htmlFor="planner-image-upload" className="form-label">Upload image</label>
+              <input
+                id="planner-image-upload"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                className="form-input"
+                disabled={isUploading}
+                onChange={event => uploadImage(event.target.files?.[0] || null)}
+              />
+              {isUploading && <p className="text-xs text-neutral-500">Uploading image...</p>}
+              {uploadError && <p className="text-xs text-red-600">{uploadError}</p>}
+              {imageUrl && (
+                <div className="mt-2 overflow-hidden rounded-xl border border-neutral-100">
+                  <img src={imageUrl} alt="" className="h-28 w-full object-cover" />
+                  <div className="flex items-center justify-between gap-3 px-3 py-2">
+                    <p className="min-w-0 truncate text-xs text-neutral-500">{imageName || 'Linked image'}</p>
+                    <button type="button" onClick={() => { setImageUrl(''); setImageName('') }} className="text-xs font-medium text-red-600">
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             <button type="submit" className="btn btn-md btn-brand w-full">
               <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
