@@ -22,8 +22,20 @@ export const useAdminUser = () => useContext(UserContext)
 export const canAccess = (u: AdminUser | null, min: AdminRole) => !!u && RANK[u.role] >= RANK[min]
 
 type NavLink = { href: string; label: string; min: AdminRole; icon: IconSvgElement; also?: string[] }
+type NavGroup = { title: string; label: string; links: NavLink[] }
 
 // Day-to-day work sits in the bar; configuration lives under the settings menu, personal items under the account menu.
+const DASHBOARD: NavLink = { href: '/admin/dashboard', label: 'Dashboard', min: 'staff', icon: DashboardSquare01Icon, also: ['/admin/properties'] }
+const OPERATIONS: NavLink[] = [
+  { href: '/admin/leads', label: 'Leads', min: 'admin', icon: ContactBookIcon },
+  { href: '/admin/analytics', label: 'Analytics', min: 'admin', icon: Analytics01Icon },
+  { href: '/admin/visitors', label: 'Visitors', min: 'admin', icon: Globe02Icon },
+]
+const CONTENT: NavLink[] = [
+  { href: '/admin/blog', label: 'Blog', min: 'staff', icon: News01Icon },
+  { href: '/admin/content-planner', label: 'Planner', min: 'staff', icon: Calendar03Icon },
+  { href: '/admin/team', label: 'Team', min: 'staff', icon: UserGroupIcon },
+]
 const MAIN: NavLink[] = [
   { href: '/admin/dashboard', label: 'Dashboard', min: 'staff', icon: DashboardSquare01Icon, also: ['/admin/properties'] },
   { href: '/admin/leads', label: 'Leads', min: 'admin', icon: ContactBookIcon },
@@ -115,8 +127,15 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
   }
 
   const main = MAIN.filter(l => canAccess(user, l.min))
+  const dashboard = canAccess(user, DASHBOARD.min) ? DASHBOARD : null
+  const groups: NavGroup[] = [
+    { title: 'Operations', label: 'Operations', links: OPERATIONS.filter(l => canAccess(user, l.min)) },
+    { title: 'Content', label: 'Content', links: CONTENT.filter(l => canAccess(user, l.min)) },
+  ].filter(g => g.links.length > 0)
   const settings = SETTINGS.filter(l => canAccess(user, l.min))
   const settingsActive = settings.some(l => isActive(pathname, l))
+  const operationsActive = groups.some(g => g.title === 'Operations' && g.links.some(l => isActive(pathname, l)))
+  const contentActive = groups.some(g => g.title === 'Content' && g.links.some(l => isActive(pathname, l)))
   const initials = user.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase()
   const signOut = async () => {
     await fetch('/api/auth', { method: 'DELETE' })
@@ -140,15 +159,23 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
               <span className="text-[11px] font-medium uppercase tracking-wider text-neutral-400 border border-neutral-200 rounded px-1.5 py-0.5">Admin</span>
             </Link>
             <span className="hidden lg:block w-px h-5 bg-neutral-200" aria-hidden="true" />
-            <nav className="hidden lg:flex items-center gap-0.5 text-sm" aria-label="Admin">
-              {main.map(l => {
-                const active = isActive(pathname, l)
+            <nav className="hidden lg:flex items-center gap-1 text-sm" aria-label="Admin">
+              {dashboard && (
+                <Link href={dashboard.href} aria-current={isActive(pathname, dashboard) ? 'page' : undefined}
+                  className={`h-9 px-3 rounded-lg flex items-center gap-2 transition-colors ${isActive(pathname, dashboard) ? 'bg-blue-50 text-[#0055cc] font-medium' : 'text-neutral-500 hover:text-ink hover:bg-neutral-100'}`}>
+                  <HugeiconsIcon icon={dashboard.icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+                  {dashboard.label}
+                </Link>
+              )}
+              {groups.map(group => {
+                const active = group.title === 'Operations' ? operationsActive : contentActive
+                const icon = group.title === 'Operations' ? ContactBookIcon : News01Icon
                 return (
-                  <Link key={l.href} href={l.href} aria-current={active ? 'page' : undefined}
-                    className={`h-9 px-3 rounded-lg flex items-center gap-2 transition-colors ${active ? 'bg-blue-50 text-[#0055cc] font-medium' : 'text-neutral-500 hover:text-ink hover:bg-neutral-100'}`}>
-                    <HugeiconsIcon icon={l.icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
-                    {l.label}
-                  </Link>
+                  <Menu key={group.title} label={`${group.title} menu`} active={active}
+                    trigger={<><HugeiconsIcon icon={icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" /> {group.label}</>}>
+                    <p className="px-3 pt-1.5 pb-1 text-[11px] font-medium uppercase tracking-wider text-neutral-400">{group.title}</p>
+                    {group.links.map(l => <MenuLink key={l.href} link={l} pathname={pathname} />)}
+                  </Menu>
                 )
               })}
             </nav>
