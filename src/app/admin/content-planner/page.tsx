@@ -9,8 +9,16 @@ import {
   Calendar03Icon,
   Delete02Icon,
 } from '@hugeicons/core-free-icons'
+import { canAccess, useAdminUser, type AdminRole } from '@/components/admin/AdminNav'
 
 type Channel = 'Instagram' | 'Facebook' | 'Blog' | 'WhatsApp' | 'Email'
+
+interface StaffMember {
+  id: string
+  name: string
+  email: string
+  role: AdminRole
+}
 
 interface PlannerItem {
   id: string
@@ -22,9 +30,11 @@ interface PlannerItem {
   note: string
   imageUrl?: string
   imageName?: string
+  assignedToId?: string
+  assignedToName?: string
+  assignedToEmail?: string
 }
 
-const STORAGE_KEY = 'sabi-content-planner-v1'
 const channels: Channel[] = ['Instagram', 'Facebook', 'Blog', 'WhatsApp', 'Email']
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -34,48 +44,6 @@ const channelStyles: Record<Channel, string> = {
   Blog: 'bg-amber-50 text-amber-700',
   WhatsApp: 'bg-emerald-50 text-emerald-700',
   Email: 'bg-violet-50 text-violet-700',
-}
-
-const seedItems: PlannerItem[] = [
-  {
-    id: 'market-update',
-    title: 'Abuja land buying checklist',
-    channel: 'Instagram',
-    date: nextDate(1),
-    time: '09:00',
-    theme: 'Buyer Education',
-    note: 'Carousel: title search, allocation papers, survey plan, access road, payment proof.',
-    imageUrl: '',
-    imageName: '',
-  },
-  {
-    id: 'property-spotlight',
-    title: 'Galadimawa plot spotlight',
-    channel: 'Facebook',
-    date: nextDate(3),
-    time: '12:00',
-    theme: 'Property Feature',
-    note: 'Use verified property images, location benefits, and inspection CTA.',
-    imageUrl: '',
-    imageName: '',
-  },
-  {
-    id: 'blog-investment',
-    title: 'How to compare land options in Abuja',
-    channel: 'Blog',
-    date: nextDate(5),
-    time: '15:00',
-    theme: 'Investment Advisory',
-    note: 'Short article for first-time investors. Include district comparison table.',
-    imageUrl: '',
-    imageName: '',
-  },
-]
-
-function nextDate(days: number) {
-  const date = new Date()
-  date.setDate(date.getDate() + days)
-  return dateKey(date)
 }
 
 function dateKey(date: Date) {
@@ -108,47 +76,55 @@ function makeId() {
 }
 
 export default function ContentPlannerPage() {
+  const signedInUser = useAdminUser()
+  const canManage = canAccess(signedInUser, 'admin')
   const today = useMemo(() => new Date(), [])
-  const [items, setItems] = useState<PlannerItem[]>(seedItems)
+  const [items, setItems] = useState<PlannerItem[]>([])
+  const [staff, setStaff] = useState<StaffMember[]>([])
   const [calendarDate, setCalendarDate] = useState(today)
   const [selectedDate, setSelectedDate] = useState(dateKey(today))
+  const [selectedStaffId, setSelectedStaffId] = useState('all')
   const [title, setTitle] = useState('')
   const [channel, setChannel] = useState<Channel>('Instagram')
   const [time, setTime] = useState('09:00')
   const [theme, setTheme] = useState('Buyer Education')
   const [note, setNote] = useState('')
+  const [assignedToId, setAssignedToId] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [imageName, setImageName] = useState('')
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState('')
+  const [notice, setNotice] = useState('')
+  const [loadError, setLoadError] = useState('')
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-      if (saved) {
-        const parsed = JSON.parse(saved) as Partial<PlannerItem>[]
-        setItems(parsed.map(item => ({
-          id: item.id || makeId(),
-          title: item.title || 'Untitled content',
-          channel: item.channel || 'Instagram',
-          date: item.date || dateKey(today),
-          time: item.time || '09:00',
-          theme: item.theme || 'General',
-          note: item.note || '',
-          imageUrl: item.imageUrl || '',
-          imageName: item.imageName || '',
-        })))
-      }
-    } catch {
-      // A bad local draft should not block the planner.
-    }
-  }, [today])
+    let alive = true
+    fetch('/api/content-planner', { cache: 'no-store' })
+      .then(async response => {
+        const data = await response.json()
+        if (!response.ok) throw new Error(data.error || 'Couldn’t load planner')
+        return data
+      })
+      .then(data => {
+        if (!alive) return
+        setItems(data.items || [])
+        setStaff(data.staff || [])
+        if (!canManage && data.user?.id) setSelectedStaffId(data.user.id)
+        if (canManage && data.staff?.[0]?.id) setAssignedToId(data.staff[0].id)
+      })
+      .catch(error => { if (alive) setLoadError(error instanceof Error ? error.message : 'Couldn’t load planner') })
+    return () => { alive = false }
+  }, [canManage])
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-  }, [items])
-
+  const activeAssignee = staff.find(member => member.id === assignedToId)
   const monthLabel = calendarDate.toLocaleDateString('en-NG', { month: 'long', year: 'numeric' })
+
+  const visibleItems = useMemo(() => {
+    if (!canManage) return items
+    if (selectedStaffId === 'all') return items
+    if (selectedStaffId === 'unassigned') return items.filter(item => !item.assignedToId)
+    return items.filter(item => item.assignedToId === selectedStaffId)
+  }, [canManage, items, selectedStaffId])
 
   const calendarDays = useMemo(() => {
     const year = calendarDate.getFullYear()
@@ -165,24 +141,38 @@ export default function ContentPlannerPage() {
   }, [calendarDate])
 
   const selectedItems = useMemo(
-    () => items.filter(item => item.date === selectedDate).sort((a, b) => a.time.localeCompare(b.time)),
-    [items, selectedDate],
+    () => visibleItems.filter(item => item.date === selectedDate).sort((a, b) => a.time.localeCompare(b.time)),
+    [visibleItems, selectedDate],
   )
 
   const itemsByDate = useMemo(() => {
-    return items.reduce<Record<string, PlannerItem[]>>((groups, item) => {
+    return visibleItems.reduce<Record<string, PlannerItem[]>>((groups, item) => {
       groups[item.date] = [...(groups[item.date] || []), item]
       return groups
     }, {})
-  }, [items])
+  }, [visibleItems])
 
-  const addItem = (event: React.FormEvent) => {
+  const saveItems = async (nextItems: PlannerItem[]) => {
+    setNotice('')
+    const response = await fetch('/api/content-planner', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: nextItems }),
+    })
+    const result = await response.json()
+    if (!response.ok) throw new Error(result.error || 'Couldn’t save planner')
+    setItems(result.items)
+    setNotice('Planner updated.')
+  }
+
+  const addItem = async (event: React.FormEvent) => {
     event.preventDefault()
     const cleanTitle = title.trim()
-    if (!cleanTitle) return
+    if (!cleanTitle || !canManage) return
+    const assignee = staff.find(member => member.id === assignedToId)
 
-    setItems(current => [
-      ...current,
+    const nextItems = [
+      ...items,
       {
         id: makeId(),
         title: cleanTitle,
@@ -193,13 +183,22 @@ export default function ContentPlannerPage() {
         note: note.trim(),
         imageUrl: imageUrl.trim(),
         imageName: imageName.trim(),
+        assignedToId: assignee?.id || '',
+        assignedToName: assignee?.name || '',
+        assignedToEmail: assignee?.email || '',
       },
-    ])
-    setTitle('')
-    setNote('')
-    setImageUrl('')
-    setImageName('')
-    setUploadError('')
+    ]
+
+    try {
+      await saveItems(nextItems)
+      setTitle('')
+      setNote('')
+      setImageUrl('')
+      setImageName('')
+      setUploadError('')
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : 'Couldn’t save planner')
+    }
   }
 
   const uploadImage = async (file: File | null) => {
@@ -211,14 +210,9 @@ export default function ContentPlannerPage() {
       const formData = new FormData()
       formData.append('file', file)
       formData.append('folder', 'blog')
-
       const response = await fetch('/api/upload', { method: 'POST', body: formData })
       const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Image upload failed.')
-      }
-
+      if (!response.ok) throw new Error(result.error || 'Image upload failed.')
       setImageUrl(result.url)
       setImageName(file.name)
     } catch (error) {
@@ -228,8 +222,14 @@ export default function ContentPlannerPage() {
     }
   }
 
-  const removeItem = (id: string) => {
-    setItems(current => current.filter(item => item.id !== id))
+  const removeItem = async (id: string) => {
+    if (!canManage) return
+    const nextItems = items.filter(item => item.id !== id)
+    try {
+      await saveItems(nextItems)
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : 'Couldn’t remove item')
+    }
   }
 
   const shiftMonth = (amount: number) => {
@@ -245,24 +245,39 @@ export default function ContentPlannerPage() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-3 py-1 text-xs font-medium text-brand mb-3">
             <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
             Content planner
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-ink">Calendar</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-ink">{canManage ? 'Team calendar' : 'My calendar'}</h1>
+          <p className="mt-2 max-w-2xl text-sm text-neutral-500">
+            {canManage ? 'Assign content tasks to staff and track each person’s calendar.' : 'See content tasks assigned to you by the admin.'}
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => shiftMonth(-1)} className="btn btn-sm btn-outline btn-icon" aria-label="Previous month">
-            <HugeiconsIcon icon={ArrowLeft01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
-          </button>
-          <span className="min-w-40 text-center text-sm font-medium text-ink">{monthLabel}</span>
-          <button type="button" onClick={() => shiftMonth(1)} className="btn btn-sm btn-outline btn-icon" aria-label="Next month">
-            <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
-          </button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          {canManage && (
+            <select className="form-input form-select h-10 sm:w-52" value={selectedStaffId} onChange={event => setSelectedStaffId(event.target.value)}>
+              <option value="all">All staff</option>
+              <option value="unassigned">Unassigned</option>
+              {staff.map(member => <option key={member.id} value={member.id}>{member.name}</option>)}
+            </select>
+          )}
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => shiftMonth(-1)} className="btn btn-sm btn-outline btn-icon" aria-label="Previous month">
+              <HugeiconsIcon icon={ArrowLeft01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+            </button>
+            <span className="min-w-40 text-center text-sm font-medium text-ink">{monthLabel}</span>
+            <button type="button" onClick={() => shiftMonth(1)} className="btn btn-sm btn-outline btn-icon" aria-label="Next month">
+              <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </div>
+
+      {loadError && <p className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{loadError}</p>}
+      {notice && <p className="mb-4 rounded-xl bg-blue-50 px-4 py-3 text-sm text-blue-700">{notice}</p>}
 
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6">
         <section className="card overflow-hidden">
@@ -316,9 +331,10 @@ export default function ContentPlannerPage() {
                 <article key={item.id} className="p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <span className={`badge ${channelStyles[item.channel]}`}>{item.channel}</span>
                         <span className="text-sm text-neutral-400">{formatTime(item.time)}</span>
+                        {item.assignedToName && <span className="badge badge-neutral">{item.assignedToName}</span>}
                       </div>
                       <h3 className="mt-3 font-medium text-ink">{item.title}</h3>
                       <p className="mt-1 text-sm text-neutral-500">{item.theme}</p>
@@ -328,16 +344,16 @@ export default function ContentPlannerPage() {
                           <img src={item.imageUrl} alt="" className="h-36 w-full object-cover" />
                           <div className="flex items-center justify-between gap-3 p-3">
                             <p className="min-w-0 truncate text-xs text-neutral-500">{item.imageName || 'Attached image'}</p>
-                            <a href={item.imageUrl} download className="shrink-0 text-sm font-medium text-brand hover:text-brand-dark">
-                              Download
-                            </a>
+                            <a href={item.imageUrl} download className="shrink-0 text-sm font-medium text-brand hover:text-brand-dark">Download</a>
                           </div>
                         </div>
                       )}
                     </div>
-                    <button type="button" onClick={() => removeItem(item.id)} className="text-neutral-300 hover:text-red-500 transition-colors" aria-label={`Remove ${item.title}`}>
-                      <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
-                    </button>
+                    {canManage && (
+                      <button type="button" onClick={() => removeItem(item.id)} className="text-neutral-300 hover:text-red-500 transition-colors" aria-label={`Remove ${item.title}`}>
+                        <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+                      </button>
+                    )}
                   </div>
                 </article>
               )) : (
@@ -346,90 +362,79 @@ export default function ContentPlannerPage() {
             </div>
           </section>
 
-          <form onSubmit={addItem} className="card card-body space-y-4">
-            <div>
-              <h2 className="font-medium text-ink">Add content</h2>
-              <p className="text-sm text-neutral-500 mt-1">This will be added to the selected day.</p>
-            </div>
-            <div className="form-field">
-              <label htmlFor="planner-title" className="form-label">Title</label>
-              <input
-                id="planner-title"
-                className="form-input"
-                value={title}
-                onChange={event => setTitle(event.target.value)}
-                placeholder="e.g. Maitama property spotlight"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
+          {canManage && (
+            <form onSubmit={addItem} className="card card-body space-y-4">
+              <div>
+                <h2 className="font-medium text-ink">Add task</h2>
+                <p className="text-sm text-neutral-500 mt-1">Assign this content task to a staff calendar.</p>
+              </div>
               <div className="form-field">
-                <label htmlFor="planner-channel" className="form-label">Channel</label>
-                <select id="planner-channel" className="form-input form-select" value={channel} onChange={event => setChannel(event.target.value as Channel)}>
-                  {channels.map(item => <option key={item}>{item}</option>)}
+                <label htmlFor="planner-assignee" className="form-label">Assign to</label>
+                <select id="planner-assignee" className="form-input form-select" value={assignedToId} onChange={event => setAssignedToId(event.target.value)}>
+                  <option value="">Unassigned</option>
+                  {staff.map(member => <option key={member.id} value={member.id}>{member.name}</option>)}
                 </select>
+                {activeAssignee && <p className="text-xs text-neutral-400">{activeAssignee.email}</p>}
               </div>
               <div className="form-field">
-                <label htmlFor="planner-time" className="form-label">Time</label>
-                <input id="planner-time" type="time" className="form-input" value={time} onChange={event => setTime(event.target.value)} />
+                <label htmlFor="planner-title" className="form-label">Title</label>
+                <input id="planner-title" className="form-input" value={title} onChange={event => setTitle(event.target.value)} placeholder="e.g. Maitama property spotlight" />
               </div>
-            </div>
-            <div className="form-field">
-              <label htmlFor="planner-theme" className="form-label">Theme</label>
-              <input id="planner-theme" className="form-input" value={theme} onChange={event => setTheme(event.target.value)} />
-            </div>
-            <div className="form-field">
-              <label htmlFor="planner-note" className="form-label">Notes</label>
-              <textarea
-                id="planner-note"
-                className="form-input form-textarea"
-                value={note}
-                onChange={event => setNote(event.target.value)}
-                placeholder="Angle, CTA, assets needed, or caption notes"
-              />
-            </div>
-            <div className="form-field">
-              <label htmlFor="planner-image-link" className="form-label">Image link</label>
-              <input
-                id="planner-image-link"
-                type="url"
-                className="form-input"
-                value={imageUrl}
-                onChange={event => {
-                  setImageUrl(event.target.value)
-                  setImageName(event.target.value ? 'Linked image' : '')
-                }}
-                placeholder="https://..."
-              />
-            </div>
-            <div className="form-field">
-              <label htmlFor="planner-image-upload" className="form-label">Upload image</label>
-              <input
-                id="planner-image-upload"
-                type="file"
-                accept="image/png,image/jpeg,image/webp,image/gif"
-                className="form-input"
-                disabled={isUploading}
-                onChange={event => uploadImage(event.target.files?.[0] || null)}
-              />
-              {isUploading && <p className="text-xs text-neutral-500">Uploading image...</p>}
-              {uploadError && <p className="text-xs text-red-600">{uploadError}</p>}
-              {imageUrl && (
-                <div className="mt-2 overflow-hidden rounded-xl border border-neutral-100">
-                  <img src={imageUrl} alt="" className="h-28 w-full object-cover" />
-                  <div className="flex items-center justify-between gap-3 px-3 py-2">
-                    <p className="min-w-0 truncate text-xs text-neutral-500">{imageName || 'Linked image'}</p>
-                    <button type="button" onClick={() => { setImageUrl(''); setImageName('') }} className="text-xs font-medium text-red-600">
-                      Remove
-                    </button>
-                  </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="form-field">
+                  <label htmlFor="planner-channel" className="form-label">Channel</label>
+                  <select id="planner-channel" className="form-input form-select" value={channel} onChange={event => setChannel(event.target.value as Channel)}>
+                    {channels.map(item => <option key={item}>{item}</option>)}
+                  </select>
                 </div>
-              )}
-            </div>
-            <button type="submit" className="btn btn-md btn-brand w-full">
-              <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
-              Add to selected day
-            </button>
-          </form>
+                <div className="form-field">
+                  <label htmlFor="planner-time" className="form-label">Time</label>
+                  <input id="planner-time" type="time" className="form-input" value={time} onChange={event => setTime(event.target.value)} />
+                </div>
+              </div>
+              <div className="form-field">
+                <label htmlFor="planner-theme" className="form-label">Theme</label>
+                <input id="planner-theme" className="form-input" value={theme} onChange={event => setTheme(event.target.value)} />
+              </div>
+              <div className="form-field">
+                <label htmlFor="planner-note" className="form-label">Notes</label>
+                <textarea id="planner-note" className="form-input form-textarea" value={note} onChange={event => setNote(event.target.value)} placeholder="Angle, CTA, assets needed, or caption notes" />
+              </div>
+              <div className="form-field">
+                <label htmlFor="planner-image-link" className="form-label">Image link</label>
+                <input
+                  id="planner-image-link"
+                  type="url"
+                  className="form-input"
+                  value={imageUrl}
+                  onChange={event => {
+                    setImageUrl(event.target.value)
+                    setImageName(event.target.value ? 'Linked image' : '')
+                  }}
+                  placeholder="https://..."
+                />
+              </div>
+              <div className="form-field">
+                <label htmlFor="planner-image-upload" className="form-label">Upload image</label>
+                <input id="planner-image-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="form-input" disabled={isUploading} onChange={event => uploadImage(event.target.files?.[0] || null)} />
+                {isUploading && <p className="text-xs text-neutral-500">Uploading image...</p>}
+                {uploadError && <p className="text-xs text-red-600">{uploadError}</p>}
+                {imageUrl && (
+                  <div className="mt-2 overflow-hidden rounded-xl border border-neutral-100">
+                    <img src={imageUrl} alt="" className="h-28 w-full object-cover" />
+                    <div className="flex items-center justify-between gap-3 px-3 py-2">
+                      <p className="min-w-0 truncate text-xs text-neutral-500">{imageName || 'Linked image'}</p>
+                      <button type="button" onClick={() => { setImageUrl(''); setImageName('') }} className="text-xs font-medium text-red-600">Remove</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <button type="submit" className="btn btn-md btn-brand w-full">
+                <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
+                Add assigned task
+              </button>
+            </form>
+          )}
         </aside>
       </div>
     </main>
