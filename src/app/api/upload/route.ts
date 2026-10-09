@@ -3,7 +3,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { randomUUID } from 'crypto'
 import { requireRole } from '@/lib/auth'
 import { isStorageImageUrl } from '@/lib/storage-url'
-import { rateLimit } from '@/lib/rate-limit'
+import { clientIp, rateLimit } from '@/lib/rate-limit'
 
 // The browser-supplied type is only a claim; check the file's leading bytes match it
 function matchesSignature(type: string, b: Uint8Array): boolean {
@@ -29,11 +29,14 @@ const SVG_DANGER = /<script|<foreignobject|<iframe|<embed|<object|<animate|<set\
 
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
-    const currentUser = await requireRole('staff')
+    // Signed-in staff can upload anywhere below; anyone else only a profile photo for the public join form
+    const requestedFolder = request.nextUrl.searchParams.get('folder')
+    const isJoinPhoto = requestedFolder === 'staff'
+    const currentUser = isJoinPhoto ? null : await requireRole('staff')
     if (currentUser instanceof NextResponse) return currentUser
 
-    if (!rateLimit(`upload:${currentUser.id}`, 60, 60 * 60 * 1000)) {
+    const limitKey = currentUser ? `upload:${currentUser.id}` : `upload-join:${clientIp(request)}`
+    if (!rateLimit(limitKey, currentUser ? 60 : 5, 60 * 60 * 1000)) {
       return NextResponse.json({ error: 'Upload limit reached. Try again in an hour.' }, { status: 429 })
     }
     if (Number(request.headers.get('content-length') || 0) > 6 * 1024 * 1024) {
@@ -68,9 +71,13 @@ export async function POST(request: NextRequest) {
     const timestamp = Date.now()
     const randomStr = randomUUID()
     const requested = String(formData.get('folder') || 'properties')
-    const folder = ['properties', 'brand', 'team', 'blog'].includes(requested) ? requested : 'properties'
+    const folder = isJoinPhoto ? 'staff' : ['properties', 'brand', 'team', 'blog'].includes(requested) ? requested : 'properties'
 
-    if (file.type === 'image/svg+xml' && (folder !== 'brand' || currentUser.role !== 'super_admin')) {
+    if (isJoinPhoto && !['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      return NextResponse.json({ error: 'Use a JPG, PNG or WebP photo.' }, { status: 400 })
+    }
+
+    if (file.type === 'image/svg+xml' && (folder !== 'brand' || currentUser?.role !== 'super_admin')) {
       return NextResponse.json({ error: 'SVG uploads are restricted to super admin brand assets.' }, { status: 403 })
     }
 
