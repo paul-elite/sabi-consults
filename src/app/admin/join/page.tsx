@@ -57,7 +57,7 @@ export default function JoinPage() {
     formData.append('file', file)
 
     try {
-      const res = await fetch('/api/upload', { method: 'POST', body: formData })
+      const res = await fetch('/api/upload?folder=staff', { method: 'POST', body: formData })
       if (!res.ok) throw new Error('Upload failed')
       const data = await res.json()
       setImage(data.url)
@@ -90,7 +90,6 @@ export default function JoinPage() {
           password: form.password,
           confirmPassword: form.confirmPassword,
           image,
-          invite: new URLSearchParams(window.location.search).get('invite') || '',
         }),
       })
       const data = await res.json()

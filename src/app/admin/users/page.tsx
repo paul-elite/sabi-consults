@@ -30,12 +30,8 @@ function UsersManager() {
   const [created, setCreated] = useState<{ email: string; password: string } | null>(null)
   const [linkCopied, setLinkCopied] = useState(false)
 
-  // The sign-up link carries a private invite token; without STAFF_REGISTRATION_TOKEN self sign-up is closed
-  const [inviteToken, setInviteToken] = useState<string | null>(null)
-  useEffect(() => {
-    fetch('/api/users/invite', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => setInviteToken(d?.token ?? null)).catch(() => {})
-  }, [])
-  const joinLink = inviteToken && typeof window !== 'undefined' ? `${window.location.origin}/admin/join?invite=${encodeURIComponent(inviteToken)}` : ''
+  const [joinLink, setJoinLink] = useState('')
+  useEffect(() => setJoinLink(`${window.location.origin}/admin/join`), [])
 
   const copyJoinLink = () => {
     navigator.clipboard?.writeText(joinLink)
@@ -112,9 +108,7 @@ function UsersManager() {
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-ink mb-1">Staff registration link</p>
             <p className="text-xs text-neutral-500">
-              {joinLink
-                ? 'Share this private link only with new staff. Their accounts stay inactive until you turn them on below.'
-                : 'Self sign-up is off. Set STAFF_REGISTRATION_TOKEN (16+ characters) on the server to turn it on.'}
+              Anyone with this link can request a staff account. Requests stay inactive until you turn them on below.
             </p>
           </div>
           <div className="flex items-center gap-2">

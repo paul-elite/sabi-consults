@@ -3,9 +3,8 @@ import { hashPassword, serviceClient as db, sameOrigin, MAX_PASSWORD } from '@/l
 import { cleanText } from '@/lib/sanitize'
 import { clientIp, rateLimit, readJson } from '@/lib/rate-limit'
 import { isStorageImageUrl } from '@/lib/storage-url'
-import { validInvite } from '@/lib/staff-invite'
 
-// POST /api/staff/register – self-registration for staff
+// POST /api/staff/register – anyone can request a staff account; it stays inactive until an admin turns it on
 export async function POST(request: NextRequest) {
   // CSRF protection
   if (!(await sameOrigin())) {
@@ -23,11 +22,6 @@ export async function POST(request: NextRequest) {
 
   const body = await readJson(request, 16 * 1024)
   if (body instanceof NextResponse) return body
-
-  // Only people holding the private link from the Staff accounts page can sign up
-  if (!validInvite(body.invite)) {
-    return NextResponse.json({ error: 'This sign-up link is invalid or has expired. Ask an admin for a new one.' }, { status: 403 })
-  }
 
   const name = cleanText(body.name, 120)
   const email = cleanText(body.email, 254).toLowerCase()

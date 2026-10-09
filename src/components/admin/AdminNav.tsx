@@ -103,7 +103,8 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AdminUser | null>(null)
   const [checked, setChecked] = useState(false)
   const [open, setOpen] = useState(false)
-  const isLogin = pathname === '/admin'
+  // The sign-in page and the staff sign-up form are open to everyone
+  const isLogin = pathname === '/admin' || pathname === '/admin/join'
 
   useEffect(() => {
     let alive = true
