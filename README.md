@@ -89,3 +89,5 @@ Tailwind classes such as `bg-brand`, `text-ink` and `bg-surface` use those varia
 
 ## Scripts
 `npm run dev` · `npm run build` · `npm start` · `npm run typecheck`
+
+`npm run leads` finds real estate companies that may need a website redesign. It also runs weekly on GitHub Actions; see [`scripts/leads/README.md`](scripts/leads/README.md).

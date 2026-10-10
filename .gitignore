@@ -38,3 +38,6 @@ next-env.d.ts
 .DS_Store
 Thumbs.db
 .env*.local
+
+# Lead finder output
+leads-output/

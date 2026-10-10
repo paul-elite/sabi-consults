@@ -1,0 +1,46 @@
+# Lead finder
+
+Finds real estate companies whose websites look outdated and that can probably afford a ~$2,000 redesign.
+It runs every Monday on GitHub Actions and produces a ranked spreadsheet.
+
+## How it works
+
+1. **Find companies** in each city in [`config.json`](config.json) (Abuja first, plus London, Manchester, Dublin, Houston and Atlanta by default).
+   It uses the Google Places API if a key is set, and the free but sparser OpenStreetMap data if not.
+2. **Check each website**: mobile-friendly, HTTPS, old copyright year, outdated code (old jQuery, Bootstrap or WordPress, Flash, table layouts), slow loading, free website-builder address, no WhatsApp button, no enquiry form, missing Google/social-sharing tags. It also picks up the public contact email.
+   Companies whose "website" is only an Instagram/Facebook page or a portal profile are treated as having **no website**.
+3. **Score them** from 0 to 100:
+   - **redesign_score**: how clearly the site needs replacing (no site at all scores 70).
+   - **budget_score**: Google review count and rating, own domain, number of listings, social accounts, and the market (US/UK/EU agencies get a boost).
+   - **score**: the two combined, weighted by each city's `priority`.
+4. **Output** `leads.csv` (qualified leads, best first, with a suggested pitch line per company), `all-checked.csv` (everything checked) and `leads.json`. Companies not seen in earlier runs are marked `new`.
+
+## Set up (once)
+
+1. In Google Cloud, create an API key with **Places API (New)** enabled (billing must be on; the default settings make about 70 searches a week).
+   Optional: enable **PageSpeed Insights API** on the same key to add Google's mobile speed score.
+2. In GitHub, go to **Settings > Secrets and variables > Actions** and add `GOOGLE_PLACES_API_KEY` (and optionally `PAGESPEED_API_KEY`).
+3. Go to **Actions > Find redesign leads > Run workflow** to try it now. When it finishes, download the **leads** file from the run page.
+
+## Run it on your computer
+
+```bash
+GOOGLE_PLACES_API_KEY=... npm run leads -- --only Abuja
+```
+Results go to `leads-output/`. Options: `--only Abuja,London`, `--limit 30` (check fewer companies), `--config my-config.json`, `--out folder`.
+
+## Tuning
+
+Edit `config.json`:
+- `locations`: add or remove cities (name, country code, centre lat/lon, radius, priority 0–1).
+- `queries`: the search phrases.
+- `minRedesignScore` / `minBudgetScore`: raise them for fewer, stronger leads.
+- `includeNoWebsite`: whether companies without a site count as leads.
+
+Issue weights and budget signals live in [`score.mjs`](score.mjs).
+
+## Before you reach out
+
+- Check each lead by hand: the scores are a shortlist, not a verdict.
+- UK and EU businesses are covered by GDPR/PECR. Cold-emailing a company's generic address (info@…) about a relevant service is generally fine; keep it short, say how you found them, and honour opt-outs. US emails need a working unsubscribe line (CAN-SPAM).
+- On a **public** repository anyone with a GitHub account can download the run's files, so make the repository private, or run it locally, if you don't want your lead list visible.
