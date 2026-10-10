@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Finds real estate companies whose websites look outdated and who can likely afford a
-// ~$2,000 redesign. Writes a ranked CSV (open it in Excel or Google Sheets) and JSON.
+// ~$2,000 redesign. Sends them to your Google Sheet and also writes a ranked CSV and JSON.
 //
 //   node scripts/leads/find-leads.mjs [--config path] [--out dir] [--only Abuja,London] [--limit 50]
 //
-// Env: GOOGLE_PLACES_API_KEY (recommended), PAGESPEED_API_KEY (optional).
+// Env: GOOGLE_PLACES_API_KEY (recommended), PAGESPEED_API_KEY (optional),
+//      LEADS_SHEET_URL + LEADS_SHEET_SECRET (the Apps Script web app from google-sheet.gs).
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -12,11 +13,34 @@ import { fileURLToPath } from 'node:url';
 import { discover, dedupeKey, isOwnSite } from './discover.mjs';
 import { auditSite } from './audit.mjs';
 import { redesignScore, budgetScore, leadScore, pitch } from './score.mjs';
+import { sendToSheet } from './sheet.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const args = parseArgs(process.argv.slice(2));
 const config = JSON.parse(await readFile(args.config ?? join(here, 'config.json'), 'utf8'));
 const outDir = args.out ?? 'leads-output';
+
+// Columns for the CSV and the Google Sheet, in order.
+const COLUMNS = [
+  ['key', (l) => l.key],
+  ['score', (l) => l.score],
+  ['new', (l) => (l.isNew ? 'yes' : '')],
+  ['name', (l) => l.name],
+  ['city', (l) => l.city],
+  ['website', (l) => l.finalUrl || l.website],
+  ['social_or_profile', (l) => l.profileUrl ?? ''],
+  ['phone', (l) => l.phone],
+  ['email', (l) => (l.emails ?? []).join(' ')],
+  ['redesign_score', (l) => l.redesign],
+  ['budget_score', (l) => l.budget],
+  ['google_rating', (l) => l.rating ?? ''],
+  ['google_reviews', (l) => l.reviews ?? ''],
+  ['pitch', (l) => l.pitch],
+  ['issues', (l) => l.issues.map((i) => i.label).join('; ')],
+  ['address', (l) => l.address],
+  ['maps', (l) => l.mapsUrl],
+  ['first_seen', (l) => l.firstSeen],
+];
 
 if (args.only) {
   const wanted = args.only.toLowerCase().split(',');
@@ -46,6 +70,7 @@ const leads = await mapLimit(places, config.concurrency, async (place, i) => {
   lead.score = leadScore(lead);
   lead.pitch = pitch(lead);
   const key = dedupeKey(place);
+  lead.key = key;
   lead.firstSeen = history[key] ?? today;
   lead.isNew = !history[key];
   history[key] = lead.firstSeen;
@@ -64,39 +89,26 @@ await writeFile(join(outDir, 'history.json'), JSON.stringify(history, null, 2));
 
 const fresh = qualified.filter((l) => l.isNew).length;
 console.error(`[leads] ${qualified.length} qualified leads (${fresh} new) out of ${leads.length} checked → ${join(outDir, 'leads.csv')}`);
+
+if (process.env.LEADS_SHEET_URL) {
+  const sheetColumns = COLUMNS.filter(([h]) => h !== 'new');
+  const result = await sendToSheet(process.env.LEADS_SHEET_URL, process.env.LEADS_SHEET_SECRET, sheetColumns.map(([h]) => h), qualified.map((l) => sheetColumns.map(([, f]) => f(l) ?? '')));
+  console.error(`[leads] Google Sheet: ${result.added} added, ${result.updated} updated`);
+}
 // Run summaries are public on public repos, so the workflow turns this off there.
 if (process.env.GITHUB_STEP_SUMMARY && process.env.LEADS_SUMMARY !== 'off') await writeFile(process.env.GITHUB_STEP_SUMMARY, summaryMarkdown(qualified, leads.length, fresh));
 
 function toCsv(rows) {
-  const cols = [
-    ['score', (l) => l.score],
-    ['new', (l) => (l.isNew ? 'yes' : '')],
-    ['name', (l) => l.name],
-    ['city', (l) => l.city],
-    ['website', (l) => l.finalUrl || l.website],
-    ['social_or_profile', (l) => l.profileUrl ?? ''],
-    ['phone', (l) => l.phone],
-    ['email', (l) => (l.emails ?? []).join(' ')],
-    ['redesign_score', (l) => l.redesign],
-    ['budget_score', (l) => l.budget],
-    ['google_rating', (l) => l.rating ?? ''],
-    ['google_reviews', (l) => l.reviews ?? ''],
-    ['pitch', (l) => l.pitch],
-    ['issues', (l) => l.issues.map((i) => i.label).join('; ')],
-    ['address', (l) => l.address],
-    ['maps', (l) => l.mapsUrl],
-    ['first_seen', (l) => l.firstSeen],
-  ];
   const esc = (v) => {
     const s = String(v ?? '');
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
-  return [cols.map(([h]) => h).join(','), ...rows.map((r) => cols.map(([, f]) => esc(f(r))).join(','))].join('\n') + '\n';
+  return [COLUMNS.map(([h]) => h).join(','), ...rows.map((r) => COLUMNS.map(([, f]) => esc(f(r))).join(','))].join('\n') + '\n';
 }
 
 function summaryMarkdown(rows, checked, fresh) {
   const top = rows.slice(0, 25).map((l) => `| ${l.score} | ${l.isNew ? '🆕 ' : ''}${l.name} | ${l.city} | ${l.website || '—'} | ${l.pitch.replace(/\|/g, '/')} |`);
-  return [`### ${rows.length} qualified leads (${fresh} new) from ${checked} companies`, '', '| Score | Company | City | Website | Pitch |', '|---|---|---|---|---|', ...top, '', 'Full list: download the **leads** artifact below.', ''].join('\n');
+  return [`### ${rows.length} qualified leads (${fresh} new) from ${checked} companies`, '', '| Score | Company | City | Website | Pitch |', '|---|---|---|---|---|', ...top, '', 'Full list: see your Google Sheet.', ''].join('\n');
 }
 
 async function loadHistory(path) {
