@@ -10,6 +10,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useBrand } from '../BrandProvider'
+import { rememberStaff } from '@/lib/staff-device'
 
 export type AdminRole = 'super_admin' | 'admin' | 'staff'
 export interface AdminUser { id: string; email: string; name: string; role: AdminRole }
@@ -113,6 +114,7 @@ export default function AdminNav({ children }: { children: React.ReactNode }) {
       .then(d => {
         if (!alive) return
         setUser(d.authenticated ? d.user : null)
+        if (d.authenticated) rememberStaff(d.user)
         setChecked(true)
         if (!d.authenticated && !isLogin) router.replace('/admin')
       })

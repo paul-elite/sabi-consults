@@ -7,6 +7,7 @@ import { useState, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useBrand } from '@/components/BrandProvider'
+import { rememberStaff } from '@/lib/staff-device'
 
 const POSITIONS = [
   'Sales Agent',
@@ -101,6 +102,7 @@ export default function JoinPage() {
         return
       }
 
+      rememberStaff({ name: form.name, email: form.email.trim().toLowerCase() })
       setSuccess(true)
     } catch {
       setError('Something went wrong. Please try again.')
@@ -120,7 +122,7 @@ export default function JoinPage() {
             An admin will review your account. You can sign in with your email and password once it has been approved.
           </p>
           <Link
-            href="/admin"
+            href="/admin?login=1"
             className="btn btn-md btn-brand"
           >
             Sign in
@@ -328,7 +330,7 @@ export default function JoinPage() {
 
         <p className="text-center text-sm text-neutral-500 mt-6">
           Already have an account?{' '}
-          <Link href="/admin" className="text-brand font-medium hover:underline">
+          <Link href="/admin?login=1" className="text-brand font-medium hover:underline">
             Sign in
           </Link>
         </p>
