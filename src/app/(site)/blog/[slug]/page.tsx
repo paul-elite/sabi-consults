@@ -109,10 +109,10 @@ export default async function BlogPostPage({ params }: PageProps) {
               prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
               prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
               prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-2
-              prose-p:text-neutral-600 prose-p:leading-relaxed
+              prose-p:text-neutral-600 prose-p:font-medium prose-p:leading-relaxed
               prose-a:text-brand prose-a:no-underline hover:prose-a:underline
               prose-strong:text-ink
-              prose-ul:text-neutral-600 prose-ol:text-neutral-600
+              prose-ul:text-neutral-600 prose-ol:text-neutral-600 prose-ul:font-medium prose-ol:font-medium
               prose-li:my-1
               prose-img:rounded-lg"
             dangerouslySetInnerHTML={{ __html: cleanHtml(blog.content) }}
