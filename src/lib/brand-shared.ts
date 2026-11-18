@@ -66,7 +66,7 @@ export const DEFAULT_BRAND: Brand = {
   name: process.env.NEXT_PUBLIC_BRAND_NAME || 'Sabi Consults',
   tagline: process.env.NEXT_PUBLIC_BRAND_TAGLINE || 'Helping people find their way home in Abuja',
   logoUrl: '/logo.svg',
-  logoDarkUrl: '',
+  logoDarkUrl: '/logo-dark.svg',
   faviconUrl: '',
   colorPrimary: process.env.NEXT_PUBLIC_BRAND_COLOR || '#0055CC',
   colorInk: '#1a1a1a',

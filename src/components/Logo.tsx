@@ -4,7 +4,9 @@ import { useBrand } from './BrandProvider'
 
 /**
  * The brand logo, or the brand name in type when no logo is set.
- * `onDark` picks the logo meant for brand-coloured backgrounds.
+ * `onDark` picks the logo meant for brand-coloured backgrounds. On light
+ * backgrounds we use the dedicated dark artwork; if none has been uploaded we
+ * fall back to the main logo silhouetted to black so it stays legible.
  */
 export default function Logo({ onDark = true, className = 'h-9 w-auto' }: { onDark?: boolean; className?: string }) {
   const brand = useBrand()
@@ -16,6 +18,7 @@ export default function Logo({ onDark = true, className = 'h-9 w-auto' }: { onDa
       </span>
     )
   }
+  const silhouette = !onDark && !brand.logoDarkUrl
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src={src} alt={brand.name} className={className} />
+  return <img src={src} alt={brand.name} className={`${className}${silhouette ? ' brightness-0' : ''}`} />
 }

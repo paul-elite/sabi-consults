@@ -129,7 +129,7 @@ export default function Header() {
           }`}
         >
           <Link href="/" className="flex items-center min-h-11 shrink-0 rounded-lg" aria-label={`${brand.name} home`}>
-            <Logo onDark={false} className="h-7 lg:h-9 w-auto brightness-0" />
+            <Logo onDark={false} className="h-7 lg:h-9 w-auto" />
           </Link>
 
           <ul className="hidden xl:flex items-center gap-0.5 ml-auto text-sm">
