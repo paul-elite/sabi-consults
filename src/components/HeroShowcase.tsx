@@ -155,7 +155,7 @@ export default function HeroShowcase({ brandName, properties }: HeroShowcaseProp
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 grid">
         <div className={`${panel(!detailsOpen)} text-center`} inert={detailsOpen || undefined}>
           <div className="mx-auto mb-8 sm:mb-12 max-w-3xl px-2">
-            <h1 className="text-[34px] sm:text-5xl lg:text-6xl font-semibold text-white mb-4 sm:mb-6 leading-tight [text-shadow:0_3px_18px_rgba(0,0,0,0.45)]">
+            <h1 className="text-[34px] sm:text-5xl lg:text-6xl font-semibold text-white mb-4 sm:mb-6 leading-tight [text-shadow:0_1px_0.75px_rgba(0,0,0,0.95)]">
               Find Your Perfect Property
               <span className="block font-medium">in Abuja</span>
             </h1>

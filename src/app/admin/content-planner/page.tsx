@@ -244,8 +244,9 @@ export default function ContentPlannerPage() {
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+    <main className="min-h-[calc(100vh-3.5rem)] bg-[#f1f2f4] px-4 py-6 sm:px-6 sm:py-8">
+      <div className="max-w-7xl mx-auto">
+      <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-3 py-1 text-xs font-medium text-brand mb-3">
             <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
@@ -256,19 +257,19 @@ export default function ContentPlannerPage() {
             {canManage ? 'Assign content tasks to staff and track each person’s calendar.' : 'See content tasks assigned to you by the admin.'}
           </p>
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex w-full flex-col gap-3 lg:w-[min(100%,32rem)]">
           {canManage && (
-            <select className="form-input form-select h-10 sm:w-52" value={selectedStaffId} onChange={event => setSelectedStaffId(event.target.value)}>
+            <select className="form-input form-select h-10 w-full" value={selectedStaffId} onChange={event => setSelectedStaffId(event.target.value)}>
               <option value="all">All staff</option>
               <option value="unassigned">Unassigned</option>
               {staff.map(member => <option key={member.id} value={member.id}>{member.name}</option>)}
             </select>
           )}
-          <div className="flex items-center gap-2">
+          <div className="grid w-full grid-cols-[2.5rem_1fr_2.5rem] items-center gap-2 rounded-2xl bg-white p-2">
             <button type="button" onClick={() => shiftMonth(-1)} className="btn btn-sm btn-outline btn-icon" aria-label="Previous month">
               <HugeiconsIcon icon={ArrowLeft01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
             </button>
-            <span className="min-w-40 text-center text-sm font-medium text-ink">{monthLabel}</span>
+            <span className="flex h-9 w-full items-center justify-center rounded-xl bg-[#f1f2f4] text-center text-sm font-semibold text-ink">{monthLabel}</span>
             <button type="button" onClick={() => shiftMonth(1)} className="btn btn-sm btn-outline btn-icon" aria-label="Next month">
               <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4" strokeWidth={1.7} aria-hidden="true" />
             </button>
@@ -301,7 +302,7 @@ export default function ContentPlannerPage() {
                   key={key}
                   type="button"
                   onClick={() => pickDay(day)}
-                  className={`group min-h-24 sm:min-h-32 border-b border-r border-neutral-100 p-2 sm:p-3 text-left transition-colors last:border-r-0 ${selected ? 'bg-blue-50 ring-2 ring-inset ring-brand' : 'hover:bg-neutral-50'} ${muted ? 'bg-neutral-50/50' : 'bg-white'}`}
+                  className={`group min-h-24 sm:min-h-32 border-b border-r border-neutral-100 p-2 sm:p-3 text-left transition-colors last:border-r-0 ${selected ? 'rounded-tl-3xl rounded-br-3xl bg-white ring-2 ring-inset ring-brand' : 'hover:bg-neutral-50'} ${muted ? 'bg-neutral-50/50' : 'bg-white'}`}
                 >
                   <span className={`grid h-7 w-7 place-items-center rounded-full text-sm font-medium ${current ? 'bg-brand text-on-brand' : selected ? 'text-brand' : muted ? 'text-neutral-300' : 'text-ink'}`}>
                     {day.getDate()}
@@ -436,6 +437,7 @@ export default function ContentPlannerPage() {
             </form>
           )}
         </aside>
+      </div>
       </div>
     </main>
   )
