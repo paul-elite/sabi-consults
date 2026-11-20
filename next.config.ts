@@ -44,6 +44,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
+    qualities: [75, 90],
     // Only optimise images from places we actually use, so the image service
     // can't be used as an open proxy for any website.
     remotePatterns: [
