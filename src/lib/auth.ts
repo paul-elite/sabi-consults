@@ -49,6 +49,19 @@ function sign(payload: string): string {
   return createHmac('sha256', secret()).update(payload).digest('base64url')
 }
 
+/**
+ * Signs a value for use in links sent by email (unsubscribe, preferences, click tracking).
+ * The purpose is mixed in so a token made for one job can't be reused for another.
+ */
+export function hmacTag(purpose: string, data: string, length = 32): string {
+  return createHmac('sha256', secret()).update(`link:${purpose}:${data}`).digest('base64url').slice(0, length)
+}
+
+export function verifyTag(purpose: string, data: string, tag: string, length = 32): boolean {
+  if (!tag || tag.length !== length) return false
+  return safeEqual(hmacTag(purpose, data, length), tag)
+}
+
 /** Short fingerprint of a credential; changes whenever the password does. */
 function credentialTag(credential: string): string {
   return createHmac('sha256', secret()).update('cred:' + credential).digest('base64url').slice(0, 22)

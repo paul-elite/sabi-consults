@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { LeadWithDetails, LeadQuality, LeadStatus } from '@/lib/types'
 import { RequireRole } from '@/components/admin/AdminNav'
+import LeadCrmPanel from '@/components/admin/email/LeadCrmPanel'
 
 const QUALITY_STYLES: Record<LeadQuality, { bg: string; text: string; icon: typeof StarIcon }> = {
   hot: { bg: 'bg-red-100', text: 'text-red-700', icon: FlameIcon },
@@ -32,7 +33,7 @@ const QUALITY_STYLES: Record<LeadQuality, { bg: string; text: string; icon: type
   cold: { bg: 'bg-blue-100', text: 'text-blue-700', icon: UserIcon },
 }
 
-const STATUS_OPTIONS: LeadStatus[] = ['new', 'contacted', 'qualified', 'converted', 'lost']
+const STATUS_OPTIONS: LeadStatus[] = ['new', 'contacted', 'qualified', 'interested', 'inspection_scheduled', 'inspected', 'negotiating', 'offer_submitted', 'converted', 'lost', 'dormant']
 
 const EVENT_ICONS: Record<string, typeof ViewIcon> = {
   page_view: ViewIcon,
@@ -198,7 +199,7 @@ function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
               className="form-input form-select w-auto"
             >
               {STATUS_OPTIONS.map(s => (
-                <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s}>{(s.charAt(0).toUpperCase() + s.slice(1)).replace(/_/g, ' ')}</option>
               ))}
             </select>
           </div>
@@ -206,6 +207,7 @@ function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
       </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <LeadCrmPanel leadId={id} />
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Left Column - Contact & Details */}
           <div className="space-y-6">
@@ -514,5 +516,5 @@ function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
 }
 
 export default function LeadDetailAdminPage({ params }: { params: Promise<{ id: string }> }) {
-  return <RequireRole min="admin"><LeadDetailPage params={params} /></RequireRole>
+  return <RequireRole min="staff"><LeadDetailPage params={params} /></RequireRole>
 }

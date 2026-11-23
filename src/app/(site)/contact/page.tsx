@@ -12,7 +12,8 @@ export const metadata: Metadata = {
   description: 'Get in touch with us for premium real estate services in Abuja, Nigeria.',
 }
 
-export default async function ContactPage() {
+export default async function ContactPage({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
+  const { type } = await searchParams
   const settings = await getSettings()
   const digits = settings.whatsapp_number.replace(/\D/g, '')
   return (
@@ -129,7 +130,7 @@ export default async function ContactPage() {
               <p className="text-neutral-600 mb-8">
                 Fill out the form below and we&apos;ll get back to you as soon as possible.
               </p>
-              <ContactForm />
+              <ContactForm showType defaultType={type} />
             </div>
           </div>
         </div>

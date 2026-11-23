@@ -4,6 +4,7 @@ import { InstagramIcon, WhatsappIcon } from '@hugeicons/core-free-icons'
 import Link from 'next/link'
 import { getBrand } from '@/lib/brand'
 import { getSettings } from '@/lib/settings'
+import { FooterNewsletter } from './EmailCapture'
 
 export default async function Footer() {
   const [brand, settings] = await Promise.all([getBrand(), getSettings()])
@@ -129,6 +130,18 @@ export default async function Footer() {
               </li>
             </ul>
           </div>
+        </div>
+
+        {/* Newsletter */}
+        <div className="mt-12 pt-10 border-t border-on-brand/20 grid md:grid-cols-[1fr_minmax(0,420px)] gap-6 md:gap-12 items-start">
+          <div>
+            <h4 className="text-sm font-semibold uppercase tracking-wider mb-2">New listings in your inbox</h4>
+            <p className="text-on-brand/70 text-sm leading-relaxed max-w-md">
+              Be first to hear about new homes and land in Abuja, plus practical buying guides. No spam, and you choose what you get.
+            </p>
+            <Link href="/guides" className="inline-block mt-3 text-sm text-on-brand/80 underline hover:text-on-brand">Free buying guides</Link>
+          </div>
+          <FooterNewsletter />
         </div>
 
         {/* Bottom Bar */}

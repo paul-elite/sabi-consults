@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { getSession, requireRole } from '@/lib/auth'
+import { emitEvent } from '@/lib/email/events'
+import { kickWorker } from '@/lib/email/worker'
 
 // GET single property
 export async function GET(
@@ -64,6 +66,8 @@ export async function PUT(
     if (body.status !== undefined) updates.status = body.status
     if (body.featured !== undefined) updates.featured = body.featured
 
+    const { data: before } = await supabase.from('properties').select('price, status').eq('id', id).maybeSingle()
+
     const { data, error } = await supabase
       .from('properties')
       .update(updates)
@@ -76,6 +80,22 @@ export async function PUT(
         { error: 'Property not found' },
         { status: 404 }
       )
+    }
+
+    // Tell interested people about price and availability changes
+    if (before) {
+      const stamp = new Date().toISOString()
+      if (Number(before.price) !== Number(data.price) && Number(data.price) > 0 && data.status === 'available') {
+        await emitEvent('property.price_changed', { property_id: id, old_price: Number(before.price), new_price: Number(data.price), subject_key: `price:${id}:${data.price}` }, `property.price_changed:${id}:${data.price}`)
+      }
+      if (before.status === 'available' && data.status !== 'available') {
+        await emitEvent('property.unavailable', { property_id: id, status: data.status, subject_key: `unavailable:${id}` }, `property.unavailable:${id}:${stamp}`)
+      }
+      if (before.status !== 'available' && data.status === 'available') {
+        // Back on the market (or first published): announce once per property
+        await emitEvent('property.published', { property_id: id, subject_key: `property:${id}` }, `property.published:${id}`)
+      }
+      kickWorker('property')
     }
 
     return NextResponse.json(transformProperty(data))

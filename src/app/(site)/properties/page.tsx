@@ -2,6 +2,7 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { MapsIcon } from '@hugeicons/core-free-icons'
 import Link from 'next/link'
+import { PropertyAlertForm } from '@/components/EmailCapture'
 import PropertyCard from '@/components/PropertyCard'
 import { filterProperties } from '@/lib/properties'
 
@@ -141,6 +142,15 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             </div>
           </div>
         )}
+
+        {/* Alert for this search: emails new matching listings */}
+        <div className="mt-8 rounded-xl border border-neutral-200 bg-white p-5 sm:p-6 max-w-xl">
+          <PropertyAlertForm criteria={{
+            types: params.type === 'land' || params.type === 'house' ? [params.type] : [],
+            districts: params.district ? [params.district] : [],
+            maxBudget: maxPrice || null,
+          }} />
+        </div>
       </section>
 
       {/* Floating map button on phones */}

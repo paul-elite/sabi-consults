@@ -58,6 +58,13 @@ In the admin area, as the owner:
 3. Add every variable from `.env.local.example` under **Environment Variables**.
 4. Deploy, then add your domain under **Settings > Domains**.
 
+## Email, CRM and automation
+Enquiry confirmations, inspection booking and reminders, follow-up sequences, property alerts,
+newsletters, campaigns, transaction updates and analytics. Admin area: **Email & marketing**,
+**Inspections** and **Transactions**. Setup (Resend, DNS, webhook, scheduler) and architecture
+are in [`docs/EMAIL.md`](docs/EMAIL.md). Run `supabase/migration-leads.sql`, then
+`supabase/migration-email.sql` and `supabase/migration-email-schedule.sql`.
+
 ## Updating an existing database
 Run `supabase/setup.sql` again. It only adds what's missing (new columns, the super admin role, brand settings) and never deletes data. The old step-by-step scripts are in `supabase/legacy/` for reference only. Don't run `legacy/migration-v2.sql`: it drops the properties table.
 

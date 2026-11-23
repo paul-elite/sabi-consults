@@ -113,7 +113,7 @@ export interface TeamMember {
 
 // Lead System Types
 export type LeadQuality = 'cold' | 'warm' | 'hot'
-export type LeadStatus = 'new' | 'contacted' | 'qualified' | 'converted' | 'lost'
+export type LeadStatus = 'new' | 'contacted' | 'qualified' | 'interested' | 'inspection_scheduled' | 'inspected' | 'negotiating' | 'offer_submitted' | 'converted' | 'lost' | 'dormant'
 export type LeadIntent = 'buy' | 'rent' | 'invest' | 'undecided'
 
 export interface Lead {

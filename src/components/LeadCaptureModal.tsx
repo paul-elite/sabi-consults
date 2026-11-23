@@ -138,6 +138,7 @@ export default function LeadCaptureModal({
   const [errorText, setErrorText] = useState('')
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({})
   const [website, setWebsite] = useState('') // Honeypot
+  const [marketingConsent, setMarketingConsent] = useState(false)
 
   // Track popup view
   useEffect(() => {
@@ -242,6 +243,7 @@ export default function LeadCaptureModal({
         propertyId: property?.id,
         ...identity,
         website, // Honeypot
+        marketingConsent,
       }
 
       // If this is a viewing request, use a different endpoint
@@ -549,6 +551,14 @@ export default function LeadCaptureModal({
                   ))}
                 </select>
               </div>
+            )}
+
+            {/* Optional marketing consent: never pre-ticked */}
+            {config.fields.includes('email') && (
+              <label className="flex items-start gap-3 text-sm text-neutral-600 cursor-pointer">
+                <input type="checkbox" checked={marketingConsent} onChange={e => setMarketingConsent(e.target.checked)} className="mt-0.5 w-4 h-4 shrink-0" />
+                <span>Email me new listings and property updates. Optional; unsubscribe any time.</span>
+              </label>
             )}
 
             {/* Error message */}

@@ -8,6 +8,7 @@ import { getSettings } from '@/lib/settings'
 import { getPropertyById } from '@/lib/properties'
 import { formatNaira, formatPrice, priceHeadline, propertyFacts } from '@/lib/format'
 import ContactForm from '@/components/ContactForm'
+import { PropertyAlertForm } from '@/components/EmailCapture'
 import MapWrapper from '@/components/MapWrapper'
 import PropertyGallery from '@/components/PropertyGallery'
 
@@ -148,10 +149,11 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
           </section>
 
           {/* Enquiry form (phones) */}
-          <section className="mt-10 lg:hidden" aria-labelledby="enq-h">
+          <section id="inspect" className="mt-10 lg:hidden scroll-mt-24" aria-labelledby="enq-h">
             <h2 id="enq-h" className="text-xl font-semibold text-ink mb-1">Book an inspection</h2>
             <p className="text-sm text-neutral-500 mb-4">Leave your details and we’ll call you back, usually the same day.</p>
-            <ContactForm propertyId={property.id} propertyTitle={property.title} />
+            <ContactForm propertyId={property.id} propertyTitle={property.title} propertyType={property.type} propertyDistrict={property.district} propertyPrice={property.price} />
+            {property.status === 'available' && <div className="mt-6 pt-6 border-t border-neutral-200"><PropertyAlertForm propertyId={property.id} propertyTitle={property.title} compact /></div>}
           </section>
         </div>
 
@@ -174,8 +176,9 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
             </div>
             <div className="mt-6 pt-6 border-t border-neutral-200">
               <p className="font-medium text-ink mb-3">Book an inspection</p>
-              <ContactForm propertyId={property.id} propertyTitle={property.title} />
+              <ContactForm propertyId={property.id} propertyTitle={property.title} propertyType={property.type} propertyDistrict={property.district} propertyPrice={property.price} />
             </div>
+            {property.status === 'available' && <div className="mt-5 pt-5 border-t border-neutral-200"><PropertyAlertForm propertyId={property.id} propertyTitle={property.title} compact /></div>}
           </div>
         </aside>
       </div>

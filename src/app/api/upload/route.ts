@@ -14,6 +14,7 @@ function matchesSignature(type: string, b: Uint8Array): boolean {
     case 'image/png': return starts(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)
     case 'image/gif': return ascii(0, 'GIF87a') || ascii(0, 'GIF89a')
     case 'image/webp': return ascii(0, 'RIFF') && ascii(8, 'WEBP')
+    case 'application/pdf': return ascii(0, '%PDF-')
     case 'image/x-icon':
     case 'image/vnd.microsoft.icon': return starts(0x00, 0x00, 0x01, 0x00)
     case 'image/svg+xml': {
@@ -39,8 +40,8 @@ export async function POST(request: NextRequest) {
     if (!rateLimit(limitKey, currentUser ? 60 : 5, 60 * 60 * 1000)) {
       return NextResponse.json({ error: 'Upload limit reached. Try again in an hour.' }, { status: 429 })
     }
-    if (Number(request.headers.get('content-length') || 0) > 6 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File too large. Maximum size is 5MB.' }, { status: 413 })
+    if (Number(request.headers.get('content-length') || 0) > 11 * 1024 * 1024) {
+      return NextResponse.json({ error: 'File too large. Maximum size is 10MB for guides and 5MB for images.' }, { status: 413 })
     }
 
     const formData = await request.formData()
@@ -51,30 +52,39 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon']
+    // PDFs are only for downloadable guides, uploaded by an admin
+    const wantsGuide = String(formData.get('folder') || '') === 'guides'
+    if (file.type === 'application/pdf' && !(wantsGuide && currentUser && currentUser.role !== 'staff')) {
+      return NextResponse.json({ error: 'PDFs can only be uploaded as guides by an admin.' }, { status: 403 })
+    }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon', 'application/pdf']
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json({ error: 'Use a JPG, PNG, WebP, GIF, SVG or ICO image.' }, { status: 400 })
     }
 
     // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024
+    const maxSize = (file.type === 'application/pdf' ? 10 : 5) * 1024 * 1024
     if (file.size > maxSize) {
-      return NextResponse.json({ error: 'File too large. Maximum size is 5MB.' }, { status: 400 })
+      return NextResponse.json({ error: `File too large. Maximum size is ${file.type === 'application/pdf' ? 10 : 5}MB.` }, { status: 400 })
     }
 
     const supabase = await createAdminClient()
 
     // Generate unique filename
     // Pick the extension from the checked file type, never from the file name
-    const EXT: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'image/x-icon': 'ico', 'image/vnd.microsoft.icon': 'ico' }
+    const EXT: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'image/x-icon': 'ico', 'image/vnd.microsoft.icon': 'ico', 'application/pdf': 'pdf' }
     const ext = EXT[file.type]
     const timestamp = Date.now()
     const randomStr = randomUUID()
     const requested = String(formData.get('folder') || 'properties')
-    const folder = isJoinPhoto ? 'staff' : ['properties', 'brand', 'team', 'blog'].includes(requested) ? requested : 'properties'
+    const folder = isJoinPhoto ? 'staff' : ['properties', 'brand', 'team', 'blog', 'guides'].includes(requested) ? requested : 'properties'
 
     if (isJoinPhoto && !['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
       return NextResponse.json({ error: 'Use a JPG, PNG or WebP photo.' }, { status: 400 })
+    }
+
+    if ((folder === 'guides') !== (file.type === 'application/pdf')) {
+      return NextResponse.json({ error: 'Guides must be PDF files.' }, { status: 400 })
     }
 
     if (file.type === 'image/svg+xml' && (folder !== 'brand' || currentUser?.role !== 'super_admin')) {
@@ -140,7 +150,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid image URL' }, { status: 400 })
     }
     const path = decodeURIComponent(new URL(url).pathname.replace('/storage/v1/object/public/images/', ''))
-    const match = path.match(/^(properties|brand|team|blog)\/[\w.-]+$/)
+    const match = path.match(/^(properties|brand|team|blog|guides)\/[\w.-]+$/)
     if (!match || path.includes('..')) {
       return NextResponse.json({ error: 'Invalid image URL' }, { status: 400 })
     }

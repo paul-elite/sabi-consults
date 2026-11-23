@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { getSession, requireRole } from '@/lib/auth'
+import { emitEvent } from '@/lib/email/events'
+import { kickWorker } from '@/lib/email/worker'
 
 // GET all properties
 export async function GET(request: NextRequest) {
@@ -103,6 +105,12 @@ export async function POST(request: NextRequest) {
         { error: 'Failed to create property' },
         { status: 500 }
       )
+    }
+
+    // Matching alerts go out from the event, not from this request
+    if (data.status === 'available') {
+      await emitEvent('property.published', { property_id: data.id, subject_key: `property:${data.id}` }, `property.published:${data.id}`)
+      kickWorker('property')
     }
 
     return NextResponse.json(transformProperty(data), { status: 201 })

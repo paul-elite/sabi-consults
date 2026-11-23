@@ -19,15 +19,22 @@ const STATUS_STYLES: Record<LeadStatus, string> = {
   new: 'badge-info',
   contacted: 'badge-warning',
   qualified: 'badge-success',
+  interested: 'badge-success',
+  inspection_scheduled: 'badge-brand',
+  inspected: 'badge-brand',
+  negotiating: 'badge-warning',
+  offer_submitted: 'badge-warning',
   converted: 'badge-brand',
   lost: 'badge-neutral',
+  dormant: 'badge-neutral',
 }
 
 function LeadsPage() {
   const router = useRouter()
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<{ quality?: LeadQuality; status?: LeadStatus }>({})
+  const [filter, setFilter] = useState<{ quality?: LeadQuality; status?: LeadStatus; assigned?: 'unassigned' | 'me' }>({})
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     async function checkAuthAndFetch() {
@@ -42,6 +49,8 @@ function LeadsPage() {
         const params = new URLSearchParams()
         if (filter.quality) params.set('quality', filter.quality)
         if (filter.status) params.set('status', filter.status)
+        if (filter.assigned) params.set('assigned', filter.assigned)
+        if (query.trim()) params.set('q', query.trim())
 
         const res = await fetch(`/api/leads?${params}`)
         if (res.ok) {
@@ -56,7 +65,7 @@ function LeadsPage() {
     }
 
     checkAuthAndFetch()
-  }, [router, filter])
+  }, [router, filter, query])
 
   const stats = {
     total: leads.length,
@@ -132,11 +141,20 @@ function LeadsPage() {
           New
         </button>
         <button
-          onClick={() => setFilter({ status: 'contacted' })}
-          className={`btn btn-sm ${filter.status === 'contacted' ? 'btn-primary' : 'btn-secondary'}`}
+          onClick={() => setFilter({ assigned: 'unassigned' })}
+          className={`btn btn-sm ${filter.assigned === 'unassigned' ? 'btn-primary' : 'btn-secondary'}`}
         >
-          Contacted
+          Unassigned
         </button>
+        <label className="sr-only" htmlFor="lead-status">Pipeline stage</label>
+        <select id="lead-status" className="form-select h-8 py-0 w-auto text-sm" value={filter.status || ''}
+          onChange={e => setFilter(e.target.value ? { status: e.target.value as LeadStatus } : {})}>
+          <option value="">Any stage</option>
+          {Object.keys(STATUS_STYLES).map(s => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}
+        </select>
+        <label className="sr-only" htmlFor="lead-q">Search leads</label>
+        <input id="lead-q" type="search" placeholder="Search name, email or phone" className="form-input h-8 py-0 w-56 text-sm"
+          defaultValue={query} onKeyDown={e => { if (e.key === 'Enter') setQuery((e.target as HTMLInputElement).value) }} />
       </div>
 
       {/* Leads Table */}
@@ -151,6 +169,7 @@ function LeadsPage() {
                   <th>Source</th>
                   <th>Engagement</th>
                   <th>Status</th>
+                  <th>Agent</th>
                   <th>Created</th>
                   <th></th>
                 </tr>
@@ -204,9 +223,10 @@ function LeadsPage() {
                       </td>
                       <td>
                         <span className={`badge ${STATUS_STYLES[lead.status]}`}>
-                          {lead.status}
+                          {lead.status.replace(/_/g, ' ')}
                         </span>
                       </td>
+                      <td className="text-sm text-neutral-600">{(lead as unknown as { assignee?: { name: string } | null }).assignee?.name || <span className="text-amber-600">Unassigned</span>}</td>
                       <td className="text-sm text-neutral-500">
                         {new Date(lead.createdAt).toLocaleDateString('en-GB', {
                           day: 'numeric',
@@ -243,5 +263,5 @@ function LeadsPage() {
 }
 
 export default function LeadsAdminPage() {
-  return <RequireRole min="admin"><LeadsPage /></RequireRole>
+  return <RequireRole min="staff"><LeadsPage /></RequireRole>
 }

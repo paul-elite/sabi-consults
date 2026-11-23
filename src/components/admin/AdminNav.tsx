@@ -2,7 +2,7 @@
 
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
 import {
-  Analytics01Icon, ArrowDown01Icon, Calendar03Icon, Cancel01Icon, ContactBookIcon, DashboardSquare01Icon, Globe02Icon, LinkSquare01Icon,
+  Agreement01Icon, Analytics01Icon, ArrowDown01Icon, Calendar01Icon, Calendar03Icon, Mail01Icon, Cancel01Icon, ContactBookIcon, DashboardSquare01Icon, Globe02Icon, LinkSquare01Icon,
   Logout03Icon, Menu01Icon, News01Icon, PaintBoardIcon, Settings02Icon, UserCircleIcon, UserGroupIcon, UserLock01Icon,
 } from '@hugeicons/core-free-icons'
 
@@ -28,7 +28,10 @@ type NavGroup = { title: string; label: string; links: NavLink[] }
 // Day-to-day work sits in the bar; configuration lives under the settings menu, personal items under the account menu.
 const DASHBOARD: NavLink = { href: '/admin/dashboard', label: 'Dashboard', min: 'staff', icon: DashboardSquare01Icon, also: ['/admin/properties'] }
 const OPERATIONS: NavLink[] = [
-  { href: '/admin/leads', label: 'Leads', min: 'admin', icon: ContactBookIcon },
+  { href: '/admin/leads', label: 'Leads', min: 'staff', icon: ContactBookIcon },
+  { href: '/admin/inspections', label: 'Inspections', min: 'staff', icon: Calendar01Icon },
+  { href: '/admin/transactions', label: 'Transactions', min: 'staff', icon: Agreement01Icon },
+  { href: '/admin/email', label: 'Email & marketing', min: 'admin', icon: Mail01Icon },
   { href: '/admin/analytics', label: 'Analytics', min: 'admin', icon: Analytics01Icon },
   { href: '/admin/visitors', label: 'Visitors', min: 'admin', icon: Globe02Icon },
 ]
@@ -39,7 +42,10 @@ const CONTENT: NavLink[] = [
 ]
 const MAIN: NavLink[] = [
   { href: '/admin/dashboard', label: 'Dashboard', min: 'staff', icon: DashboardSquare01Icon, also: ['/admin/properties'] },
-  { href: '/admin/leads', label: 'Leads', min: 'admin', icon: ContactBookIcon },
+  { href: '/admin/leads', label: 'Leads', min: 'staff', icon: ContactBookIcon },
+  { href: '/admin/inspections', label: 'Inspections', min: 'staff', icon: Calendar01Icon },
+  { href: '/admin/transactions', label: 'Transactions', min: 'staff', icon: Agreement01Icon },
+  { href: '/admin/email', label: 'Email & marketing', min: 'admin', icon: Mail01Icon },
   { href: '/admin/analytics', label: 'Analytics', min: 'admin', icon: Analytics01Icon },
   { href: '/admin/visitors', label: 'Visitors', min: 'admin', icon: Globe02Icon },
   { href: '/admin/blog', label: 'Blog', min: 'staff', icon: News01Icon },

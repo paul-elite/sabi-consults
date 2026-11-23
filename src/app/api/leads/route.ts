@@ -3,32 +3,48 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/auth'
 import { clientIp, isLimited, rateLimit, readJson } from '@/lib/rate-limit'
+import { makeReference } from '@/lib/email/config'
+import { upsertContact } from '@/lib/email/contacts'
+import { attributionFrom, handleMarketingOptIn } from '@/lib/email/intake'
+import { emitEvent } from '@/lib/email/events'
+import { recordConversion } from '@/lib/email/attribution'
+import { kickWorker } from '@/lib/email/worker'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 
 // GET all leads (admin only)
 export async function GET(request: NextRequest) {
-  const auth = await requireRole('admin')
+  // Agents (staff) see the leads assigned to them; admins see everything
+  const auth = await requireRole('staff')
   if (auth instanceof NextResponse) return auth
 
   const supabase = await createAdminClient()
   const searchParams = request.nextUrl.searchParams
   const status = searchParams.get('status')
   const quality = searchParams.get('quality')
-  const limit = parseInt(searchParams.get('limit') || '100', 10)
+  const limit = Math.min(500, Math.max(1, parseInt(searchParams.get('limit') || '200', 10) || 200))
 
   let query = supabase
     .from('leads')
     .select(`
       *,
-      most_viewed_property:properties!leads_most_viewed_property_id_fkey(id, title, district, images)
+      most_viewed_property:properties!leads_most_viewed_property_id_fkey(id, title, district, images),
+      assignee:admin_users!leads_assigned_to_fkey(id, name)
     `)
     .order('created_at', { ascending: false })
     .limit(limit)
 
   if (status) query = query.eq('status', status)
   if (quality) query = query.eq('quality', quality)
+  const assigned = searchParams.get('assigned')
+  if (auth.role === 'staff' || assigned === 'me') query = auth.id === 'env' ? query.is('assigned_to', null).eq('id', '00000000-0000-0000-0000-000000000000') : query.eq('assigned_to', auth.id)
+  else if (assigned === 'unassigned') query = query.is('assigned_to', null)
+  const q = searchParams.get('q')?.trim().slice(0, 80)
+  if (q) {
+    const safe = q.replace(/[%,()*]/g, ' ')
+    query = query.or(`name.ilike.%${safe}%,email.ilike.%${safe}%,phone.ilike.%${safe}%`)
+  }
 
   const { data, error } = await query
 
@@ -154,6 +170,8 @@ export async function POST(request: NextRequest) {
         } catch { /* Silent fail - function may not exist yet */ }
       }
 
+      await afterLeadCapture(request, raw, data as Record<string, unknown>, false)
+
       return NextResponse.json({
         ...transformLead(data),
         isExisting: true,
@@ -216,6 +234,8 @@ export async function POST(request: NextRequest) {
         })
     }
 
+    await afterLeadCapture(request, raw, data as Record<string, unknown>, true)
+
     return NextResponse.json({
       ...transformLead(data),
       isExisting: false,
@@ -224,6 +244,63 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('Lead creation error:', err)
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  }
+}
+
+/**
+ * A pop-up submission is an enquiry too: when the person gave an email we
+ * record it as one, so they get the same immediate confirmation and the
+ * team gets the same alert as the contact form.
+ */
+async function afterLeadCapture(request: NextRequest, raw: Record<string, unknown>, lead: Record<string, unknown>, isNew: boolean) {
+  try {
+    const supabase = await createAdminClient()
+    const leadId = lead.id as string
+    const propertyId = typeof raw.propertyId === 'string' && UUID.test(raw.propertyId) ? raw.propertyId : null
+    const attr = attributionFrom(raw, propertyId ? 'property_listing' : 'website')
+    if (isNew) {
+      await emitEvent('lead.created', { lead_id: leadId, property_id: propertyId, subject_key: `lead:${leadId}` }, `lead.created:${leadId}`)
+    }
+    const email = typeof lead.email === 'string' ? lead.email : null
+    if (!email) { kickWorker('lead'); return }
+    const contact = await upsertContact({
+      email, name: lead.name as string, phone: lead.phone as string, leadId, source: attr.source === 'website' && propertyId ? 'property_listing' : attr.source,
+      sourceDetail: propertyId, interests: {
+        types: Array.isArray(raw.propertyTypes) ? raw.propertyTypes.map(String).slice(0, 5) : undefined,
+        districts: Array.isArray(raw.preferredDistricts) ? raw.preferredDistricts.map(String).slice(0, 20) : undefined,
+        minBudget: Number(raw.minBudget) || null, maxBudget: Number(raw.maxBudget) || null,
+      },
+    })
+    if (isNew) await recordConversion({ type: 'lead', entityId: leadId, contactId: contact.id, leadId, propertyId })
+    // One enquiry record per person per property per day, so repeated pop-ups don't spam them
+    const dayKey = new Date().toISOString().slice(0, 10)
+    const { data: recent } = await supabase.from('inquiries').select('id').eq('lead_id', leadId)
+      .gte('created_at', `${dayKey}T00:00:00Z`).limit(1).maybeSingle()
+    if (!recent) {
+      const message = [
+        propertyId ? 'Asked for details through the website pop-up.' : 'Shared their details through the website pop-up.',
+        raw.intent ? `Looking to: ${cleanText(raw.intent, 20)}` : '',
+        raw.timeline ? `Timeline: ${cleanText(raw.timeline, 40)}` : '',
+      ].filter(Boolean).join('\n')
+      const { data: inq } = await supabase.from('inquiries').insert({
+        name: lead.name, email, phone: lead.phone || '', message, property_id: propertyId,
+        reference: makeReference('SC'), enquiry_type: propertyId ? 'property' : 'general', source: attr.source, attribution: attr,
+        lead_id: leadId, contact_id: contact.id, marketing_consent: raw.marketingConsent === true,
+      }).select('id').single()
+      if (inq) {
+        let propertyType: string | null = null
+        if (propertyId) propertyType = (await supabase.from('properties').select('type').eq('id', propertyId).maybeSingle()).data?.type || null
+        await emitEvent('inquiry.created', {
+          inquiry_id: inq.id, lead_id: leadId, contact_id: contact.id, property_id: propertyId,
+          enquiry_type: propertyId ? 'property' : 'general', property_type: propertyType, subject_key: `inquiry:${inq.id}`,
+        }, `inquiry.created:${inq.id}`)
+        await recordConversion({ type: 'enquiry', entityId: inq.id, contactId: contact.id, leadId, propertyId })
+      }
+    }
+    if (raw.marketingConsent === true) await handleMarketingOptIn(contact, request, 'lead_popup')
+    kickWorker('lead')
+  } catch (err) {
+    console.error('Lead follow-up failed:', err)
   }
 }
 
@@ -265,6 +342,10 @@ function transformLead(row: Record<string, unknown>) {
     lastActivityAt: row.last_activity_at,
     status: row.status,
     assignedTo: row.assigned_to,
+    assignee: row.assignee || null,
+    kind: row.kind,
+    nextFollowUpAt: row.next_follow_up_at,
+    lastContactedAt: row.last_contacted_at,
     notes: row.notes,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
