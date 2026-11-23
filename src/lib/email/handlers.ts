@@ -39,9 +39,17 @@ export async function handleDomainEvent(ev: { id: string; type: AppEventType; pa
 /* ------------------------------------------------------------- inspections */
 
 async function cancelInspectionReminders(viewingId: string, why: string) {
-  await db().from('email_messages').update({ status: 'cancelled', status_reason: `Inspection ${why.split('.')[1]}` })
+  const reason = `Inspection ${why.split('.')[1].replace('_', '-')}`
+  // Timed reminders carry the inspection time they were scheduled for; other queued
+  // notices (e.g. the team's "new request" alert) are left alone
+  await db().from('email_messages').update({ status: 'cancelled', status_reason: reason })
     .eq('viewing_id', viewingId).eq('status', 'queued').in('template_key', ['inspection_reminder', 'internal_inspection'])
-    .gt('send_after', new Date().toISOString())
+    .not('context->>expected_datetime', 'is', null)
+  // A booking confirmation that hasn't gone out yet is now wrong: withdraw it
+  if (why === 'inspection.cancelled') {
+    await db().from('email_messages').update({ status: 'cancelled', status_reason: reason })
+      .eq('viewing_id', viewingId).eq('status', 'queued').in('template_key', ['inspection_confirmed', 'inspection_requested'])
+  }
 }
 
 export async function scheduleInspectionReminders(viewingId: string) {
